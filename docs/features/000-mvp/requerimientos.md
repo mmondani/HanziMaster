@@ -1,3 +1,7 @@
+# App
+- Es una app web pensada principalmente para ser usada desde el celular pero que también debe poder ser usada desde una PC
+- En un celular se debe comportar como una pwa
+
 # Login
 - Login mediante cuenta de Google
 - En la base de datos hay una colección con los emails que se pueden autenticar
