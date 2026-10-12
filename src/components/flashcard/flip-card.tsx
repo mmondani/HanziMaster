@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import { useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 
 export interface FlipCardProps {
   front: ReactNode;
@@ -10,7 +10,11 @@ export interface FlipCardProps {
   style?: CSSProperties;
 }
 
-/** Carta con giro 3D (`rotateY`). Clic, Enter y Espacio giran; los botones internos marcados `data-no-flip` no. */
+/**
+ * Carta con giro 3D (`rotateY`). Tocar la carta o usar su botón (Enter/Espacio) la gira; los botones internos marcados
+ * `data-no-flip` (p. ej. el audio) no. El control accesible es un `<button>` hermano de las caras, no un contenedor
+ * `role="button"` con botones adentro (los controles anidados no los anuncian bien los lectores de pantalla).
+ */
 export function FlipCard({ front, back, flipped: controlled, onFlipChange, style }: FlipCardProps) {
   const [inner, setInner] = useState(false);
   const flipped = controlled ?? inner;
@@ -23,21 +27,17 @@ export function FlipCard({ front, back, flipped: controlled, onFlipChange, style
     if ((e.target as HTMLElement).closest('[data-no-flip]')) return;
     toggle();
   }
-  function onKeyDown(e: KeyboardEvent) {
-    if (e.target !== e.currentTarget) return;
-    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
-  }
-
   return (
-    <div
-      className={`flip${flipped ? ' is-flipped' : ''}`}
-      role="button"
-      tabIndex={0}
-      aria-label={`Girar carta. Mostrando ${flipped ? 'el reverso' : 'el frente'}`}
-      style={style}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-    >
+    // El clic del puntero se atiende en el contenedor (cualquier parte de la carta); la tecla, en el botón.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- el teclado lo cubre `.flip-toggle`
+    <div className={`flip${flipped ? ' is-flipped' : ''}`} style={style} onClick={onClick}>
+      <button
+        type="button"
+        className="flip-toggle"
+        data-no-flip
+        aria-label={`Girar carta. Mostrando ${flipped ? 'el reverso' : 'el frente'}`}
+        onClick={toggle}
+      />
       <div className="flip-inner">
         <div className="face" aria-hidden={flipped || undefined}>{front}</div>
         <div className="face back" aria-hidden={!flipped || undefined}>{back}</div>

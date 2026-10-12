@@ -256,8 +256,8 @@ function LayoutEditor({ language, initial, persisted }: LayoutEditorProps) {
 
         <div className="sticky-foot">
           <Button variant="secondary" onClick={() => navigate(back)}>Cancelar</Button>
-          {persisted && <Button variant="danger-ghost" onClick={() => void askDelete()}><Trash2 className="ic" aria-hidden="true" />Eliminar layout</Button>}
-          <Button loading={saving} onClick={save}>Guardar layout</Button>
+          {persisted && <Button variant="danger-ghost" aria-label="Eliminar layout" onClick={() => void askDelete()}><Trash2 className="ic" aria-hidden="true" />Eliminar<span className="only-desktop"> layout</span></Button>}
+          <Button loading={saving} aria-label="Guardar layout" onClick={save}>Guardar<span className="only-desktop"> layout</span></Button>
         </div>
       </div>
 

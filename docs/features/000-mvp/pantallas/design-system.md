@@ -21,12 +21,12 @@ Nunca usar hex en componentes; solo `var(--token)`.
 | `--surface-2` | `#EEF0FB` | `#20233B` | Fondos secundarios, hover, chips |
 | `--text` | `#1E1B4B` | `#E8E9FF` | Texto principal (contraste ≥ 7:1) |
 | `--text-muted` | `#4B5563` | `#A9ADCC` | Texto secundario (≥ 4.5:1 sobre `--bg` y `--surface`) |
-| `--border` / `--border-strong` | `#D5DAF0` / `#9AA3D0` | `#32365A` / `#5A5F92` | Separadores / bordes de inputs (≥ 3:1) |
+| `--border` / `--border-strong` | `#D5DAF0` / `#7A83B5` | `#32365A` / `#7378B0` | Separadores / bordes de inputs (≥ 3:1) |
 | `--primary` | `#4F46E5` | `#818CF8` | Marca, acción primaria, foco |
 | `--on-primary` | `#FFFFFF` | `#0F1020` | Texto sobre primario |
 | `--primary-soft` / `--primary-text` | `#E7E8FD` / `#4338CA` | `#2A2D58` / `#A5B4FC` | Selección, ítem activo, tags |
 | `--success` / `--success-soft` | `#15803D` / `#DCFCE7` | `#4ADE80` / `#12331F` | Confirmaciones |
-| `--danger` / `--danger-soft` | `#DC2626` / `#FEE2E2` | `#F87171` / `#3B1818` | Eliminar, errores |
+| `--danger` / `--danger-soft` | `#C21F1F` / `#FEE2E2` | `#F87171` / `#3B1818` | Eliminar, errores |
 | `--warn` / `--warn-soft` | `#B45309` / `#FEF3C7` | `#FBBF24` / `#3A2A0A` | Avisos |
 | `--ai` / `--ai-soft` | `#7C3AED` / `#F3E8FF` | `#C4B5FD` / `#2E2150` | Todo lo que viene de IA (botón y aviso) |
 | `--ring` | `#4F46E5` | `#A5B4FC` | Anillo de foco |

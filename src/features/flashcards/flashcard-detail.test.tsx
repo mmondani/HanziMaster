@@ -52,10 +52,10 @@ describe('F04 · Detalle de flashcard', () => {
     await openDetail();
     const flip = screen.getByRole('button', { name: 'Girar carta. Mostrando el frente' });
     await userEvent.click(flip);
-    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el reverso' })).toHaveClass('is-flipped');
+    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el reverso' }).closest('.flip')).toHaveClass('is-flipped');
     flip.focus();
     await userEvent.keyboard('{Enter}');
-    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el frente' })).not.toHaveClass('is-flipped');
+    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el frente' }).closest('.flip')).not.toHaveClass('is-flipped');
     await userEvent.keyboard(' ');
     expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el reverso' })).toBeInTheDocument();
 
@@ -92,7 +92,7 @@ describe('F04 · Detalle de flashcard', () => {
     await openDetail();
     const front = document.querySelector('.face:not(.back)') as HTMLElement;
     await userEvent.click(within(front).getByRole('button', { name: 'Escuchar palabra', hidden: true }));
-    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el frente' })).not.toHaveClass('is-flipped');
+    expect(screen.getByRole('button', { name: 'Girar carta. Mostrando el frente' }).closest('.flip')).not.toHaveClass('is-flipped');
   });
 
   it('avisa si el dispositivo no tiene voz para el idioma', async () => {

@@ -87,17 +87,17 @@ describe('R01 · Frente de la carta', () => {
     expect(flipCard()).toHaveAccessibleName('Girar carta. Mostrando el frente');
     await userEvent.click(flipCard());
     expect(flipCard()).toHaveAccessibleName('Girar carta. Mostrando el reverso');
-    expect(flipCard()).toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).toHaveClass('is-flipped');
     expect(within(back()).getByText('hola0')).toBeInTheDocument();
     await userEvent.click(flipCard());
-    expect(flipCard()).not.toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).not.toHaveClass('is-flipped');
   });
 
   it('el botón Girar también gira la carta', async () => {
     identityOrder();
     await openStudy();
     await userEvent.click(screen.getByRole('button', { name: 'Girar' }));
-    expect(flipCard()).toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).toHaveClass('is-flipped');
   });
 
   it('R01-3 en PC las flechas del teclado navegan y los botones en pantalla hacen lo mismo', async () => {
@@ -125,9 +125,9 @@ describe('R01 · Frente de la carta', () => {
     identityOrder();
     await openStudy();
     await userEvent.keyboard(' ');
-    expect(flipCard()).toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).toHaveClass('is-flipped');
     await userEvent.keyboard('{Enter}');
-    expect(flipCard()).not.toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).not.toHaveClass('is-flipped');
   });
 
   it('R01-8 la carta es operable con teclado y anuncia la cara visible', async () => {
@@ -183,7 +183,7 @@ describe('R01 · Frente de la carta', () => {
     await userEvent.click(audio);
     expect(speakSpy).toHaveBeenCalledOnce();
     expect(speakSpy.mock.calls[0][0]).toMatchObject({ text: '你好0', lang: 'zh-CN' });
-    expect(flipCard()).not.toHaveClass('is-flipped');
+    expect(flipCard().closest('.flip')).not.toHaveClass('is-flipped');
     expect(within(front()).queryAllByRole('button', { name: /Escuchar pinyin/, hidden: true })).toHaveLength(0);
     expect(within(back()).queryAllByRole('button', { name: /Escuchar/, hidden: true })).toHaveLength(0);
   });

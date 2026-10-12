@@ -21,7 +21,7 @@ export function DeckCard({ deck, status, onStudy }: DeckCardProps) {
       <div className="row">
         <span className="deck-icon"><Layers className="ic" aria-hidden="true" /></span>
         <div className="grow">
-          <h3>{deck.name}</h3>
+          <h2 className="as-h3">{deck.name}</h2>
           <div className="small muted">{plural(deck.cardIds.length, 'flashcard', 'flashcards')}</div>
         </div>
         <Link className="icon-btn" to={`/mazos/${deck.id}`} aria-label={`Ver detalle de ${deck.name}`}>
