@@ -81,7 +81,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **3. Biblioteca de UI y shell**
   - Qué: componentes de `components/ui`, `AppShell` (sidebar ≥ 1024px / bottom nav 3 ítems), `PageHeader`, toasts, diálogos/bottom sheets accesibles (foco, `Esc`), rutas con guardas, foco al `<main>` al navegar.
   - Verificación: tests de navegación por teclado y de `aria-current`; revisión visual contra `mockups/` en 390px y 1280px, claro/oscuro.
-- [ ] **4. Acceso (A01–A02) y sin conexión (A03–A04)**
+- [x] **4. Acceso (A01–A02) y sin conexión (A03–A04)**
   - Qué: login con Google (popup), consulta a `allowedEmails`, cierre de sesión forzado si no está, `/acceso-denegado` con selector de cuenta forzado, guardas de ruta; `OfflineBanner` por `navigator.onLine` + evento `online/offline`; pantalla A03.
   - Verificación: tests A01-1…6, A02-1…4, A03-1…3, A04-1 con Auth/Firestore simulados (interfaz de `lib/auth`) y prueba manual con emulador.
 - [ ] **5. Idiomas (I01–I04, G01)**

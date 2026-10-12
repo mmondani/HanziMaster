@@ -12,6 +12,10 @@
 - **Paso 3 — fuentes:** Noto Serif SC se carga con el subset `chinese-simplified` (500 y 700); caracteres fuera de ese subset (algunos kanji japoneses) caen a la serif del sistema. Revisar al probar japonés.
 - **Paso 3 — rutas provisorias:** `src/app/routes.tsx` usa `PlaceholderPage`; cada paso posterior reemplaza la suya. `OfflineBanner` queda para el paso 4, como en el plan.
 
+- **Paso 4 — A04 y detección de red:** la franja usa `navigator.onLine` y los eventos `online`/`offline`; no detecta "conectado a una red sin internet". Aceptable para el MVP.
+- **Paso 4 — sesión sin red:** si no hay red, la validación en `allowedEmails` se resuelve desde la caché local de Firestore; solo si no está cacheada se muestra A03.
+- **Paso 4 — pruebas:** el flujo con el popup real de Google no se puede automatizar; los tests usan un `FakeAuthService`. Probar a mano con la cuenta habilitada.
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
