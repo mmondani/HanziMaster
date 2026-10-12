@@ -16,6 +16,13 @@
 - **Paso 4 — sesión sin red:** si no hay red, la validación en `allowedEmails` se resuelve desde la caché local de Firestore; solo si no está cacheada se muestra A03.
 - **Paso 4 — pruebas:** el flujo con el popup real de Google no se puede automatizar; los tests usan un `FakeAuthService`. Probar a mano con la cuenta habilitada.
 
+- **Paso 5 — arrastre en el editor de layouts:** el plan lo mencionaba como opcional ("en PC se puede además arrastrar"). No se implementó: todo se hace con controles (I04-6) y es un buen candidato para una iteración posterior. Por la misma razón se omitió el asa de arrastre en la lista de campos; se reordena con "Mover arriba/abajo" en el editor de campo.
+- **Paso 5 — G01-3 ("Más" activo en Idiomas):** las pantallas de Idiomas son pantallas "push" (como en el mockup), así que no muestran la barra inferior en mobile; "Más" figura activo en G01. El sidebar de desktop marca "Idiomas" como activo en todo `/idiomas/*`.
+- **Paso 5 — layouts de un idioma nuevo:** no se pueden crear hasta guardar el idioma (la pestaña Layouts lo avisa). Los layouts se guardan directamente en el documento del idioma al presionar "Guardar layout"; el editor de idioma no los toca salvo para quitar campos eliminados.
+- **Paso 5 — I04-7:** el criterio ("los mazos afectados quedan no disponibles") se verifica aquí solo en el dato (los modos conservan su `layoutId`); la presentación "Mazo no disponible" y el bloqueo de *Estudiar* son M01-7 y se prueban en el paso 9 con `deck-status`.
+- **Paso 5 — dependencias de datos:** las cuentas de flashcards y mazos del listado de idiomas salen de suscribirse a esas colecciones completas (volumen bajo). Si crecen mucho, reemplazar por contadores.
+- **Paso 5 — selector de idioma activo:** el estado global (`useLanguages().active`, persistido en `localStorage` por usuario) está listo; el chip selector de F01/M01 se construye en los pasos 6 y 9.
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).

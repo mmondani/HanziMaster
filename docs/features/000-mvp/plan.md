@@ -84,7 +84,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **4. Acceso (A01–A02) y sin conexión (A03–A04)**
   - Qué: login con Google (popup), consulta a `allowedEmails`, cierre de sesión forzado si no está, `/acceso-denegado` con selector de cuenta forzado, guardas de ruta; `OfflineBanner` por `navigator.onLine` + evento `online/offline`; pantalla A03.
   - Verificación: tests A01-1…6, A02-1…4, A03-1…3, A04-1 con Auth/Firestore simulados (interfaz de `lib/auth`) y prueba manual con emulador.
-- [ ] **5. Idiomas (I01–I04, G01)**
+- [x] **5. Idiomas (I01–I04, G01)**
   - Qué: repositorio de idiomas; I01; I02 con pestañas Campos/Tags/Layouts; I03 (campos de sistema protegidos, reordenar); I04 con `LayoutCanvas` (validación pura de límites/solapes en `layout-grid`); eliminación de idioma con nombre escrito; eliminación de campo y de layout con aviso de impacto; G01 (Más). Idioma activo en contexto + `localStorage`.
   - Verificación: tests I01-1…3, I02-1…7, I03-1…4, I04-1…7, G01-1…3; tests unitarios de `layout-grid` y `field-rules`.
 - [ ] **6. Flashcards: listado, formulario y detalle (F01–F04)**

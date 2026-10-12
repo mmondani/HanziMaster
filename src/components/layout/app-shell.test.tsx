@@ -29,8 +29,8 @@ describe('AppShell', () => {
     expect(current.map((a) => a.textContent)).toEqual(['Mazos']);
   });
 
-  it('"Más" figura activo también dentro de Idiomas (G01-3)', async () => {
-    await renderAt('/idiomas');
+  it('"Más" figura activo en G01 (G01-3)', async () => {
+    await renderAt('/mas');
     const bottom = document.querySelector('.bottom-nav') as HTMLElement;
     const mas = within(bottom).getByRole('link', { name: 'Más', hidden: true });
     expect(mas).toHaveAttribute('aria-current', 'page');
@@ -46,20 +46,20 @@ describe('AppShell', () => {
   it('las pantallas hijas ocultan la barra inferior y muestran Volver', async () => {
     await renderAt('/idiomas/nuevo');
     expect(document.querySelector('.bottom-nav')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Volver' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Volver a Idiomas' })).toBeInTheDocument();
   });
 
   it('al cambiar de ruta el foco va a <main>', async () => {
     const router = await renderAt('/flashcards');
     await router.navigate('/mazos');
     expect(await screen.findByRole('heading', { name: 'Mazos', level: 1 })).toBeInTheDocument();
-    expect(document.getElementById('main')).toHaveFocus();
+    await waitFor(() => expect(document.getElementById('main')).toHaveFocus());
   });
 
   it('Volver regresa a la pantalla anterior', async () => {
     const router = await renderAt('/idiomas');
     await router.navigate('/idiomas/nuevo');
-    await userEvent.click(await screen.findByRole('button', { name: 'Volver' }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Volver a Idiomas' }));
     expect(router.state.location.pathname).toBe('/idiomas');
   });
 });
