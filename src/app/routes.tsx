@@ -3,6 +3,7 @@ import { AppShell } from '@/components/layout/app-shell';
 import { AccessDeniedPage } from '@/features/access/access-denied-page';
 import { LoginPage } from '@/features/access/login-page';
 import { RequireAuth } from '@/features/access/require-auth';
+import { StudyPage } from '@/features/study/study-page';
 import { DeckDetailPage } from '@/features/decks/deck-detail-page';
 import { DeckFormPage } from '@/features/decks/deck-form-page';
 import { DecksPage } from '@/features/decks/decks-page';
@@ -15,7 +16,6 @@ import { LanguagesPage } from '@/features/languages/languages-page';
 import { LayoutEditorPage } from '@/features/languages/layout-editor-page';
 import { MorePage } from '@/features/more/more-page';
 import { DataLayout } from './data-layout';
-import { PlaceholderPage } from './placeholder-page';
 
 /** Mapa de rutas (ver docs/features/000-mvp/pantallas/navegacion.md). */
 export const routes: RouteObject[] = [
@@ -27,8 +27,8 @@ export const routes: RouteObject[] = [
       {
         element: <DataLayout />,
         children: [
-          // Recorrido: pantalla completa, fuera del shell (se implementa en el paso 10).
-          { path: '/mazos/:id/estudiar', element: <PlaceholderPage title="Recorrido" child /> },
+          // Recorrido: pantalla completa, fuera del shell.
+          { path: '/mazos/:id/estudiar', element: <StudyPage /> },
           {
             element: <AppShell />,
             children: [

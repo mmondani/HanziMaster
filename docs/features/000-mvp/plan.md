@@ -99,7 +99,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **9. Mazos (M01–M04)**
   - Qué: repositorio de decks; `deck-status` (disponible / sin flashcards / no disponible por layout eliminado); M01 con tarjetas y estados; M02 con picker, modos y validaciones (incluye reparar modo huérfano, M02-8); M03; M04 (si hay un único modo se inicia directo).
   - Verificación: tests M01-1…7, M02-1…8, M03-1…3, M04-1…4; unit test de `deck-status`.
-- [ ] **10. Recorrido (R01–R03)**
+- [x] **10. Recorrido (R01–R03)**
   - Qué: ruta a pantalla completa; `shuffle` (Fisher-Yates) puro; `FlipCard` con `rotateY` y `prefers-reduced-motion`; teclado (`←` `→` `Espacio` `Esc`), swipe (umbral ~60px), botones visibles; `TtsButton` con `speechSynthesis` y aviso si no hay voz; diálogo de fin de mazo; confirmación al salir.
   - Verificación: tests R01-1…9, R02-1, R03-1…2; unit test de `shuffle` (permutación, sin repetidos, orden distinto al remezclar).
 - [ ] **11. PWA y offline**

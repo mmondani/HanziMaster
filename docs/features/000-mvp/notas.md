@@ -56,6 +56,16 @@
 - **Paso 9 — tipografía de listas en desktop:** el CSS heredado de los mockups muestra el texto de las filas `.item` en una sola línea en desktop (también en listas de Idiomas y Mazos); respeta lo aprobado en los mockups. Revisar en el paso 13 si se prefiere en columna.
 - **Paso 9 — fixtures compartidos:** `MODE_A` y `MODE_B` viven en `src/test/fixtures.ts` (no se importan desde archivos `.test`).
 
+- **Paso 10 — lógica en `src/lib/domain`:** la mezcla (`shuffle`, Fisher-Yates; `reshuffle`, que garantiza un orden distinto al anterior) y el estado del recorrido (`studyReducer`: girar, avanzar, retroceder, fin, reiniciar) son funciones puras con tests propios; la pantalla solo las conecta con teclado, gestos y diálogos.
+- **Paso 10 — Espacio/Enter:** giran la carta solo cuando el foco está en el documento; si el foco está en la carta o en un botón, actúa el propio control (evita girar dos veces).
+- **Paso 10 — gestos:** el swipe usa eventos táctiles con umbral de 60 px y solo cuenta si es más horizontal que vertical; con un diálogo abierto se ignoran teclas y gestos. El margen lateral de 16 px para no chocar con el gesto "atrás" lo da el padding del escenario.
+- **Paso 10 — animación:** cada carta nueva se monta desde cero por el frente (sin giro de regreso). `prefers-reduced-motion` desactiva las transiciones por la regla global del CSS.
+- **Paso 10 — salir:** la confirmación de salida se mantiene (la spec la dejaba "a confirmar"); tanto *Salir* como el fin del mazo llevan a `/mazos`.
+- **Paso 10 — nombre accesible de la carta:** es "Girar carta. Mostrando el frente/reverso" (de `FlipCard`), no el texto literal de la spec ("Carta. Tocar para girar…"); mismo sentido.
+- **Paso 10 — audio:** como en F04, cada campo con audio lleva su botón junto al campo; no se agrupa en la esquina de la carta.
+- **Paso 10 — estados:** un modo inexistente, un mazo vacío o no disponible se informan en una pantalla simple con enlace al mazo; el recorrido no se inicia.
+- **Paso 10 — placeholder eliminado:** `PlaceholderPage` ya no se usa y se borró.
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
