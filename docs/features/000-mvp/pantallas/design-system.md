@@ -56,7 +56,7 @@ Reglas: el color nunca es el único indicador (siempre ícono o texto: p. ej. er
 
 - Trazo (outline) 1.75px, 24px por defecto (`20px` en botones, `16px` en badges). **Un solo set**: en producción usar **Lucide** (`lucide-react`) o **Phosphor** (`@phosphor-icons/react`); los nombres de los mockups (`search`, `plus`, `sparkles`, `volume`, …) mapean 1:1 a Lucide. *Agregar la dependencia debe mencionarse en el plan.*
 - Prohibido emoji como ícono. Los íconos decorativos junto a texto llevan `aria-hidden="true"`; los botones solo-ícono, `aria-label`.
-- El logo provisorio es el carácter 漢 sobre fondo índigo (placeholder, a definir).
+- El logo provisorio es el carácter 汉 sobre fondo índigo (placeholder, a definir).
 
 ## Interacción y movimiento
 

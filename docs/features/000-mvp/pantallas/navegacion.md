@@ -49,6 +49,6 @@ Todas las pantallas son alcanzables por URL (deep link). El router recomendado e
 
 ## PWA
 
-- `display: standalone`, `theme_color` = `--primary`, `background_color` = `--bg`; ícono maskable (el logo 漢 es provisorio).
+- `display: standalone`, `theme_color` = `--primary`, `background_color` = `--bg`; ícono maskable (el logo 汉 es provisorio).
 - Respetar `env(safe-area-inset-*)` en barra inferior, FAB y barras de acciones (ya contemplado en los mockups).
 - Meta viewport `width=device-width, initial-scale=1` (no deshabilitar el zoom).

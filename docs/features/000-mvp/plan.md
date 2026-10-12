@@ -102,7 +102,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **10. Recorrido (R01–R03)**
   - Qué: ruta a pantalla completa; `shuffle` (Fisher-Yates) puro; `FlipCard` con `rotateY` y `prefers-reduced-motion`; teclado (`←` `→` `Espacio` `Esc`), swipe (umbral ~60px), botones visibles; `TtsButton` con `speechSynthesis` y aviso si no hay voz; diálogo de fin de mazo; confirmación al salir.
   - Verificación: tests R01-1…9, R02-1, R03-1…2; unit test de `shuffle` (permutación, sin repetidos, orden distinto al remezclar).
-- [ ] **11. PWA y offline**
+- [x] **11. PWA y offline**
   - Qué: `vite-plugin-pwa` (manifest standalone, ícono maskable, precache del shell), caché persistente de Firestore, deshabilitar acciones que requieren red con "Requiere conexión", safe-area insets.
   - Verificación: Lighthouse PWA instalable; prueba manual en modo avión: ver y recorrer lo ya sincronizado (A04-2), cambios sincronizan al volver (A04-4). Tests A04-3.
 - [ ] **12. Completar con IA (F03-5…8, A04-3)**

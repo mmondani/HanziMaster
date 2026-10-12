@@ -21,7 +21,7 @@ export function LoginPage() {
     <main className="center-screen">
       <div className="login-card">
         <div>
-          <div className="brand-mark han" aria-hidden="true">漢</div>
+          <div className="brand-mark han" aria-hidden="true">汉</div>
           <h1 style={{ marginTop: 'var(--sp-4)', fontSize: 28 }}>Hanzi Master</h1>
           <p className="muted" style={{ marginTop: 'var(--sp-2)' }}>
             Flashcards a tu medida para aprender chino, japonés o el idioma que elijas.

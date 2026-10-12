@@ -15,7 +15,7 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <span className="brand-mark" aria-hidden="true">漢</span>
+        <span className="brand-mark" aria-hidden="true">汉</span>
         Hanzi Master
       </div>
       <nav className="side-nav" aria-label="Principal">

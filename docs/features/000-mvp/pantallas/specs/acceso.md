@@ -11,7 +11,7 @@ Convenciones: ver [../README.md](../README.md). Mockups en `../mockups/`.
 - **Propósito:** única forma de autenticarse. Cumple "Login mediante cuenta de Google".
 
 ### Estructura (igual en mobile y desktop; tarjeta centrada, máx. 420px)
-1. Logo (漢), nombre "Hanzi Master" (H1) y una frase de propuesta de valor.
+1. Logo (汉), nombre "Hanzi Master" (H1) y una frase de propuesta de valor.
 2. Botón **Ingresar con Google** (único CTA; estilo de botón oficial de Google: fondo blanco, logo "G" a color, texto oscuro, píldora, alto 52px).
 3. Nota de privacidad: "Solo pueden ingresar las cuentas habilitadas. Tus flashcards son privadas…".
 

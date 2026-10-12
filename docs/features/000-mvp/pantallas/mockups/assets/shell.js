@@ -72,7 +72,7 @@
     var a = b.getAttribute('data-active');
     var cur = function (k) { return a === k ? ' aria-current="page"' : ''; };
     var side = '<aside class="sidebar" aria-label="Navegación principal">' +
-      '<div class="brand"><span class="brand-mark han" aria-hidden="true">漢</span>Hanzi Master</div>' +
+      '<div class="brand"><span class="brand-mark han" aria-hidden="true">汉</span>Hanzi Master</div>' +
       '<nav class="side-nav"><a href="f01-flashcards.html"' + cur('flashcards') + '><i data-i="cards"></i>Flashcards</a>' +
       '<a href="m01-mazos.html"' + cur('mazos') + '><i data-i="deck"></i>Mazos</a></nav>' +
       '<div class="side-sep"></div><div class="side-label">Configuración</div>' +

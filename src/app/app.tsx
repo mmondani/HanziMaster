@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { UpdatePrompt } from '@/components/layout/update-prompt';
 import { ToastProvider } from '@/components/ui/toast-provider';
 import { AuthProvider } from '@/lib/auth/auth-provider';
 import { createFirebaseAuthService } from '@/lib/auth/firebase-auth-service';
@@ -15,6 +16,7 @@ export function App() {
       <RepositoriesProvider factory={createFirestoreRepositories}>
         <ToastProvider>
           <RouterProvider router={router} />
+          <UpdatePrompt />
         </ToastProvider>
       </RepositoriesProvider>
     </AuthProvider>
