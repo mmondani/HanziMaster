@@ -87,4 +87,5 @@
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
-- **Pendiente manual (paso 12):** probar *Completar con IA* con una palabra real en `npm run dev` (con `VITE_USE_EMULATORS` desactivado), verificar que los tags devueltos son del set y, tras desplegar, activar *Enforce* de App Check para AI Logic.
+- **Paso 12 — probado a mano:** *Completar con IA* funciona con una palabra real en `npm run dev` contra el proyecto real (el primer intento falló con 403/401 hasta registrar el debug token de App Check en la consola).
+- **Pendiente manual (paso 12):** tras desplegar, registrar la site key en producción y activar *Enforce* de App Check para AI Logic.
