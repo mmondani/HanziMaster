@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // El usuario autenticado tiene un email verificado que figura en allowedEmails.
+    function isAllowedUser() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/allowedEmails/$(request.auth.token.email.lower()));
+    }
+
+    // Lista de cuentas habilitadas: cada usuario solo puede leer su propio documento
+    // (id = email en minúsculas). Nadie escribe desde el cliente; se administra en la consola.
+    match /allowedEmails/{email} {
+      allow get: if request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower() == email;
+      allow list, write: if false;
+    }
+
+    // Todos los datos de un usuario (idiomas, flashcards, mazos) son privados y solo
+    // accesibles por su dueño si además está habilitado.
+    match /users/{uid}/{document=**} {
+      allow read, write: if isAllowedUser() && request.auth.uid == uid;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
