@@ -1,6 +1,6 @@
 # Plan — 000 MVP
 
-**Estado:** Aprobado
+**Estado:** Completado (pendientes manuales en [notas.md](./notas.md))
 **Requerimientos:** [./requerimientos.md](./requerimientos.md)
 **Diseño de pantallas (aprobado):** [./pantallas/README.md](./pantallas/README.md) — specs con los criterios de aceptación citados abajo.
 
@@ -148,8 +148,8 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
   5. **Tags en el reverso del recorrido:** se muestran si el campo Tags está incluido en el layout (no hay lógica especial).
 
 ## Al terminar
-- [ ] Todos los criterios de aceptación verificados
-- [ ] Tests y lint pasan
-- [ ] `docs/arquitectura.md` actualizado
-- [ ] ADR creado si corresponde (candidatos: reglas de acceso por `allowedEmails`; estrategia de IA; modelo de datos bajo `users/{uid}`; mazo "no disponible" derivado)
-- [ ] `notas.md` completado
+- [ ] Todos los criterios de aceptación verificados — 115 de 117 verificados (tests o capturas); **A04-2 y A04-4** esperan la prueba manual sin conexión (ver notas.md)
+- [x] Tests y lint pasan
+- [x] `docs/arquitectura.md` actualizado
+- [x] ADR creado si corresponde (candidatos: reglas de acceso por `allowedEmails`; estrategia de IA; modelo de datos bajo `users/{uid}`; mazo "no disponible" derivado)
+- [x] `notas.md` completado

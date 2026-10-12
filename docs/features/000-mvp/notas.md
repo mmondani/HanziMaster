@@ -92,8 +92,28 @@
 - **Paso 13 — textos:** revisión por búsqueda de voseo y formas rioplatenses en `src/`: sin hallazgos; los textos usan español neutro.
 - **Paso 13 — despliegue:** por decisión del usuario (primera versión) se desplegó **directo a producción** (`firebase deploy --only hosting`, sin canal de vista previa): https://hanzi-master-701f9.web.app. Las reglas de Firestore ya estaban desplegadas desde el paso 2. Pendientes de la puesta en producción: probar el login y la IA en la URL real, verificar que la clave de reCAPTCHA incluya `hanzi-master-701f9.web.app` y `.firebaseapp.com`, y recién entonces activar *Enforce* de App Check para AI Logic.
 
+## Verificación de criterios de aceptación (cierre)
+- Los 117 criterios de las specs (`pantallas/specs/*.md`) tienen un test que los nombra en su descripción (`F03-6`, `M02-3`…), salvo tres:
+  - **R01-9** (tamaño del hanzi en 375px y en horizontal): jsdom no calcula estilos; se verificó con capturas de Chrome a 375px y en horizontal (paso 13).
+  - **A04-2** (ver y recorrer lo sincronizado sin conexión) y **A04-4** (los cambios sin conexión se sincronizan al volver): dependen de la caché persistente de Firestore con una sesión real; **sin verificar todavía** (ver pendientes).
+- `npm test`: 337 tests en 30 archivos · `npm run test:rules`: 11 tests · `npm run lint` y `tsc`: sin errores · `npm run build`: sin errores.
+- Probado a mano con sesión real: login con Google y *Completar con IA* contra el proyecto real (en desarrollo).
+
 ## Pendientes
-- **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
-- **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
-- **Paso 12 — probado a mano:** *Completar con IA* funciona con una palabra real en `npm run dev` contra el proyecto real (el primer intento falló con 403/401 hasta registrar el debug token de App Check en la consola).
-- **Pendiente manual (paso 12):** tras desplegar, registrar la site key en producción y activar *Enforce* de App Check para AI Logic.
+- **Probar en producción** (https://hanzi-master-701f9.web.app): login, *Completar con IA* (con App Check por reCAPTCHA real), instalación como PWA.
+- **Uso sin conexión con una sesión real (A04-2, A04-4):** instalar la PWA, cargar flashcards y mazos con red, pasar a modo avión y verificar que se ven y se recorren; editar sin red y comprobar que se sincroniza al volver.
+- **App Check:** verificar que la clave de reCAPTCHA Enterprise incluya `hanzi-master-701f9.web.app` y `.firebaseapp.com`, y activar *Enforce* para AI Logic cuando la consola muestre solicitudes verificadas. Hasta entonces cualquier cuenta de Google autenticada en la app puede llamar a la IA (ver ADR 0003).
+- **Cuota de IA:** no se encontró un límite por usuario en la consola; acotar la cuota de la API de Generative Language en Google Cloud si hace falta.
+- **Voces de text-to-speech:** probar con voces reales de `zh-CN` y `ja-JP` en el celular; sin voz instalada el botón avisa con un toast.
+- **Deuda menor:** el chunk de Firebase pesa ~650 KB (193 KB gzip) porque Auth y Firestore se usan desde el inicio; el layout de escritorio de `.item .meta` se heredó de los mockups; el texto de ejemplo de la tabla de columnas del CSV es genérico; el desfase de pantallas respecto de los mockups queda registrado paso a paso arriba.
+- **Usuarios:** alta/baja manual de documentos en `allowedEmails` desde la consola de Firebase.
+- Nada de lo hecho se subió a un repositorio remoto (`git push` no solicitado).
+
+## Aprendizajes
+- Separar lógica pura (`lib/domain`) de la UI y de Firebase permitió cubrir casi todos los criterios con tests rápidos y sin emulador; solo las reglas necesitan emulador.
+- Las interfaces inyectables (repositorios, autenticación, IA) hicieron triviales los tests de pantalla y la prueba de la IA sin red.
+- Los linters de React 19 (`react-hooks` estricto) obligan a mover efectos secundarios fuera del render; conviene tenerlos desde el paso 1.
+- Cargar pantallas con `lazy` vuelve asíncrona la navegación en los tests: usar `waitFor` en las aserciones de ruta desde el principio.
+- Revisar el contraste con un script sobre los tokens encontró fallos que la revisión visual no habría visto; conviene repetirlo al tocar colores.
+- axe-core detecta bien problemas estructurales en jsdom (controles anidados, encabezados), pero no contraste ni layout: esos se revisan con cálculo y capturas.
+- Configurar App Check/AI Logic exige pasos manuales en la consola (debug token, claves, dominios); documentarlos temprano evita idas y vueltas.
