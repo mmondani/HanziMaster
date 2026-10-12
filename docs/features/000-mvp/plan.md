@@ -108,7 +108,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **12. Completar con IA (F03-5…8, A04-3)**
   - Qué: `lib/ai` con **Firebase AI Logic** (Gemini vía SDK de cliente, salida estructurada con `responseSchema`), App Check activado y habilitación de la API en la consola. Entrada = palabra + idioma + definición de campos + set de tags; salida con esquema estructurado; el cliente **descarta** tags que no estén en el set y recorta a 2 tags; solo rellena campos vacíos; estado "viene de IA".
   - Verificación: tests F03-5…8 con el servicio de IA simulado; unit test del saneamiento de la respuesta; prueba manual con una palabra real.
-- [ ] **13. Pasada final de calidad**
+- [x] **13. Pasada final de calidad**
   - Qué: revisión de accesibilidad (contraste, foco, `aria-*`, objetivos ≥ 44px), 375px y landscape, modo oscuro, textos en español neutro (D13), despliegue a Hosting + reglas.
   - Verificación: checklist de [design-system.md](./pantallas/design-system.md); `firebase deploy` a un canal de preview.
 
