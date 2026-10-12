@@ -15,6 +15,7 @@ export const auth = getAuth(app);
 
 /** Caché persistente (multi-pestaña): permite ver y recorrer lo ya sincronizado sin conexión. */
 export const db = initializeFirestore(app, {
+  ignoreUndefinedProperties: true,
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
 });
 
