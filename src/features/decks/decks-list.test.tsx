@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
 import { card, chinese, deck, MODE_A, MODE_B } from '@/test/fixtures';
@@ -51,23 +51,23 @@ describe('M01 · Listado de mazos', () => {
     const { router } = await openDecks();
     await userEvent.click(within(await screen.findByRole('heading', { name: 'HSK 1' }).then((h) => h.closest('.deck-card') as HTMLElement)).getByRole('button', { name: /Estudiar/ }));
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(router.state.location.pathname).toBe('/mazos/d2/estudiar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d2/estudiar'));
     expect(router.state.location.search).toBe('?modo=mA');
   });
 
   it('M01-3 el ícono de detalle abre M03 y Nuevo mazo abre M02', async () => {
     const { router } = await openDecks();
     await userEvent.click(await screen.findByRole('link', { name: 'Ver detalle de Saludos básicos' }));
-    expect(router.state.location.pathname).toBe('/mazos/d1');
-    await userEvent.click(screen.getByRole('button', { name: 'Volver a Mazos' }));
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d1'));
+    await userEvent.click(await screen.findByRole('button', { name: 'Volver a Mazos' }));
     await userEvent.click((await screen.findAllByRole('link', { name: /Nuevo mazo/ }))[0]);
-    expect(router.state.location.pathname).toBe('/mazos/nuevo');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/nuevo'));
   });
 
   it('tocar la tarjeta no inicia el estudio', async () => {
     const { router } = await openDecks();
     await userEvent.click(await screen.findByRole('heading', { name: 'Saludos básicos' }));
-    expect(router.state.location.pathname).toBe('/mazos');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos'));
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 

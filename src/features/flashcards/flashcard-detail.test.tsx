@@ -105,7 +105,7 @@ describe('F04 · Detalle de flashcard', () => {
   it('F04-4 Editar abre el formulario precargado', async () => {
     const { router } = await openDetail();
     await userEvent.click(screen.getAllByRole('link', { name: /Editar/ })[0]);
-    expect(router.state.location.pathname).toBe('/flashcards/c1/editar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards/c1/editar'));
     expect(await screen.findByLabelText(/Palabra/)).toHaveValue('朋友');
   });
 

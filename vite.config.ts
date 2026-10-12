@@ -49,6 +49,14 @@ export default defineConfig({
         },
       }),
   ],
+  build: {
+    rolldownOptions: {
+      output: {
+        // Firebase (Auth + Firestore) es lo más pesado y casi no cambia: en su propio chunk se cachea aparte del código de la app. El SDK de IA queda fuera: se carga al usarla.
+        codeSplitting: { groups: [{ name: 'firebase', test: /node_modules[\/](@firebase[\/](?!ai[\/])|firebase[\/](?!ai[\/]))/ }] },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': src('./src'),

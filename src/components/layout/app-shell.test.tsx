@@ -11,7 +11,7 @@ async function renderAt(path: string) {
 describe('AppShell', () => {
   it('redirige / a /flashcards', async () => {
     const router = await renderAt('/');
-    expect(router.state.location.pathname).toBe('/flashcards');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards'));
   });
 
   it('la barra inferior tiene 3 ítems: Flashcards, Mazos y Más', async () => {
@@ -60,6 +60,6 @@ describe('AppShell', () => {
     const router = await renderAt('/idiomas');
     await router.navigate('/idiomas/nuevo');
     await userEvent.click(await screen.findByRole('button', { name: 'Volver a Idiomas' }));
-    expect(router.state.location.pathname).toBe('/idiomas');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas'));
   });
 });

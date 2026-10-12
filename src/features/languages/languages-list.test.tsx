@@ -22,7 +22,7 @@ describe('G01 · Más', () => {
   it('G01-2 Idiomas abre I01 y Cerrar sesión lleva a A01', async () => {
     const { router } = renderApp('/mas', signedInService(), seeded());
     await userEvent.click(within(await screen.findByRole('main')).getByRole('link', { name: /Idiomas/ }));
-    expect(router.state.location.pathname).toBe('/idiomas');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas'));
     await userEvent.click(screen.getByRole('button', { name: 'Volver a Más' }));
     await userEvent.click(within(await screen.findByRole('main')).getByRole('button', { name: /Cerrar sesión/ }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
@@ -41,10 +41,10 @@ describe('I01 · Listado de idiomas', () => {
   it('I01-2 tocar un idioma abre su editor y Nuevo idioma abre el editor vacío', async () => {
     const { router } = renderApp('/idiomas', signedInService(), seeded());
     await userEvent.click(await screen.findByRole('link', { name: /Japonés/ }));
-    expect(router.state.location.pathname).toBe('/idiomas/ja');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas/ja'));
     await userEvent.click(await screen.findByRole('button', { name: 'Volver a Idiomas' }));
     await userEvent.click((await screen.findAllByRole('link', { name: /Nuevo idioma/ }))[0]);
-    expect(router.state.location.pathname).toBe('/idiomas/nuevo');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas/nuevo'));
     expect(await screen.findByLabelText(/Nombre del idioma/)).toHaveValue('');
   });
 

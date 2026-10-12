@@ -49,7 +49,7 @@ describe('F02 · Selección múltiple', () => {
     await userEvent.click(row('你好'));
     expect(row('你好')).toHaveAttribute('aria-checked', 'false');
     expect(within(bar()).getByRole('status')).toHaveTextContent('1 seleccionadas');
-    expect(router.state.location.pathname).toBe('/flashcards');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards'));
   });
 
   it('"Seleccionar todas las visibles" alterna la selección de las filas a la vista', async () => {
@@ -75,7 +75,7 @@ describe('F02 · Selección múltiple', () => {
     await userEvent.click(row('你好'));
     await userEvent.click(row('水'));
     await userEvent.click(within(bar()).getByRole('link', { name: /Crear mazo/ }));
-    expect(router.state.location.pathname).toBe('/mazos/nuevo');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/nuevo'));
     expect(router.state.location.search).toBe('?cartas=c1,c4');
   });
 

@@ -44,13 +44,13 @@ describe('M03 · Detalle de mazo', () => {
     await userEvent.click(list.getByRole('button', { name: 'Ver menos' }));
     expect(list.getAllByRole('link')).toHaveLength(10);
     await userEvent.click(list.getByRole('link', { name: /字3/ }));
-    expect(router.state.location.pathname).toBe('/flashcards/c3');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards/c3'));
   });
 
   it('M03-3 Editar abre M02 precargado', async () => {
     const { router } = await openDetail();
     await userEvent.click(screen.getAllByRole('link', { name: /Editar/ })[0]);
-    expect(router.state.location.pathname).toBe('/mazos/d1/editar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d1/editar'));
     expect(await screen.findByLabelText(/Nombre/)).toHaveValue('Saludos básicos');
   });
 
@@ -102,7 +102,7 @@ describe('M04 · Elegir modo de recorrida', () => {
     const { dialog, router } = await openPicker();
     await userEvent.click(dialog.getByRole('radio', { name: /Significado → Palabra/ }));
     await userEvent.click(dialog.getByRole('button', { name: /Comenzar/ }));
-    expect(router.state.location.pathname).toBe('/mazos/d1/estudiar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d1/estudiar'));
     expect(router.state.location.search).toBe('?modo=mB');
   });
 
@@ -113,7 +113,7 @@ describe('M04 · Elegir modo de recorrida', () => {
     await userEvent.click(screen.getByRole('button', { name: /Estudiar este mazo/ }));
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
-    expect(router.state.location.pathname).toBe('/mazos/d1');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d1'));
   });
 
   it('M04-4 es navegable con teclado: las flechas cambian de opción y Enter confirma', async () => {

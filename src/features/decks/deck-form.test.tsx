@@ -55,7 +55,7 @@ describe('M02 · Crear mazo', () => {
     expect(created).toMatchObject({ languageId: 'zh', cardIds: ['c1', 'c4'], learning: 'free' });
     expect(created.modes).toHaveLength(1);
     expect(created.modes[0]).toMatchObject({ name: 'Palabra → Significado', frontLayoutId: 'ly1', backLayoutId: 'ly2' });
-    expect(router.state.location.pathname).toBe(`/mazos/${created.id}`);
+    await waitFor(() => expect(router.state.location.pathname).toBe(`/mazos/${created.id}`));
     expect(await screen.findByText('Mazo guardado')).toBeInTheDocument();
   });
 

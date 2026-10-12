@@ -9,7 +9,7 @@ describe('A01 · Ingreso con Google', () => {
   it('A01-1 sin sesión, una ruta privada lleva a /login', async () => {
     const { router } = renderApp('/mazos');
     expect(await googleButton()).toBeInTheDocument();
-    expect(router.state.location.pathname).toBe('/login');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
   });
 
   it('A01-2 presionar el botón inicia el ingreso y muestra "Conectando"', async () => {
@@ -104,7 +104,7 @@ describe('A02 · Acceso denegado', () => {
     service.nextAccount = { uid: 'u2', email: 'luis@gmail.com' };
     service.allowed.add('luis@gmail.com');
     await userEvent.click(screen.getByRole('link', { name: 'Probar con otra cuenta' }));
-    expect(router.state.location.pathname).toBe('/login');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
     await userEvent.click(await googleButton());
     await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards'));
   });
@@ -112,7 +112,7 @@ describe('A02 · Acceso denegado', () => {
   it('A02-4 abrir /acceso-denegado sin haber intentado ingresar redirige a /login', async () => {
     const { router } = renderApp('/acceso-denegado');
     await googleButton();
-    expect(router.state.location.pathname).toBe('/login');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/login'));
   });
 });
 

@@ -107,7 +107,7 @@ describe('F05 · Importar CSV', () => {
     expect(repos.languagesData[0].tags).toEqual(['Saludos', 'HSK1', 'Viajes']);
 
     await userEvent.click(screen.getByRole('link', { name: 'Ver flashcards' }));
-    expect(router.state.location.pathname).toBe('/flashcards');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards'));
   });
 
   it('F05-4 las filas omitidas se pueden descargar con el motivo', async () => {
@@ -177,7 +177,7 @@ describe('F01 · accesos a Importar CSV', () => {
     const { router } = renderApp('/flashcards', signedInService(), seeded());
     await screen.findByRole('link', { name: /你好/ });
     await userEvent.click(screen.getAllByRole('link', { name: /Importar CSV/ })[0]);
-    expect(router.state.location.pathname).toBe('/flashcards/importar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards/importar'));
   });
 
   it('F01-6 el estado vacío ofrece crear e importar', async () => {

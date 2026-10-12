@@ -255,7 +255,7 @@ describe('R03 · Fin del mazo', () => {
   it('R03-2 Salir vuelve a la lista de mazos', async () => {
     const { dialog, router } = await finish();
     await userEvent.click(dialog.getByRole('button', { name: 'Salir' }));
-    expect(router.state.location.pathname).toBe('/mazos');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos'));
   });
 
   it('un mazo de una carta termina al avanzar', async () => {
@@ -273,10 +273,10 @@ describe('R01 · Salir', () => {
     expect(dialog.getByText(/No se guarda el avance/)).toBeInTheDocument();
     await userEvent.click(dialog.getByRole('button', { name: 'Seguir estudiando' }));
     expect(screen.queryByRole('alertdialog')).toBeNull();
-    expect(router.state.location.pathname).toBe('/mazos/d1/estudiar');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos/d1/estudiar'));
     await userEvent.click(screen.getByRole('button', { name: 'Salir del recorrido' }));
     await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Salir' }));
-    expect(router.state.location.pathname).toBe('/mazos');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/mazos'));
   });
 
   it('R01-7 Esc abre la confirmación para salir', async () => {

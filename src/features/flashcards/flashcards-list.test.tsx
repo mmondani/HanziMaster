@@ -94,7 +94,7 @@ describe('F01 · Listado de flashcards', () => {
     expect(await screen.findByRole('button', { name: /Idioma: Chino mandarín/ })).toHaveFocus();
     await userEvent.click(await screen.findByRole('button', { name: /Idioma: Chino mandarín/ }));
     await userEvent.click(screen.getByRole('menuitem', { name: 'Administrar idiomas' }));
-    expect(router.state.location.pathname).toBe('/idiomas');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas'));
   });
 
   it('F01-5 una búsqueda sin coincidencias muestra "Sin resultados" con acción para limpiar', async () => {
@@ -118,7 +118,7 @@ describe('F01 · Listado de flashcards', () => {
   it('F01-7 tocar una fila abre el detalle de esa flashcard', async () => {
     const { router } = await openList();
     await userEvent.click(await screen.findByRole('link', { name: /学生/ }));
-    expect(router.state.location.pathname).toBe('/flashcards/c3');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards/c3'));
   });
 
   it('F01-8 el listado es navegable con teclado (filas y chips son enlaces/botones)', async () => {
@@ -127,7 +127,7 @@ describe('F01 · Listado de flashcards', () => {
     first.focus();
     expect(first).toHaveFocus();
     await userEvent.keyboard('{Enter}');
-    expect(router.state.location.pathname).toBe('/flashcards/c1');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/flashcards/c1'));
   });
 
   it('sin idiomas lleva a crear el primero', async () => {

@@ -53,7 +53,7 @@ describe('I02 · Crear y guardar idiomas', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
     const dialog = await screen.findByRole('alertdialog', { name: '¿Salir sin guardar?' });
     await userEvent.click(within(dialog).getByRole('button', { name: 'Seguir editando' }));
-    expect(router.state.location.pathname).toBe('/idiomas/zh');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas/zh'));
     await userEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
     await userEvent.click(await screen.findByRole('button', { name: 'Salir sin guardar' }));
     await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas'));
@@ -194,7 +194,7 @@ describe('I02 · Layouts (listado)', () => {
     expect(screen.getByRole('link', { name: 'Editar layout Palabra y pinyin' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Editar layout Solo traducción' })).toBeInTheDocument();
     await userEvent.click(screen.getAllByRole('link', { name: /Nuevo layout|Layout/ })[0]);
-    expect(router.state.location.pathname).toBe('/idiomas/zh/layouts/nuevo');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas/zh/layouts/nuevo'));
   });
 
   it('un idioma sin guardar pide guardarlo antes de crear layouts', async () => {
