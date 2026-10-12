@@ -90,7 +90,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **6. Flashcards: listado, formulario y detalle (F01–F04)**
   - Qué: repositorio de flashcards con suscripción por idioma; `search` (sin acentos ni mayúsculas, palabra + traducción); F01 con filtros por tag y estado en la URL (`?q=&tag=`); `FieldInput` dinámico por `FieldDef`; F03 (crear/editar/eliminar, tags nuevos al set del idioma); F04 con `FlipCard` + `FlashcardView` y mazos que la contienen. Aún **sin** botón de IA.
   - Verificación: tests F01-1…8, F03-1…4 y 9…10, F04-1…5; unit test de `search`.
-- [ ] **7. Selección múltiple y edición masiva (F02, F06)**
+- [x] **7. Selección múltiple y edición masiva (F02, F06)**
   - Qué: modo selección, barra de acciones, edición masiva de un campo (tags: agregar/quitar/reemplazar) con *Deshacer*; *Crear mazo* navega a `/mazos/nuevo?cartas=…`.
   - Verificación: tests F02-1…5, F06-1…5; unit test de `bulk-edit`.
 - [ ] **8. Importar CSV (F05)**

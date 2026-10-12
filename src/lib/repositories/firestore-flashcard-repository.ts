@@ -19,6 +19,14 @@ export function createFirestoreFlashcardRepository(db: Firestore, uid: string): 
       await setDoc(doc(flashcards, card.id), card);
     },
 
+    async saveMany(cards) {
+      for (let i = 0; i < cards.length; i += 400) {
+        const batch = writeBatch(db);
+        cards.slice(i, i + 400).forEach((c) => batch.set(doc(flashcards, c.id), c));
+        await batch.commit();
+      }
+    },
+
     async remove(cardId) {
       const ref = doc(flashcards, cardId);
       const [cardSnap, deckSnap] = await Promise.all([getDoc(ref), getDocs(query(decks, where('cardIds', 'array-contains', cardId)))]);

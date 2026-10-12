@@ -32,6 +32,7 @@ export const routes: RouteObject[] = [
               { path: '/flashcards/:id', element: <FlashcardDetailPage />, handle: { push: true } },
               { path: '/flashcards/:id/editar', element: <FlashcardFormPage />, handle: { push: true } },
               { path: '/mazos', element: <PlaceholderPage title="Mazos" /> },
+              { path: '/mazos/nuevo', element: <PlaceholderPage title="Nuevo mazo" child />, handle: { push: true } },
               { path: '/mazos/:id', element: <PlaceholderPage title="Mazo" child />, handle: { push: true } },
               { path: '/mas', element: <MorePage /> },
               { path: '/idiomas', element: <LanguagesPage />, handle: { push: true } },

@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/toast-provider';
 import { UnsavedChangesGuard } from '@/components/ui/unsaved-changes-guard';
 import { useDecks } from '@/lib/decks/decks-provider';
-import { addTag } from '@/lib/domain/field-rules';
 import { buildValues, formFields, toFormValues, validateFlashcard, type FormErrors } from '@/lib/domain/flashcard-form';
 import { languageGlyph } from '@/lib/domain/language-presentation';
 import { newId } from '@/lib/ids';
@@ -18,6 +17,7 @@ import type { Flashcard, Language } from '@/lib/types';
 import { DeleteFlashcardDialog } from './delete-flashcard-dialog';
 import { RecordStatusView } from './record-status-view';
 import { TagPicker } from './tag-picker';
+import { useCreateTag } from './use-create-tag';
 import { useDeleteFlashcard } from './use-delete-flashcard';
 import { useFlashcardRecord } from './use-flashcard-record';
 
@@ -35,6 +35,7 @@ function FlashcardForm({ language, card }: { language: Language; card?: Flashcar
   const toast = useToast();
   const navigate = useNavigate();
   const deleteFlashcard = useDeleteFlashcard();
+  const createTag = useCreateTag(language);
   const formRef = useRef<HTMLFormElement>(null);
 
   const [baseline] = useState(() => ({ values: toFormValues(language, card), tags: card?.tags ?? [] }));
@@ -85,15 +86,6 @@ function FlashcardForm({ language, card }: { language: Language; card?: Flashcar
       setSaveError(true);
       setSaving(false);
     }
-  }
-
-  /** Alta de un tag desde el formulario: queda en el set del idioma. Si ya existe, se reutiliza. */
-  async function createTag(raw: string): Promise<string> {
-    const existing = language.tags.find((t) => t.toLowerCase() === raw.toLowerCase());
-    if (existing) return existing;
-    const { tags: next } = addTag(language.tags, raw);
-    await repos.languages.save({ ...language, tags: next });
-    return raw.trim();
   }
 
   async function confirmDelete() {

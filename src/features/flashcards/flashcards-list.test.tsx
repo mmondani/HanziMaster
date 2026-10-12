@@ -20,6 +20,8 @@ function seeded() {
 async function openList(repos = seeded(), path = '/flashcards') {
   const view = renderApp(path, signedInService(), repos);
   await screen.findByRole('heading', { name: 'Flashcards', level: 1 });
+  // Espera a que terminen de cargar los datos (desaparece el esqueleto).
+  await waitFor(() => expect(screen.queryByRole('status', { name: 'Cargando flashcards' })).toBeNull());
   return { ...view, repos };
 }
 
@@ -39,6 +41,7 @@ describe('F01 · Listado de flashcards', () => {
 
   it('F01-2 la búsqueda filtra en vivo por palabra o traducción, sin distinguir mayúsculas ni acentos', async () => {
     const { router } = await openList();
+    await screen.findByLabelText('Buscar flashcards');
     await userEvent.type(screen.getByLabelText('Buscar flashcards'), 'ESTUDIÁ');
     await waitFor(() => expect(screen.getByText('1 flashcard')).toBeInTheDocument());
     expect(rows()).toHaveLength(1);
@@ -96,6 +99,7 @@ describe('F01 · Listado de flashcards', () => {
 
   it('F01-5 una búsqueda sin coincidencias muestra "Sin resultados" con acción para limpiar', async () => {
     await openList();
+    await screen.findByLabelText('Buscar flashcards');
     await userEvent.type(screen.getByLabelText('Buscar flashcards'), 'xyz');
     expect(await screen.findByText('Sin resultados para “xyz”')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'Limpiar búsqueda' }));

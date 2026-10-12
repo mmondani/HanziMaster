@@ -31,6 +31,14 @@
 - **Paso 6 — "Completar con IA":** el formulario no incluye aún el botón; se agrega en el paso 12.
 - **Paso 6 — tests de reglas:** hay que cerrar los emuladores que dejan los comandos `emulators:start` (un `emulators:exec` falla con "port taken" si quedó uno abierto).
 
+- **Paso 7 — campos editables en masa:** se excluyen Palabra y Traducción (como en el mockup): cambiar el mismo valor en todas las flashcards no tiene sentido. El resto (incluidos Tags y campos propios) sí.
+- **Paso 7 — "nuevo tag" en F06:** el diálogo tiene un campo "Nuevo tag" en línea en vez de abrir otro diálogo encima (evita diálogos anidados, que complican el foco y Esc).
+- **Paso 7 — selección y filtros:** la selección solo cuenta las flashcards que están a la vista; si se filtra, las demás dejan de contar (y vuelven si se quita el filtro).
+- **Paso 7 — "Seleccionar todas las visibles":** es un checkbox sobre la lista, visible en mobile y desktop (la spec lo pedía solo en desktop).
+- **Paso 7 — ruta provisoria:** `/mazos/nuevo` es un placeholder hasta el paso 9; ya recibe `?cartas=id1,id2`.
+- **Paso 7 — "Deshacer":** restaura las versiones previas de las flashcards modificadas (incluye su `updatedAt` anterior).
+- **Paso 7 — tests:** varios tests del listado fallaban de forma intermitente por no esperar la carga de datos; ahora esperan a que desaparezca el esqueleto.
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).

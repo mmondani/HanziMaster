@@ -42,6 +42,8 @@ export interface FlashcardRepository {
   /** Todas las flashcards del usuario (el volumen esperado es bajo; se filtra por idioma en el cliente). */
   subscribe(onData: (cards: Flashcard[]) => void, onError: (error: Error) => void): Unsubscribe;
   save(card: Flashcard): Promise<void>;
+  /** Guarda varias flashcards de una vez (edición masiva y su deshacer). */
+  saveMany(cards: Flashcard[]): Promise<void>;
   /** Elimina la flashcard y la quita de los mazos que la incluyen. */
   remove(cardId: string): Promise<RemovedFlashcard>;
   /** Deshace `remove`: vuelve a crear la flashcard y la reincorpora a sus mazos. */

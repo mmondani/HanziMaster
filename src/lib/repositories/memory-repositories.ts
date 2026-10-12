@@ -71,6 +71,14 @@ export class MemoryRepositories implements Repositories {
       else this.flashcardsData.push(card);
       this.notify();
     },
+    saveMany: async (cards) => {
+      for (const card of cards) {
+        const i = this.flashcardsData.findIndex((c) => c.id === card.id);
+        if (i >= 0) this.flashcardsData[i] = card;
+        else this.flashcardsData.push(card);
+      }
+      this.notify();
+    },
     remove: async (cardId) => {
       const card = this.flashcardsData.find((c) => c.id === cardId);
       if (!card) throw new Error('La flashcard no existe');
