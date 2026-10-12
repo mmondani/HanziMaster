@@ -3,6 +3,9 @@ import { AppShell } from '@/components/layout/app-shell';
 import { AccessDeniedPage } from '@/features/access/access-denied-page';
 import { LoginPage } from '@/features/access/login-page';
 import { RequireAuth } from '@/features/access/require-auth';
+import { FlashcardDetailPage } from '@/features/flashcards/flashcard-detail-page';
+import { FlashcardFormPage } from '@/features/flashcards/flashcard-form-page';
+import { FlashcardsPage } from '@/features/flashcards/flashcards-page';
 import { LanguageEditorPage } from '@/features/languages/language-editor-page';
 import { LanguagesPage } from '@/features/languages/languages-page';
 import { LayoutEditorPage } from '@/features/languages/layout-editor-page';
@@ -24,8 +27,12 @@ export const routes: RouteObject[] = [
             element: <AppShell />,
             children: [
               { path: '/', element: <Navigate to="/flashcards" replace /> },
-              { path: '/flashcards', element: <PlaceholderPage title="Flashcards" /> },
+              { path: '/flashcards', element: <FlashcardsPage /> },
+              { path: '/flashcards/nueva', element: <FlashcardFormPage />, handle: { push: true } },
+              { path: '/flashcards/:id', element: <FlashcardDetailPage />, handle: { push: true } },
+              { path: '/flashcards/:id/editar', element: <FlashcardFormPage />, handle: { push: true } },
               { path: '/mazos', element: <PlaceholderPage title="Mazos" /> },
+              { path: '/mazos/:id', element: <PlaceholderPage title="Mazo" child />, handle: { push: true } },
               { path: '/mas', element: <MorePage /> },
               { path: '/idiomas', element: <LanguagesPage />, handle: { push: true } },
               { path: '/idiomas/nuevo', element: <LanguageEditorPage />, handle: { push: true } },

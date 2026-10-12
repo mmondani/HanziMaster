@@ -1,4 +1,4 @@
-import type { Language } from '@/lib/types';
+import type { Deck, Flashcard, Language } from '@/lib/types';
 
 export type Unsubscribe = () => void;
 
@@ -31,6 +31,29 @@ export interface LanguageRepository {
   decksUsingLayout(languageId: string, layoutId: string): Promise<DeckRef[]>;
 }
 
+/** Lo necesario para deshacer la eliminación de una flashcard. */
+export interface RemovedFlashcard {
+  card: Flashcard;
+  /** Mazos de los que se la quitó. */
+  deckIds: string[];
+}
+
+export interface FlashcardRepository {
+  /** Todas las flashcards del usuario (el volumen esperado es bajo; se filtra por idioma en el cliente). */
+  subscribe(onData: (cards: Flashcard[]) => void, onError: (error: Error) => void): Unsubscribe;
+  save(card: Flashcard): Promise<void>;
+  /** Elimina la flashcard y la quita de los mazos que la incluyen. */
+  remove(cardId: string): Promise<RemovedFlashcard>;
+  /** Deshace `remove`: vuelve a crear la flashcard y la reincorpora a sus mazos. */
+  restore(removed: RemovedFlashcard): Promise<void>;
+}
+
+export interface DeckRepository {
+  subscribe(onData: (decks: Deck[]) => void, onError: (error: Error) => void): Unsubscribe;
+}
+
 export interface Repositories {
   languages: LanguageRepository;
+  flashcards: FlashcardRepository;
+  decks: DeckRepository;
 }

@@ -7,8 +7,8 @@ import { renderApp, signedInService } from '@/test/render-app';
 function seeded() {
   const repos = new MemoryRepositories();
   repos.languagesData = [chinese(), chinese({ id: 'ja', name: 'Japonés', code: 'ja-JP', tags: [], layouts: [] })];
-  repos.flashcards = [card('c1', 'zh'), card('c2', 'zh'), card('c3', 'ja')];
-  repos.decks = [deck('d1', 'zh')];
+  repos.flashcardsData = [card('c1', 'zh'), card('c2', 'zh'), card('c3', 'ja')];
+  repos.decksData = [deck('d1', 'zh')];
   return repos;
 }
 

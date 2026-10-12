@@ -87,7 +87,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **5. Idiomas (I01–I04, G01)**
   - Qué: repositorio de idiomas; I01; I02 con pestañas Campos/Tags/Layouts; I03 (campos de sistema protegidos, reordenar); I04 con `LayoutCanvas` (validación pura de límites/solapes en `layout-grid`); eliminación de idioma con nombre escrito; eliminación de campo y de layout con aviso de impacto; G01 (Más). Idioma activo en contexto + `localStorage`.
   - Verificación: tests I01-1…3, I02-1…7, I03-1…4, I04-1…7, G01-1…3; tests unitarios de `layout-grid` y `field-rules`.
-- [ ] **6. Flashcards: listado, formulario y detalle (F01–F04)**
+- [x] **6. Flashcards: listado, formulario y detalle (F01–F04)**
   - Qué: repositorio de flashcards con suscripción por idioma; `search` (sin acentos ni mayúsculas, palabra + traducción); F01 con filtros por tag y estado en la URL (`?q=&tag=`); `FieldInput` dinámico por `FieldDef`; F03 (crear/editar/eliminar, tags nuevos al set del idioma); F04 con `FlipCard` + `FlashcardView` y mazos que la contienen. Aún **sin** botón de IA.
   - Verificación: tests F01-1…8, F03-1…4 y 9…10, F04-1…5; unit test de `search`.
 - [ ] **7. Selección múltiple y edición masiva (F02, F06)**

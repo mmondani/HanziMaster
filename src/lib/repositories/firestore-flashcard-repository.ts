@@ -1,0 +1,41 @@
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, where, writeBatch, type Firestore } from 'firebase/firestore';
+import type { Flashcard } from '@/lib/types';
+import type { FlashcardRepository } from './types';
+
+export function createFirestoreFlashcardRepository(db: Firestore, uid: string): FlashcardRepository {
+  const flashcards = collection(db, 'users', uid, 'flashcards');
+  const decks = collection(db, 'users', uid, 'decks');
+
+  return {
+    subscribe(onData, onError) {
+      return onSnapshot(
+        flashcards,
+        (snap) => onData(snap.docs.map((d) => ({ ...(d.data() as Flashcard), id: d.id }))),
+        onError,
+      );
+    },
+
+    async save(card) {
+      await setDoc(doc(flashcards, card.id), card);
+    },
+
+    async remove(cardId) {
+      const ref = doc(flashcards, cardId);
+      const [cardSnap, deckSnap] = await Promise.all([getDoc(ref), getDocs(query(decks, where('cardIds', 'array-contains', cardId)))]);
+      if (!cardSnap.exists()) throw new Error('La flashcard no existe');
+      const card = { ...(cardSnap.data() as Flashcard), id: cardId };
+      const batch = writeBatch(db);
+      batch.delete(ref);
+      deckSnap.docs.forEach((d) => batch.update(d.ref, { cardIds: arrayRemove(cardId) }));
+      await batch.commit();
+      return { card, deckIds: deckSnap.docs.map((d) => d.id) };
+    },
+
+    async restore({ card, deckIds }) {
+      const batch = writeBatch(db);
+      batch.set(doc(flashcards, card.id), card);
+      deckIds.forEach((id) => batch.update(doc(decks, id), { cardIds: arrayUnion(card.id) }));
+      await batch.commit();
+    },
+  };
+}

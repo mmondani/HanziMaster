@@ -7,8 +7,8 @@ import { renderApp, signedInService } from '@/test/render-app';
 function seeded() {
   const repos = new MemoryRepositories();
   repos.languagesData = [chinese(), chinese({ id: 'ja', name: 'Japonés', code: 'ja-JP', tags: [], layouts: [] })];
-  repos.flashcards = [card('c1', 'zh', { tags: ['Saludos', 'Escuela'] }), card('c2', 'zh')];
-  repos.decks = [deck('d1', 'zh')];
+  repos.flashcardsData = [card('c1', 'zh', { tags: ['Saludos', 'Escuela'] }), card('c2', 'zh')];
+  repos.decksData = [deck('d1', 'zh')];
   return repos;
 }
 
@@ -146,7 +146,7 @@ describe('I02/I03 · Campos', () => {
     await waitFor(() => expect(repos.languagesData.find((l) => l.id === 'zh')!.fields).toHaveLength(3));
     const zh = repos.languagesData.find((l) => l.id === 'zh')!;
     expect(zh.layouts[0].items.map((i) => i.fieldId)).toEqual(['word']);
-    expect(repos.flashcards.every((c) => !('pinyin' in c.values))).toBe(true);
+    expect(repos.flashcardsData.every((c) => !('pinyin' in c.values))).toBe(true);
   });
 });
 
@@ -176,8 +176,8 @@ describe('I02 · Tags', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Quitar tag Saludos' }));
     await userEvent.click(saveButton());
     await waitFor(() => expect(repos.languagesData.find((l) => l.id === 'zh')!.tags).toEqual(['Escuela']));
-    expect(repos.flashcards.find((c) => c.id === 'c1')!.tags).toEqual(['Escuela']);
-    expect(repos.flashcards.find((c) => c.id === 'c2')!.tags).toEqual([]);
+    expect(repos.flashcardsData.find((c) => c.id === 'c1')!.tags).toEqual(['Escuela']);
+    expect(repos.flashcardsData.find((c) => c.id === 'c2')!.tags).toEqual([]);
   });
 
   it('la pestaña activa vive en la URL (?tab=)', async () => {
@@ -219,8 +219,8 @@ describe('I02 · Eliminar idioma', () => {
     await userEvent.click(confirm);
     await waitFor(() => expect(router.state.location.pathname).toBe('/idiomas'));
     expect(repos.languagesData.map((l) => l.id)).toEqual(['ja']);
-    expect(repos.flashcards).toHaveLength(0);
-    expect(repos.decks).toHaveLength(0);
+    expect(repos.flashcardsData).toHaveLength(0);
+    expect(repos.decksData).toHaveLength(0);
   });
 
   it('no se ofrece eliminar un idioma que todavía no existe', async () => {

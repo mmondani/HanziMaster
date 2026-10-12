@@ -7,7 +7,7 @@ import { renderApp, signedInService } from '@/test/render-app';
 function seeded() {
   const repos = new MemoryRepositories();
   repos.languagesData = [chinese()];
-  repos.decks = [deck('d1', 'zh'), deck('d2', 'zh', { name: 'Frases útiles' })];
+  repos.decksData = [deck('d1', 'zh'), deck('d2', 'zh', { name: 'Frases útiles' })];
   return repos;
 }
 
@@ -135,12 +135,12 @@ describe('I04 · Editor de layout', () => {
     await userEvent.click(screen.getByRole('button', { name: /Eliminar layout/ }));
     await userEvent.click(within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Eliminar' }));
     await waitFor(() => expect(layoutsOf(repos)).toHaveLength(1));
-    expect(repos.decks[0].modes[0].frontLayoutId).toBe('ly1');
+    expect(repos.decksData[0].modes[0].frontLayoutId).toBe('ly1');
   });
 
   it('eliminar un layout que ningún mazo usa lo informa', async () => {
     const repos = seeded();
-    repos.decks = [];
+    repos.decksData = [];
     await openLayout('/idiomas/zh/layouts/ly2', repos);
     await userEvent.click(screen.getByRole('button', { name: /Eliminar layout/ }));
     expect(await screen.findByText('Ningún mazo usa este layout. Esta acción no se puede deshacer.')).toBeInTheDocument();

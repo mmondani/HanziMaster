@@ -23,6 +23,14 @@
 - **Paso 5 — dependencias de datos:** las cuentas de flashcards y mazos del listado de idiomas salen de suscribirse a esas colecciones completas (volumen bajo). Si crecen mucho, reemplazar por contadores.
 - **Paso 5 — selector de idioma activo:** el estado global (`useLanguages().active`, persistido en `localStorage` por usuario) está listo; el chip selector de F01/M01 se construye en los pasos 6 y 9.
 
+- **Paso 6 — sin virtualización:** en vez de `@tanstack/react-virtual` (dependencia prevista en el plan) el listado pagina de a 50 con "Mostrar más". Es más simple, accesible y testeable; no se instaló la dependencia. Reconsiderar si se superan varios miles de flashcards.
+- **Paso 6 — acciones de F01 pendientes:** los botones *Seleccionar* e *Importar CSV* (y el menú `⋯` en mobile) se agregan en los pasos 7 y 8 junto con sus pantallas, para no dejar botones sin función. La fila ya incluye el espacio de selección (`sel-slot`).
+- **Paso 6 — vista previa de F04:** el mockup no definía qué muestra el reverso al elegir un layout. Se asumió: frente = layout elegido, reverso = el siguiente layout distinto (o el mismo si hay uno solo). Se puede cambiar cuando se defina cómo se relacionan con los modos de recorrida.
+- **Paso 6 — datos compartidos:** flashcards y mazos se cargan completos en proveedores de contexto (`FlashcardsProvider`, `DecksProvider`); el idioma activo filtra en el cliente. El conteo de uso de idiomas (`subscribeUsage`) quedó como suscripción aparte; podría derivarse de estos proveedores.
+- **Paso 6 — accesibilidad de `FlipCard`:** el contenedor es `role="button"` y contiene botones de audio (anidado, como en el mockup). Los botones de audio detienen el giro. Revisar con lector de pantalla en el paso 13; alternativa: botón "Girar" separado (el recorrido ya lo tiene).
+- **Paso 6 — "Completar con IA":** el formulario no incluye aún el botón; se agrega en el paso 12.
+- **Paso 6 — tests de reglas:** hay que cerrar los emuladores que dejan los comandos `emulators:start` (un `emulators:exec` falla con "port taken" si quedó uno abierto).
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
