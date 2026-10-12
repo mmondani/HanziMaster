@@ -3,6 +3,9 @@ import { AppShell } from '@/components/layout/app-shell';
 import { AccessDeniedPage } from '@/features/access/access-denied-page';
 import { LoginPage } from '@/features/access/login-page';
 import { RequireAuth } from '@/features/access/require-auth';
+import { DeckDetailPage } from '@/features/decks/deck-detail-page';
+import { DeckFormPage } from '@/features/decks/deck-form-page';
+import { DecksPage } from '@/features/decks/decks-page';
 import { FlashcardDetailPage } from '@/features/flashcards/flashcard-detail-page';
 import { FlashcardFormPage } from '@/features/flashcards/flashcard-form-page';
 import { ImportPage } from '@/features/flashcards/import-page';
@@ -24,6 +27,8 @@ export const routes: RouteObject[] = [
       {
         element: <DataLayout />,
         children: [
+          // Recorrido: pantalla completa, fuera del shell (se implementa en el paso 10).
+          { path: '/mazos/:id/estudiar', element: <PlaceholderPage title="Recorrido" child /> },
           {
             element: <AppShell />,
             children: [
@@ -33,9 +38,10 @@ export const routes: RouteObject[] = [
               { path: '/flashcards/importar', element: <ImportPage />, handle: { push: true } },
               { path: '/flashcards/:id', element: <FlashcardDetailPage />, handle: { push: true } },
               { path: '/flashcards/:id/editar', element: <FlashcardFormPage />, handle: { push: true } },
-              { path: '/mazos', element: <PlaceholderPage title="Mazos" /> },
-              { path: '/mazos/nuevo', element: <PlaceholderPage title="Nuevo mazo" child />, handle: { push: true } },
-              { path: '/mazos/:id', element: <PlaceholderPage title="Mazo" child />, handle: { push: true } },
+              { path: '/mazos', element: <DecksPage /> },
+              { path: '/mazos/nuevo', element: <DeckFormPage />, handle: { push: true } },
+              { path: '/mazos/:id', element: <DeckDetailPage />, handle: { push: true } },
+              { path: '/mazos/:id/editar', element: <DeckFormPage />, handle: { push: true } },
               { path: '/mas', element: <MorePage /> },
               { path: '/idiomas', element: <LanguagesPage />, handle: { push: true } },
               { path: '/idiomas/nuevo', element: <LanguageEditorPage />, handle: { push: true } },

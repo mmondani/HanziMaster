@@ -47,6 +47,15 @@
 - **Paso 8 — dependencia:** `papaparse` (+ `@types/papaparse`), prevista en el plan.
 - **Paso 8 — ejemplos de la tabla de columnas:** son genéricos ("texto") salvo Palabra y Tags; podrían mejorarse con ejemplos por idioma.
 
+- **Paso 9 — "mazo no disponible":** se deriva en el cliente (`getDeckStatus`): un mazo está roto si algún modo apunta a un layout que ya no existe en el idioma. No hay flag guardado ni escrituras en cascada. M01 lo marca con una alerta y deshabilita *Estudiar*; M03 explica el motivo y enlaza a Editar; M02 marca el modo afectado como "Layout eliminado" y exige elegir otro layout (M02-8), lo que repara el mazo. Cubre I04-7 y M01-7.
+- **Paso 9 — un solo modo:** *Estudiar* inicia el recorrido directamente, sin diálogo (la spec lo dejaba "a confirmar"). Con varios modos se abre M04, que preselecciona el último modo usado (guardado en `localStorage`).
+- **Paso 9 — recorrido provisorio:** `/mazos/:id/estudiar` es un placeholder fuera del shell hasta el paso 10; M04 y los atajos ya navegan a `?modo=<id>`.
+- **Paso 9 — mazos vacíos o rotos en M03:** la pantalla muestra un aviso y deshabilita *Estudiar este mazo* (no figuraba en la spec).
+- **Paso 9 — el modo exige nombre:** la spec solo pedía layouts; se valida también el nombre del modo.
+- **Paso 9 — selector de flashcards:** pagina de a 50 y suma "Quitar todas las visibles" como alternancia del botón "Seleccionar todas las visibles".
+- **Paso 9 — tipografía de listas en desktop:** el CSS heredado de los mockups muestra el texto de las filas `.item` en una sola línea en desktop (también en listas de Idiomas y Mazos); respeta lo aprobado en los mockups. Revisar en el paso 13 si se prefiere en columna.
+- **Paso 9 — fixtures compartidos:** `MODE_A` y `MODE_B` viven en `src/test/fixtures.ts` (no se importan desde archivos `.test`).
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).

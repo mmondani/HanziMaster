@@ -52,6 +52,9 @@ export interface FlashcardRepository {
 
 export interface DeckRepository {
   subscribe(onData: (decks: Deck[]) => void, onError: (error: Error) => void): Unsubscribe;
+  save(deck: Deck): Promise<void>;
+  /** Elimina el mazo; las flashcards no se tocan. */
+  remove(deckId: string): Promise<void>;
 }
 
 export interface Repositories {

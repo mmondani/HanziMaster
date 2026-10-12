@@ -41,3 +41,7 @@ export function deck(id: string, languageId: string, overrides: Partial<Deck> = 
     ...overrides,
   };
 }
+
+/** Modos de recorrida de ejemplo sobre los layouts de `chinese()`. */
+export const MODE_A = { id: 'mA', name: 'Palabra → Significado', frontLayoutId: 'ly1', backLayoutId: 'ly2' };
+export const MODE_B = { id: 'mB', name: 'Significado → Palabra', frontLayoutId: 'ly2', backLayoutId: 'ly1' };

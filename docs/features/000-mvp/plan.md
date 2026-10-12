@@ -96,7 +96,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **8. Importar CSV (F05)**
   - Qué: `csv-import` puro (encabezado = nombres de campos del idioma, duplicados por *Palabra* omitidos, filas inválidas con motivo, tags `;`, límite 1.000 filas, UTF-8), plantilla descargable, `CsvImporter` de 3 pasos, descarga de filas omitidas, escritura en lotes.
   - Verificación: tests F05-1…9 con CSV de ejemplo (duplicados, falta de columna obligatoria, BOM, comillas).
-- [ ] **9. Mazos (M01–M04)**
+- [x] **9. Mazos (M01–M04)**
   - Qué: repositorio de decks; `deck-status` (disponible / sin flashcards / no disponible por layout eliminado); M01 con tarjetas y estados; M02 con picker, modos y validaciones (incluye reparar modo huérfano, M02-8); M03; M04 (si hay un único modo se inicia directo).
   - Verificación: tests M01-1…7, M02-1…8, M03-1…3, M04-1…4; unit test de `deck-status`.
 - [ ] **10. Recorrido (R01–R03)**

@@ -102,6 +102,16 @@ export class MemoryRepositories implements Repositories {
       queueMicrotask(emit);
       return () => { this.listeners.delete(emit); };
     },
+    save: async (deck) => {
+      const i = this.decksData.findIndex((d) => d.id === deck.id);
+      if (i >= 0) this.decksData[i] = deck;
+      else this.decksData.push(deck);
+      this.notify();
+    },
+    remove: async (deckId) => {
+      this.decksData = this.decksData.filter((d) => d.id !== deckId);
+      this.notify();
+    },
   };
 
   private notify() {
