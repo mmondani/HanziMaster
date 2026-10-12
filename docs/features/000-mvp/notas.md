@@ -39,6 +39,14 @@
 - **Paso 7 — "Deshacer":** restaura las versiones previas de las flashcards modificadas (incluye su `updatedAt` anterior).
 - **Paso 7 — tests:** varios tests del listado fallaban de forma intermitente por no esperar la carga de datos; ahora esperan a que desaparezca el esqueleto.
 
+- **Paso 8 — formato del CSV (decidido en la revisión):** el encabezado usa los nombres de los campos del idioma (la comparación ignora mayúsculas y acentos); las palabras duplicadas no se agregan. Como complemento se acepta `,`, `;` o tabulación como separador (se detecta por la primera línea) y BOM de Excel. Una columna ausente toma el valor por defecto del campo; una celda vacía queda vacía.
+- **Paso 8 — "fila N":** cuenta las filas de datos (el encabezado no cuenta ni las líneas en blanco), no el número de línea del archivo.
+- **Paso 8 — duplicados:** se comparan por Palabra sin distinguir mayúsculas ni espacios, contra las flashcards del idioma y contra filas anteriores del mismo archivo.
+- **Paso 8 — límites:** solo `.csv`, UTF-8 (un archivo con bytes inválidos se rechaza), máximo 1.000 filas. La vista previa muestra las primeras 50.
+- **Paso 8 — durante la importación:** se pide confirmación si se intenta salir (el guard de cambios sin guardar se reutiliza). Las flashcards se guardan por lotes de 400; los tags nuevos se agregan al idioma antes que las flashcards.
+- **Paso 8 — dependencia:** `papaparse` (+ `@types/papaparse`), prevista en el plan.
+- **Paso 8 — ejemplos de la tabla de columnas:** son genéricos ("texto") salvo Palabra y Tags; podrían mejorarse con ejemplos por idioma.
+
 ## Pendientes
 - **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
 - **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Copy, Languages, ListChecks, Plus, Search } from 'lucide-react';
+import { Copy, Languages, ListChecks, Plus, Search, Upload } from 'lucide-react';
 import { LanguageSelector } from '@/components/layout/language-selector';
 import { PageHeader } from '@/components/layout/page-header';
 import { Alert } from '@/components/ui/alert';
@@ -130,15 +130,24 @@ export function FlashcardsPage() {
       title="Flashcards"
       languageSelector={<LanguageSelector onSelect={() => { clearFilters(); cancelSelection(); }} />}
       desktopActions={
-        !selecting && active && ofLanguage.length > 0
-          ? <Button variant="ghost" onClick={startSelecting}><ListChecks className="ic" aria-hidden="true" />Seleccionar</Button>
-          : undefined
+        !selecting && active ? (
+          <>
+            {ofLanguage.length > 0 && <Button variant="ghost" onClick={startSelecting}><ListChecks className="ic" aria-hidden="true" />Seleccionar</Button>}
+            <Link className="btn btn-secondary" to="/flashcards/importar"><Upload className="ic" aria-hidden="true" />Importar CSV</Link>
+          </>
+        ) : undefined
       }
       action={<Link className="btn btn-primary" to="/flashcards/nueva"><Plus className="ic" aria-hidden="true" />Nueva flashcard</Link>}
       mobileActions={
-        !selecting && active && ofLanguage.length > 0
-          ? <Menu label="Más acciones" items={[{ label: 'Seleccionar', icon: <ListChecks className="ic" aria-hidden="true" />, onSelect: startSelecting }]} />
-          : undefined
+        !selecting && active ? (
+          <Menu
+            label="Más acciones"
+            items={[
+              ...(ofLanguage.length > 0 ? [{ label: 'Seleccionar', icon: <ListChecks className="ic" aria-hidden="true" />, onSelect: startSelecting }] : []),
+              { label: 'Importar CSV', icon: <Upload className="ic" aria-hidden="true" />, to: '/flashcards/importar' },
+            ]}
+          />
+        ) : undefined
       }
     />
   );
@@ -171,8 +180,13 @@ export function FlashcardsPage() {
       <EmptyState
         icon={<Copy className="ic lg" />}
         title={`Todavía no hay flashcards en ${active.name}`}
-        description="Crea la primera escribiendo la palabra y los demás campos."
-        actions={<Link className="btn btn-primary" to="/flashcards/nueva"><Plus className="ic" aria-hidden="true" />Nueva flashcard</Link>}
+        description="Crea la primera escribiendo la palabra y los demás campos, o importa varias desde un CSV."
+        actions={
+          <div className="btn-group" style={{ justifyContent: 'center' }}>
+            <Link className="btn btn-primary" to="/flashcards/nueva"><Plus className="ic" aria-hidden="true" />Nueva flashcard</Link>
+            <Link className="btn btn-secondary" to="/flashcards/importar"><Upload className="ic" aria-hidden="true" />Importar CSV</Link>
+          </div>
+        }
       />
     );
   } else {

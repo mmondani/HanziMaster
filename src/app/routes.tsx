@@ -5,6 +5,7 @@ import { LoginPage } from '@/features/access/login-page';
 import { RequireAuth } from '@/features/access/require-auth';
 import { FlashcardDetailPage } from '@/features/flashcards/flashcard-detail-page';
 import { FlashcardFormPage } from '@/features/flashcards/flashcard-form-page';
+import { ImportPage } from '@/features/flashcards/import-page';
 import { FlashcardsPage } from '@/features/flashcards/flashcards-page';
 import { LanguageEditorPage } from '@/features/languages/language-editor-page';
 import { LanguagesPage } from '@/features/languages/languages-page';
@@ -29,6 +30,7 @@ export const routes: RouteObject[] = [
               { path: '/', element: <Navigate to="/flashcards" replace /> },
               { path: '/flashcards', element: <FlashcardsPage /> },
               { path: '/flashcards/nueva', element: <FlashcardFormPage />, handle: { push: true } },
+              { path: '/flashcards/importar', element: <ImportPage />, handle: { push: true } },
               { path: '/flashcards/:id', element: <FlashcardDetailPage />, handle: { push: true } },
               { path: '/flashcards/:id/editar', element: <FlashcardFormPage />, handle: { push: true } },
               { path: '/mazos', element: <PlaceholderPage title="Mazos" /> },

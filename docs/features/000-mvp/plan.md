@@ -93,7 +93,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **7. Selección múltiple y edición masiva (F02, F06)**
   - Qué: modo selección, barra de acciones, edición masiva de un campo (tags: agregar/quitar/reemplazar) con *Deshacer*; *Crear mazo* navega a `/mazos/nuevo?cartas=…`.
   - Verificación: tests F02-1…5, F06-1…5; unit test de `bulk-edit`.
-- [ ] **8. Importar CSV (F05)**
+- [x] **8. Importar CSV (F05)**
   - Qué: `csv-import` puro (encabezado = nombres de campos del idioma, duplicados por *Palabra* omitidos, filas inválidas con motivo, tags `;`, límite 1.000 filas, UTF-8), plantilla descargable, `CsvImporter` de 3 pasos, descarga de filas omitidas, escritura en lotes.
   - Verificación: tests F05-1…9 con CSV de ejemplo (duplicados, falta de columna obligatoria, BOM, comillas).
 - [ ] **9. Mazos (M01–M04)**
