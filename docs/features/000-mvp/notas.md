@@ -13,4 +13,5 @@
 - **Paso 3 — rutas provisorias:** `src/app/routes.tsx` usa `PlaceholderPage`; cada paso posterior reemplaza la suya. `OfflineBanner` queda para el paso 4, como en el plan.
 
 ## Pendientes
-- **Firestore no está creado** en `hanzi-master-701f9` (la API devuelve 403: no habilitada). Hay que crear la base en la consola (elegir región, modo producción) antes del primer despliegue; también habilitar Authentication con el proveedor Google y cargar los emails en `allowedEmails`.
+- **Firestore:** base `(default)` en `us-central1` (modo nativo, Standard), con protección contra borrado activada. Reglas e índices desplegados. App web "Hanzi Master" registrada (appId `1:1080712858573:web:1f1c69736b157476abd284`); su config va en `.env.local` (ver `.env.example`).
+- **Pendiente manual:** habilitar Authentication → proveedor Google en la consola, y crear el documento `allowedEmails/mmondani89@gmail.com` (la CLI no crea documentos).
