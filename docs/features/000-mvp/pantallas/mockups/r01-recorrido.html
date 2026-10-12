@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R01 · Recorrido de mazo — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="none">
+<div class="study">
+  <header class="study-top">
+    <button class="icon-btn" data-open="#exit" aria-label="Salir del recorrido"><i data-i="x"></i></button>
+    <div class="grow">
+      <div style="font-weight:600" id="deck-name">Saludos básicos</div>
+      <div class="xs muted">Palabra → Significado · Libre</div>
+    </div>
+    <div class="small" style="font-weight:600;min-width:64px;text-align:right" aria-live="polite" id="counter">1 / 12</div>
+  </header>
+  <div style="padding:0 var(--sp-4)"><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="12" aria-valuenow="1" id="bar"><i style="width:8%"></i></div></div>
+
+  <main class="study-stage" id="stage">
+    <div class="flip" id="flip" tabindex="0" role="button" aria-label="Carta. Tocar para girar. Mostrando frente">
+      <div class="flip-inner">
+        <!-- FRENTE · layout "Palabra y pinyin" -->
+        <div class="face">
+          <span class="tts corner" role="button" tabindex="0" aria-label="Escuchar palabra"><i data-i="volume"></i></span>
+          <div class="big han" lang="zh" id="f-word">你好</div>
+          <div class="muted" style="font-size:20px" id="f-py">nǐ hǎo</div>
+        </div>
+        <!-- REVERSO · layout "Traducción y ejemplo" -->
+        <div class="face back">
+          <div class="tr" id="b-tr">hola</div>
+          <div class="row" style="justify-content:center;gap:var(--sp-2)">
+            <span class="han" lang="zh" style="font-size:22px;font-weight:500" id="b-ex">你好吗？</span>
+            <span class="tts" role="button" tabindex="0" aria-label="Escuchar ejemplo"><i data-i="volume"></i></span>
+          </div>
+          <span class="tags" style="justify-content:center" id="b-tags"><span class="tag">Saludos</span><span class="tag">HSK1</span></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p class="hint" style="margin-bottom:var(--sp-2)"><span class="only-mobile">Toca la carta para girarla · desliza para avanzar</span><span class="only-desktop">Clic o Espacio para girar · ← → para navegar · Esc para salir</span></p>
+    <div class="study-ctrl">
+      <button class="nav-btn" id="prev" aria-label="Carta anterior" disabled><i data-i="arrow-l" data-s="lg"></i></button>
+      <button class="btn btn-secondary" id="btn-flip"><i data-i="flip"></i>Girar</button>
+      <button class="nav-btn" id="next" aria-label="Carta siguiente"><i data-i="arrow-r" data-s="lg"></i></button>
+    </div>
+  </footer>
+</div>
+
+<!-- Salir -->
+<div class="overlay" id="exit" role="alertdialog" aria-modal="true" aria-labelledby="ex-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="ex-t">¿Salir del recorrido?</h2></div>
+    <div class="sheet-body"><p class="muted">No se guarda el avance: la próxima vez el mazo se vuelve a mezclar.</p></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Seguir estudiando</button><a class="btn btn-primary" href="m01-mazos.html">Salir</a></div>
+  </div>
+</div>
+
+<!-- R03 · Fin del mazo -->
+<div class="overlay" id="end" role="dialog" aria-modal="true" aria-labelledby="end-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-body" style="padding-top:var(--sp-5)">
+      <div class="empty" style="padding:var(--sp-3) 0">
+        <div class="art" style="background:var(--success-soft);color:var(--success)"><i data-i="check-circle" data-s="lg"></i></div>
+        <h2 id="end-t">¡Terminaste el mazo!</h2>
+        <p>Recorriste las 12 flashcards de «Saludos básicos».</p>
+      </div>
+    </div>
+    <div class="sheet-foot"><a class="btn btn-secondary" href="m01-mazos.html">Salir</a><a class="btn btn-primary" href="r01-recorrido.html"><i data-i="shuffle"></i>Volver a mezclar</a></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('shell-ready', function () {
+  var cards = [
+    ['你好', 'nǐ hǎo', 'hola', '你好吗？', ['Saludos', 'HSK1']],
+    ['学生', 'xuésheng', 'estudiante', '我是学生。', ['Escuela', 'Personas']],
+    ['水', 'shuǐ', 'agua', '我要喝水。', ['Comida']],
+    ['朋友', 'péngyou', 'amigo', '他是我的朋友。', ['Personas', 'HSK1']]
+  ], TOTAL = 12, i = 0;
+  var flip = document.getElementById('flip'), prev = document.getElementById('prev'), next = document.getElementById('next');
+  function render() {
+    var c = cards[i % cards.length], flipped = flip.classList.contains('is-flipped');
+    document.getElementById('f-word').textContent = c[0]; document.getElementById('f-py').textContent = c[1];
+    document.getElementById('b-tr').textContent = c[2]; document.getElementById('b-ex').textContent = c[3];
+    document.getElementById('b-tags').innerHTML = c[4].map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+    document.getElementById('counter').textContent = (i + 1) + ' / ' + TOTAL;
+    var bar = document.getElementById('bar'); bar.setAttribute('aria-valuenow', i + 1); bar.firstElementChild.style.width = ((i + 1) / TOTAL * 100) + '%';
+    prev.disabled = i === 0;
+    flip.setAttribute('aria-label', 'Carta. Tocar para girar. Mostrando ' + (flipped ? 'reverso' : 'frente'));
+  }
+  function toggle() { flip.classList.toggle('is-flipped'); render(); }
+  function go(d) {
+    var n = i + d; if (n < 0) return;
+    if (n >= TOTAL) { HM.openOverlay('end'); return; }
+    i = n; flip.style.transition = 'none'; flip.classList.remove('is-flipped'); void flip.offsetWidth; flip.style.transition = ''; render();
+  }
+  flip.addEventListener('click', function (e) { if (!e.target.closest('.tts')) toggle(); });
+  document.getElementById('btn-flip').addEventListener('click', toggle);
+  prev.addEventListener('click', function () { go(-1); }); next.addEventListener('click', function () { go(1); });
+  document.addEventListener('keydown', function (e) {
+    if (document.querySelector('.overlay.open')) return;
+    if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1);
+    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+    else if (e.key === 'Escape') HM.openOverlay('exit');
+  });
+  var x0 = null, stage = document.getElementById('stage');
+  stage.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 60) go(dx < 0 ? 1 : -1); });
+  var P = HM.params;
+  if (P.get('side') === 'back') { flip.style.transition = 'none'; flip.classList.add('is-flipped'); render(); }
+  if (P.get('end')) { i = TOTAL - 1; render(); HM.openOverlay('end'); }
+});
+</script>
+</body>
+</html>

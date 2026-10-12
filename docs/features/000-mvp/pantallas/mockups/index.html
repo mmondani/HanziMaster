@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanzi Master · Galería de pantallas</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  body { padding-bottom: 80px; }
+  .g-head { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 16px; }
+  .g-head .inner { max-width: 1400px; margin: 0 auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .g-wrap { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
+  .g-sec { margin: 40px 0 8px; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+  .scr { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-top: 12px; }
+  .scr-top { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .scr-id { font-weight: 700; font-size: 13px; background: var(--primary); color: var(--on-primary); border-radius: 8px; padding: 2px 8px; }
+  .scr-meta { flex: 1; min-width: 240px; }
+  .scr-meta h2 { font-size: 18px; margin: 2px 0 4px; }
+  .variants { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+  .frames { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .fr-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+  .fr-box { position: relative; border: 1px solid var(--border-strong); border-radius: 14px; overflow: hidden; background: var(--bg); }
+  .fr-box iframe { border: 0; transform-origin: 0 0; position: absolute; left: 0; top: 0; }
+  .rev { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+  .rev select { min-height: 40px; }
+  .rev textarea { flex: 1; min-width: 220px; min-height: 40px; height: 40px; }
+  .st-ok { border-color: var(--success); }
+  .st-chg { border-color: var(--warn); }
+  .legend { font-size: 14px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<header class="g-head">
+  <div class="inner">
+    <strong style="font-size:18px">Hanzi Master · Pantallas MVP</strong>
+    <div class="seg" role="group" aria-label="Vista" id="seg-view">
+      <button aria-pressed="false" data-v="m">Mobile</button><button aria-pressed="false" data-v="d">Desktop</button><button aria-pressed="true" data-v="b">Ambas</button>
+    </div>
+    <div class="seg" role="group" aria-label="Tema" id="seg-theme">
+      <button aria-pressed="true" data-t="light">Claro</button><button aria-pressed="false" data-t="dark">Oscuro</button>
+    </div>
+    <div class="seg" role="group" aria-label="Tamaño" id="seg-zoom">
+      <button aria-pressed="false" data-z="s">Chico</button><button aria-pressed="true" data-z="m">Medio</button><button aria-pressed="false" data-z="l">Grande</button>
+    </div>
+    <span class="grow"></span>
+    <button class="btn btn-primary" id="copy">Copiar mis comentarios</button>
+  </div>
+</header>
+
+<div class="g-wrap">
+  <p class="legend" style="margin-top:16px">Cada pantalla se ve en mobile (390×844) y desktop (1280×800). Los mockups son clickeables: puedes navegar entre pantallas dentro de cada marco. Marca cada pantalla como <em>Aprobada</em> o <em>Con cambios</em>, escribe qué cambiar y usa <strong>Copiar mis comentarios</strong> para pegarlo en el chat.</p>
+  <div id="root"></div>
+</div>
+
+<script>
+var SCREENS = [
+  ['Acceso', [
+    { id: 'A01', t: 'Ingreso con Google', d: 'Única forma de entrar. Estados: normal, conectando, error.', f: 'a01-login.html', v: [['Normal', ''], ['Conectando', '?view=loading'], ['Error', '?view=error']] },
+    { id: 'A02', t: 'Acceso denegado', d: 'El email no está en la colección de cuentas autorizadas.', f: 'a02-acceso-denegado.html', v: [['Normal', '']] },
+    { id: 'A03', t: 'Sin conexión', d: 'Pantalla completa cuando la app no puede cargar sin red, y aviso dentro de la app cuando se pierde la conexión.', f: 'a03-sin-conexion.html', v: [['Pantalla', '']] },
+    { id: 'A04', t: 'Aviso sin conexión (en la app)', d: 'Franja superior cuando se pierde la red con la app abierta; lo ya cargado sigue usable.', f: 'f01-flashcards.html', v: [['Aviso', '?offline=1']] }
+  ]],
+  ['Flashcards', [
+    { id: 'F01', t: 'Listado de flashcards', d: 'Selector de idioma, búsqueda en vivo, filtro por tags, lista. Estados: normal, vacío, sin resultados.', f: 'f01-flashcards.html', v: [['Normal', ''], ['Vacío', '?view=empty'], ['Sin resultados', '?view=noresults']] },
+    { id: 'F02', t: 'Selección múltiple', d: 'Modo selección con barra de acciones: crear mazo o editar campos en masa.', f: 'f01-flashcards.html', v: [['3 seleccionadas', '?select=1']] },
+    { id: 'F03', t: 'Crear / editar flashcard', d: 'Formulario dinámico según los campos del idioma, con botón “Completar con IA”.', f: 'f03-flashcard-form.html', v: [['Nueva', ''], ['Completada con IA', '?view=ai'], ['IA cargando', '?view=loading'], ['Error de IA', '?view=error'], ['Validación', '?view=validation'], ['Editar', '?mode=edit']] },
+    { id: 'F04', t: 'Detalle de flashcard', d: 'Vista previa de la carta (frente/reverso), campos, mazos donde aparece.', f: 'f04-flashcard-detalle.html', v: [['Frente', ''], ['Reverso', '?side=back'], ['Confirmar eliminar', '?open=del']] },
+    { id: 'F05', t: 'Importar CSV', d: 'Tres pasos: archivo, revisión, resultado.', f: 'f05-importar-csv.html', v: [['1 · Archivo', ''], ['2 · Revisar', '?view=preview'], ['3 · Listo', '?view=result'], ['Error', '?view=error']] },
+    { id: 'F06', t: 'Edición masiva', d: 'Cambiar un campo (ej. agregar tag) en las flashcards seleccionadas.', f: 'f01-flashcards.html', v: [['Diálogo', '?select=1&open=bulk']] }
+  ]],
+  ['Mazos', [
+    { id: 'M01', t: 'Listado de mazos', d: 'Tarjetas de mazo con acceso directo a “Estudiar” y a su detalle. Incluye un mazo no disponible (layout eliminado).', f: 'm01-mazos.html', v: [['Normal', ''], ['Vacío', '?view=empty']] },
+    { id: 'M02', t: 'Crear / editar mazo', d: 'Nombre, flashcards, modos de recorrida y forma de aprendizaje.', f: 'm02-mazo-form.html', v: [['Nuevo', ''], ['Editar', '?mode=edit'], ['Elegir flashcards', '?open=picker'], ['Agregar modo', '?open=modo-edit'], ['Sin modos', '?view=validation']] },
+    { id: 'M03', t: 'Detalle de mazo', d: 'Resumen, modos y cartas del mazo. Botón principal: Estudiar.', f: 'm03-mazo-detalle.html', v: [['Normal', '']] },
+    { id: 'M04', t: 'Elegir modo de recorrida', d: 'Se muestra al presionar Estudiar en un mazo.', f: 'm01-mazos.html', v: [['Diálogo', '?open=modo']] }
+  ]],
+  ['Recorrido', [
+    { id: 'R01', t: 'Recorrido · frente', d: 'Pantalla completa. Tap/click gira; swipe o flechas navegan; ícono de audio si el campo tiene TTS.', f: 'r01-recorrido.html', v: [['Frente', '']] },
+    { id: 'R02', t: 'Recorrido · reverso', d: 'La carta girada.', f: 'r01-recorrido.html', v: [['Reverso', '?side=back']] },
+    { id: 'R03', t: 'Fin del mazo', d: 'Volver a mezclar o salir.', f: 'r01-recorrido.html', v: [['Fin', '?end=1']] }
+  ]],
+  ['Idiomas y cuenta', [
+    { id: 'G01', t: 'Más (mobile)', d: 'Cuenta, acceso a Idiomas, cerrar sesión. En desktop esto vive en el sidebar.', f: 'g01-mas.html', v: [['Normal', '']] },
+    { id: 'I01', t: 'Listado de idiomas', d: 'Sección de baja prominencia: se llega desde “Más” o el pie del sidebar.', f: 'i01-idiomas.html', v: [['Normal', ''], ['Vacío', '?view=empty']] },
+    { id: 'I02', t: 'Editor de idioma', d: 'Nombre + pestañas Campos / Tags / Layouts.', f: 'i02-idioma-editor.html', v: [['Campos', ''], ['Tags', '?tab=tags'], ['Layouts', '?tab=layouts'], ['Nuevo idioma', '?mode=new'], ['Eliminar', '?open=del']] },
+    { id: 'I03', t: 'Editor de campo', d: 'Nombre, descripción, tipo, valor por defecto, TTS, obligatorio.', f: 'i02-idioma-editor.html', v: [['Diálogo', '?open=campo']] },
+    { id: 'I04', t: 'Editor de layout', d: 'Elegir campos, posición y tamaño sobre una grilla de 6 columnas.', f: 'i04-layout-editor.html', v: [['Normal', ''], ['Eliminar', '?open=del']] }
+  ]]
+];
+var ZOOM = { s: [0.45, 0.3], m: [0.6, 0.42], l: [0.8, 0.58] };
+var state = { v: 'b', t: 'light', z: 'm' }, notes = {};
+try { notes = JSON.parse(localStorage.getItem('hm-notes') || '{}'); } catch (e) {}
+function save() { try { localStorage.setItem('hm-notes', JSON.stringify(notes)); } catch (e) {} }
+function src(s, vi) {
+  var v = s.v[vi][1];
+  var q = v ? v + (state.t === 'dark' ? '&theme=dark' : '') : (state.t === 'dark' ? '?theme=dark' : '');
+  return s.f + q;
+}
+function frame(kind, s, vi) {
+  var W = kind === 'm' ? 390 : 1280, H = kind === 'm' ? 844 : 800, k = ZOOM[state.z][kind === 'm' ? 0 : 1];
+  var u = src(s, vi);
+  return '<div><div class="fr-label">' + (kind === 'm' ? 'Mobile 390×844' : 'Desktop 1280×800') + ' <a href="' + u + '" target="_blank" rel="noopener" style="color:var(--primary-text)">abrir ↗</a></div>' +
+    '<div class="fr-box" style="width:' + W * k + 'px;height:' + H * k + 'px"><iframe title="' + s.id + ' ' + kind + '" src="' + u + '" style="width:' + W + 'px;height:' + H + 'px;transform:scale(' + k + ')" loading="lazy"></iframe></div></div>';
+}
+function render() {
+  var h = '';
+  SCREENS.forEach(function (sec) {
+    h += '<div class="g-sec">' + sec[0] + '</div>';
+    sec[1].forEach(function (s) {
+      var n = notes[s.id] || { st: 'pend', tx: '', vi: 0 }, vi = n.vi || 0;
+      h += '<article class="scr ' + (n.st === 'ok' ? 'st-ok' : n.st === 'chg' ? 'st-chg' : '') + '" id="' + s.id + '"><div class="scr-top"><div class="scr-meta"><span class="scr-id">' + s.id + '</span><h2>' + s.t + '</h2><p class="muted small">' + s.d + '</p></div></div>';
+      if (s.v.length > 1) {
+        h += '<div class="variants" role="group" aria-label="Estados de ' + s.id + '">';
+        s.v.forEach(function (x, i) { h += '<button class="chip button" data-s="' + s.id + '" data-vi="' + i + '" aria-pressed="' + (i === vi) + '">' + x[0] + '</button>'; });
+        h += '</div>';
+      }
+      h += '<div class="frames">' + (state.v !== 'd' ? frame('m', s, vi) : '') + (state.v !== 'm' ? frame('d', s, vi) : '') + '</div>';
+      h += '<div class="rev"><select class="select" style="width:auto" data-st="' + s.id + '" aria-label="Estado de revisión ' + s.id + '"><option value="pend"' + (n.st === 'pend' ? ' selected' : '') + '>Pendiente</option><option value="ok"' + (n.st === 'ok' ? ' selected' : '') + '>Aprobada</option><option value="chg"' + (n.st === 'chg' ? ' selected' : '') + '>Con cambios</option></select>' +
+        '<textarea class="textarea" data-tx="' + s.id + '" placeholder="Comentarios o cambios para ' + s.id + '…" aria-label="Comentarios ' + s.id + '">' + (n.tx || '') + '</textarea></div></article>';
+    });
+  });
+  document.getElementById('root').innerHTML = h;
+}
+function find(id) { var r; SCREENS.forEach(function (s) { s[1].forEach(function (x) { if (x.id === id) r = x; }); }); return r; }
+document.addEventListener('click', function (e) {
+  var c = e.target.closest('[data-vi]');
+  if (c) { var id = c.dataset.s; notes[id] = notes[id] || { st: 'pend', tx: '' }; notes[id].vi = +c.dataset.vi; save(); keepScroll(); return; }
+  var b = e.target.closest('#seg-view [data-v]'); if (b) { state.v = b.dataset.v; seg('seg-view', b); keepScroll(); }
+  b = e.target.closest('#seg-theme [data-t]'); if (b) { state.t = b.dataset.t; seg('seg-theme', b); keepScroll(); }
+  b = e.target.closest('#seg-zoom [data-z]'); if (b) { state.z = b.dataset.z; seg('seg-zoom', b); keepScroll(); }
+});
+function seg(id, on) { document.querySelectorAll('#' + id + ' button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === on)); }); }
+function keepScroll() { var y = scrollY; render(); scrollTo(0, y); }
+document.addEventListener('change', function (e) {
+  var id = e.target.dataset.st; if (!id) return;
+  notes[id] = notes[id] || { tx: '', vi: 0 }; notes[id].st = e.target.value; save(); e.target.closest('.scr').className = 'scr ' + (e.target.value === 'ok' ? 'st-ok' : e.target.value === 'chg' ? 'st-chg' : '');
+});
+document.addEventListener('input', function (e) { var id = e.target.dataset.tx; if (!id) return; notes[id] = notes[id] || { st: 'pend', vi: 0 }; notes[id].tx = e.target.value; save(); });
+document.getElementById('copy').addEventListener('click', function () {
+  var L = ['# Revisión de pantallas — Hanzi Master', ''];
+  var lab = { pend: 'Pendiente', ok: 'Aprobada', chg: 'Con cambios' };
+  SCREENS.forEach(function (sec) { sec[1].forEach(function (s) { var n = notes[s.id] || { st: 'pend', tx: '' }; L.push('- **' + s.id + ' ' + s.t + '**: ' + lab[n.st] + (n.tx ? ' — ' + n.tx.replace(/\n/g, ' ') : '')); }); });
+  var txt = L.join('\n'), btn = document.getElementById('copy');
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { btn.textContent = 'Copiado ✓'; }, function () { prompt('Copia este texto:', txt); });
+  setTimeout(function () { btn.textContent = 'Copiar mis comentarios'; }, 2000);
+});
+render();
+</script>
+</body>
+</html>

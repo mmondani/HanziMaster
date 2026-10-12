@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M02 · Mazo (crear / editar) — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="mazos" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="m01-mazos.html" aria-label="Volver a Mazos"><i data-i="arrow-l"></i></a>
+    <h1 id="t">Nuevo mazo</h1>
+    <span class="badge only-desktop"><span class="han" lang="zh" style="font-size:13px">中</span>Chino mandarín</span>
+  </div>
+
+  <form class="page narrow" onsubmit="return false" novalidate style="--w:820px">
+    <div class="stack" style="--gap:var(--sp-5)">
+      <div class="field">
+        <label for="d-name">Nombre <span class="req" aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+        <input class="input" id="d-name" placeholder="Ej.: HSK 1 · Semana 1">
+      </div>
+
+      <!-- Cartas -->
+      <section class="card" aria-labelledby="c-t">
+        <div class="card-title"><h2 id="c-t" class="grow">Flashcards <span class="badge" style="margin-left:6px">12</span></h2><button type="button" class="btn btn-secondary" data-open="#picker"><i data-i="plus"></i>Agregar</button></div>
+        <div class="list">
+          <div class="item"><span class="lead han" lang="zh" style="font-size:24px;min-width:56px">你好</span><span class="meta"><span class="t">nǐ hǎo</span><span class="s">hola</span></span><button type="button" class="icon-btn" aria-label="Quitar 你好 del mazo"><i data-i="x"></i></button></div>
+          <div class="item"><span class="lead han" lang="zh" style="font-size:24px;min-width:56px">谢谢</span><span class="meta"><span class="t">xièxie</span><span class="s">gracias</span></span><button type="button" class="icon-btn" aria-label="Quitar 谢谢 del mazo"><i data-i="x"></i></button></div>
+          <div class="item"><span class="lead han" lang="zh" style="font-size:24px;min-width:56px">再见</span><span class="meta"><span class="t">zàijiàn</span><span class="s">adiós</span></span><button type="button" class="icon-btn" aria-label="Quitar 再见 del mazo"><i data-i="x"></i></button></div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-block" style="margin-top:var(--sp-2)">Ver las 12 flashcards</button>
+      </section>
+
+      <!-- Modos de recorrida -->
+      <section class="card" aria-labelledby="m-t">
+        <div class="card-title"><h2 id="m-t" class="grow">Modos de recorrida</h2><button type="button" class="btn btn-secondary" data-open="#modo-edit"><i data-i="plus"></i>Agregar modo</button></div>
+        <p class="section-hint">Cada modo define qué layout del idioma se ve en el frente y cuál en el reverso. Al estudiar se elige uno.</p>
+        <div class="list">
+          <div class="item"><span class="deck-icon"><i data-i="layout"></i></span><span class="meta"><span class="t">Palabra → Significado</span><span class="s">Frente: Palabra y pinyin · Reverso: Traducción y ejemplo</span></span><button type="button" class="icon-btn" aria-label="Quitar modo"><i data-i="trash"></i></button></div>
+          <div class="item"><span class="deck-icon"><i data-i="layout"></i></span><span class="meta"><span class="t">Significado → Palabra</span><span class="s">Frente: Solo traducción · Reverso: Palabra, pinyin y ejemplo</span></span><button type="button" class="icon-btn" aria-label="Quitar modo"><i data-i="trash"></i></button></div>
+        </div>
+        <p class="error" style="margin-top:var(--sp-2)" data-show="validation" hidden><i data-i="alert" data-s="sm"></i>El mazo necesita al menos un modo de recorrida.</p>
+      </section>
+
+      <!-- Forma de aprendizaje -->
+      <section class="card" aria-labelledby="l-t">
+        <h2 id="l-t" class="card-title">Forma de aprendizaje</h2>
+        <label class="item hover" style="cursor:pointer;align-items:flex-start;border-color:var(--primary);background:var(--primary-soft)">
+          <input type="radio" name="forma" checked style="width:22px;height:22px;accent-color:var(--primary);margin-top:2px">
+          <span class="meta"><span class="t">Libre</span><span class="s" style="white-space:normal">El mazo se recorre siempre en orden aleatorio y no se registra si acertaste.</span></span>
+        </label>
+        <label class="item" style="margin-top:var(--sp-2);opacity:.6;align-items:flex-start">
+          <input type="radio" name="forma" disabled style="width:22px;height:22px;margin-top:2px">
+          <span class="meta"><span class="t">Repaso espaciado <span class="badge" style="margin-left:6px">Próximamente</span></span><span class="s">Disponible en una próxima versión.</span></span>
+        </label>
+      </section>
+    </div>
+
+    <div class="sticky-foot">
+      <a class="btn btn-secondary" href="m01-mazos.html">Cancelar</a>
+      <button type="button" class="btn btn-danger-ghost" data-open="#del" id="btn-del" hidden><i data-i="trash"></i>Eliminar mazo</button>
+      <a class="btn btn-primary" href="m03-mazo-detalle.html">Guardar mazo</a>
+    </div>
+  </form>
+</main>
+
+<!-- selector de flashcards (con búsqueda y filtros) -->
+<div class="overlay" id="picker" role="dialog" aria-modal="true" aria-labelledby="pk-t">
+  <div class="sheet" style="max-width:640px;height:92dvh">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="pk-t">Agregar flashcards</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body stack" style="--gap:var(--sp-3);flex:1">
+      <div class="search"><i data-i="search"></i><input class="input" type="search" placeholder="Buscar por palabra o traducción" aria-label="Buscar flashcards"></div>
+      <div class="chips-scroll"><button class="chip button" aria-pressed="true">Todas</button><button class="chip button" aria-pressed="false">Saludos</button><button class="chip button" aria-pressed="false">Escuela</button><button class="chip button" aria-pressed="false">Comida</button><button class="chip button" aria-pressed="false">HSK1</button></div>
+      <div class="row small"><button class="btn btn-ghost" style="min-height:40px">Seleccionar todas las visibles</button></div>
+      <div class="list select-mode">
+        <label class="item hover" style="cursor:pointer"><input type="checkbox" checked style="width:22px;height:22px;accent-color:var(--primary)"><span class="lead han" lang="zh" style="font-size:24px">你好</span><span class="meta"><span class="t">nǐ hǎo</span><span class="s">hola</span></span></label>
+        <label class="item hover" style="cursor:pointer"><input type="checkbox" checked style="width:22px;height:22px;accent-color:var(--primary)"><span class="lead han" lang="zh" style="font-size:24px">谢谢</span><span class="meta"><span class="t">xièxie</span><span class="s">gracias</span></span></label>
+        <label class="item hover" style="cursor:pointer"><input type="checkbox" style="width:22px;height:22px;accent-color:var(--primary)"><span class="lead han" lang="zh" style="font-size:24px">学生</span><span class="meta"><span class="t">xuésheng</span><span class="s">estudiante</span></span></label>
+        <label class="item hover" style="cursor:pointer"><input type="checkbox" style="width:22px;height:22px;accent-color:var(--primary)"><span class="lead han" lang="zh" style="font-size:24px">水</span><span class="meta"><span class="t">shuǐ</span><span class="s">agua</span></span></label>
+        <label class="item hover" style="cursor:pointer"><input type="checkbox" style="width:22px;height:22px;accent-color:var(--primary)"><span class="lead han" lang="zh" style="font-size:24px">朋友</span><span class="meta"><span class="t">péngyou</span><span class="s">amigo</span></span></label>
+      </div>
+    </div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-primary" data-close>Listo · 12 seleccionadas</button></div>
+  </div>
+</div>
+
+<!-- alta de modo -->
+<div class="overlay" id="modo-edit" role="dialog" aria-modal="true" aria-labelledby="me-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="me-t">Nuevo modo de recorrida</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body stack">
+      <div class="field"><label for="mo-n">Nombre del modo</label><input class="input" id="mo-n" placeholder="Ej.: Escuchar → Palabra"></div>
+      <div class="field"><label for="mo-f">Layout del frente</label><select class="select" id="mo-f"><option>Palabra y pinyin</option><option>Solo traducción</option><option>Solo audio</option></select></div>
+      <div class="field"><label for="mo-r">Layout del reverso</label><select class="select" id="mo-r"><option>Traducción y ejemplo</option><option>Palabra, pinyin y ejemplo</option></select></div>
+    </div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-primary" data-close>Agregar modo</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="del" role="alertdialog" aria-modal="true" aria-labelledby="del-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="del-t">¿Eliminar el mazo «Saludos básicos»?</h2></div>
+    <div class="sheet-body"><p class="muted">Las flashcards no se eliminan, solo el mazo. Esta acción no se puede deshacer.</p></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><a class="btn btn-danger" href="m01-mazos.html">Eliminar mazo</a></div>
+  </div>
+</div>
+<script>
+document.addEventListener('shell-ready', function () {
+  if (HM.params.get('mode') === 'edit') { document.getElementById('d-name').value = 'Saludos básicos'; document.getElementById('t').textContent = 'Editar mazo'; document.getElementById('btn-del').hidden = false; }
+});
+</script>
+</body>
+</html>

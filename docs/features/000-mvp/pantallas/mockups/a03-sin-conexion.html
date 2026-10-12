@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A03 · Sin conexión — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="none">
+<!-- Variante pantalla completa: la app no puede iniciar sin red (primera carga o sesión por validar) -->
+<main class="center-screen" data-show="default">
+  <div class="login-card">
+    <div class="empty" style="padding:0">
+      <div class="art" aria-hidden="true"><i data-i="wifioff" data-s="lg"></i></div>
+      <h1>Sin conexión</h1>
+      <p>Hanzi Master necesita internet para ingresar y sincronizar tus flashcards. Revisa tu conexión e inténtalo de nuevo.</p>
+    </div>
+    <div class="stack" style="--gap:var(--sp-3)">
+      <button class="btn btn-primary btn-lg btn-block" onclick="location.reload()"><i data-i="undo"></i>Reintentar</button>
+      <p class="small muted">Si ya habías abierto la app antes, tus flashcards guardadas siguen disponibles en este dispositivo.</p>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

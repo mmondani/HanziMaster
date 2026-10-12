@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A01 · Ingreso — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="none">
+<main class="center-screen">
+  <div class="login-card">
+    <div>
+      <div class="brand-mark han" aria-hidden="true">漢</div>
+      <h1 style="margin-top:var(--sp-4);font-size:28px">Hanzi Master</h1>
+      <p class="muted" style="margin-top:var(--sp-2)">Flashcards a tu medida para aprender chino, japonés o el idioma que elijas.</p>
+    </div>
+
+    <div class="stack" style="--gap:var(--sp-3)">
+      <!-- estado normal -->
+      <a class="btn btn-google btn-block" href="f01-flashcards.html" data-show="default error">
+        <i data-i="google"></i>Ingresar con Google
+      </a>
+      <!-- estado cargando (tras presionar el botón, mientras abre el popup de Google) -->
+      <button class="btn btn-google btn-block" disabled aria-busy="true" data-show="loading">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.9s" repeatCount="indefinite"/></path></svg>
+        Conectando con Google…
+      </button>
+      <!-- estado error (popup cerrado / fallo de red) -->
+      <div class="alert err" role="alert" data-show="error">
+        <i data-i="alert"></i>
+        <div>No se pudo completar el ingreso. Revisa tu conexión e inténtalo de nuevo.</div>
+      </div>
+    </div>
+
+    <p class="xs muted">Solo pueden ingresar las cuentas habilitadas. Tus flashcards son privadas y solo las ves tú.</p>
+  </div>
+</main>
+</body>
+</html>

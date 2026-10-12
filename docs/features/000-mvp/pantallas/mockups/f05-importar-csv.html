@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F05 · Importar CSV — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="flashcards" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="f01-flashcards.html" aria-label="Cancelar importación y volver"><i data-i="arrow-l"></i></a>
+    <h1>Importar flashcards</h1>
+  </div>
+
+  <div class="page narrow" style="--w:820px">
+    <!-- Paso indicador (variante según ?view=upload|preview|result) -->
+    <nav class="steps" aria-label="Pasos de la importación" style="margin:var(--sp-2) 0 var(--sp-5)">
+      <span class="s on" data-show="default upload" aria-current="step"><span class="n">1</span>Archivo</span>
+      <span class="s done" data-show="preview result" hidden><span class="n"><i data-i="check" data-s="sm"></i></span>Archivo</span>
+      <span class="bar"></span>
+      <span class="s" data-show="default upload"><span class="n">2</span>Revisar</span>
+      <span class="s on" data-show="preview" hidden aria-current="step"><span class="n">2</span>Revisar</span>
+      <span class="s done" data-show="result" hidden><span class="n"><i data-i="check" data-s="sm"></i></span>Revisar</span>
+      <span class="bar"></span>
+      <span class="s" data-show="default upload preview"><span class="n">3</span>Listo</span>
+      <span class="s on" data-show="result" hidden aria-current="step"><span class="n">3</span>Listo</span>
+    </nav>
+
+    <!-- PASO 1: archivo -->
+    <section data-show="default upload" class="stack" aria-labelledby="s1">
+      <h2 id="s1">Selecciona el archivo CSV</h2>
+      <div class="dropzone">
+        <span class="deck-icon"><i data-i="upload" data-s="lg"></i></span>
+        <strong>Arrastra el archivo aquí</strong>
+        <span class="muted small">o</span>
+        <a class="btn btn-primary" href="f05-importar-csv.html?view=preview">Elegir archivo</a>
+        <span class="xs muted">Formato .csv, codificación UTF-8, hasta 1.000 filas.</span>
+      </div>
+      <div class="card flat">
+        <h3 class="card-title"><i data-i="file"></i>Columnas esperadas para Chino mandarín</h3>
+        <div class="scroll-x">
+          <table class="t">
+            <thead><tr><th>Columna</th><th>Obligatoria</th><th>Ejemplo</th></tr></thead>
+            <tbody>
+              <tr><td><code>palabra</code></td><td><span class="badge ok">Sí</span></td><td class="han" lang="zh" style="font-weight:500">朋友</td></tr>
+              <tr><td><code>traduccion</code></td><td><span class="badge ok">Sí</span></td><td>amigo</td></tr>
+              <tr><td><code>pinyin</code></td><td><span class="badge">No</span></td><td>péngyou</td></tr>
+              <tr><td><code>ejemplo</code></td><td><span class="badge">No</span></td><td class="han" lang="zh" style="font-weight:500">他是我的朋友。</td></tr>
+              <tr><td><code>tags</code></td><td><span class="badge">No</span></td><td>Personas;HSK1</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted" style="margin-top:var(--sp-3)">Los tags se separan con punto y coma. Los tags que no existan se crearán.</p>
+        <a class="btn btn-secondary" style="margin-top:var(--sp-3)" href="#"><i data-i="download"></i>Descargar plantilla CSV</a>
+      </div>
+    </section>
+
+    <!-- PASO 2: revisar -->
+    <section data-show="preview" hidden class="stack" aria-labelledby="s2">
+      <h2 id="s2">Revisa antes de importar</h2>
+      <div class="alert ok"><i data-i="check-circle"></i><div><strong>12 filas válidas</strong> listas para importar.</div></div>
+      <div class="alert warn"><i data-i="alert"></i><div><strong>2 filas con problemas</strong> se omitirán: fila 5 (falta traducción) y fila 9 (palabra duplicada).</div></div>
+      <div class="card flat scroll-x" style="padding:0">
+        <table class="t" aria-label="Vista previa de filas">
+          <thead><tr><th>#</th><th>Palabra</th><th>Pinyin</th><th>Traducción</th><th>Tags</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="han" lang="zh">你好</td><td>nǐ hǎo</td><td>hola</td><td>Saludos</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>2</td><td class="han" lang="zh">谢谢</td><td>xièxie</td><td>gracias</td><td>Saludos</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>3</td><td class="han" lang="zh">再见</td><td>zàijiàn</td><td>adiós</td><td>Saludos;HSK1</td><td><span class="badge ok">OK</span></td></tr>
+            <tr><td>5</td><td class="han" lang="zh">医院</td><td>yīyuàn</td><td>—</td><td>Lugares</td><td><span class="badge err"><i data-i="x" data-s="sm"></i>Falta traducción</span></td></tr>
+            <tr><td>9</td><td class="han" lang="zh">你好</td><td>nǐ hǎo</td><td>hola</td><td>—</td><td><span class="badge warn">Duplicada</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="xs muted">Mostrando 5 de 14 filas.</p>
+      <div class="sticky-foot">
+        <a class="btn btn-secondary" href="f05-importar-csv.html">Elegir otro archivo</a>
+        <a class="btn btn-primary" href="f05-importar-csv.html?view=result">Importar 12 flashcards</a>
+      </div>
+    </section>
+
+    <!-- PASO 3: resultado -->
+    <section data-show="result" hidden>
+      <div class="empty">
+        <div class="art" style="background:var(--success-soft);color:var(--success)"><i data-i="check-circle" data-s="lg"></i></div>
+        <h2>Se importaron 12 flashcards</h2>
+        <p>Se crearon 2 tags nuevos (Viajes, Clima). Se omitieron 2 filas con problemas.</p>
+        <div class="btn-group" style="justify-content:center">
+          <a class="btn btn-primary" href="f01-flashcards.html">Ver flashcards</a>
+          <button class="btn btn-secondary"><i data-i="download"></i>Descargar filas omitidas</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ERROR de archivo -->
+    <section data-show="error" hidden class="stack">
+      <div class="alert err" role="alert"><i data-i="alert"></i><div><strong>No se pudo leer el archivo.</strong> Falta la columna obligatoria <code>traduccion</code>. Revisa el encabezado o descarga la plantilla.</div></div>
+      <a class="btn btn-primary" href="f05-importar-csv.html">Elegir otro archivo</a>
+    </section>
+  </div>
+</main>
+</body>
+</html>

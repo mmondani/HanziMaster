@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F01 · Flashcards — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="flashcards">
+<main>
+  <div class="page">
+    <header class="page-head">
+      <div class="title-row">
+        <h1>Flashcards</h1>
+        <div data-lang-selector></div>
+        <!-- desktop: acciones visibles -->
+        <button class="btn btn-ghost only-desktop" id="btn-select"><i data-i="list-check"></i>Seleccionar</button>
+        <a class="btn btn-secondary only-desktop" href="f05-importar-csv.html"><i data-i="upload"></i>Importar CSV</a>
+        <a class="btn btn-primary only-desktop" href="f03-flashcard-form.html"><i data-i="plus"></i>Nueva flashcard</a>
+        <!-- mobile: menú de acciones secundarias -->
+        <div class="anchor only-mobile">
+          <button class="icon-btn" aria-label="Más acciones" aria-haspopup="menu" aria-expanded="false" data-pop="#more-pop"><i data-i="more"></i></button>
+          <div class="popover" id="more-pop" role="menu" style="left:auto;right:0" hidden>
+            <button class="opt-row" role="menuitem" id="btn-select-m"><i data-i="list-check"></i>Seleccionar</button>
+            <a class="opt-row" role="menuitem" href="f05-importar-csv.html"><i data-i="upload"></i>Importar CSV</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="stack" style="--gap:var(--sp-3)">
+      <div class="toolbar">
+        <div class="search">
+          <i data-i="search"></i>
+          <input class="input" type="search" placeholder="Buscar por palabra o traducción" aria-label="Buscar flashcards" value="">
+        </div>
+      </div>
+      <div class="chips-scroll" role="group" aria-label="Filtrar por tag">
+        <button class="chip button" aria-pressed="true">Todas</button>
+        <button class="chip button" aria-pressed="false">Saludos</button>
+        <button class="chip button" aria-pressed="false">Escuela</button>
+        <button class="chip button" aria-pressed="false">Comida</button>
+        <button class="chip button" aria-pressed="false">Personas</button>
+        <button class="chip button" aria-pressed="false">Lugares</button>
+        <button class="chip button" aria-pressed="false">Verbos</button>
+        <button class="chip button" aria-pressed="false">HSK1</button>
+      </div>
+      <p class="small muted" aria-live="polite" data-show="default">8 flashcards</p>
+    </div>
+
+    <!-- LISTADO -->
+    <div class="section" data-selectable id="list-wrap" data-show="default">
+      <div class="row-head" aria-hidden="true"><span class="sel-spacer"></span><span>Palabra</span><span>Pinyin</span><span>Traducción</span><span>Tags</span><span></span></div>
+      <div class="list" role="list">
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">你好</span>
+          <span class="meta"><span class="t">nǐ hǎo</span><span class="s">hola</span><span class="tags m-tags"><span class="tag">Saludos</span><span class="tag">HSK1</span></span></span>
+          <span class="tags tags-col"><span class="tag">Saludos</span><span class="tag">HSK1</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">谢谢</span>
+          <span class="meta"><span class="t">xièxie</span><span class="s">gracias</span><span class="tags m-tags"><span class="tag">Saludos</span></span></span>
+          <span class="tags tags-col"><span class="tag">Saludos</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">学生</span>
+          <span class="meta"><span class="t">xuésheng</span><span class="s">estudiante</span><span class="tags m-tags"><span class="tag">Escuela</span><span class="tag">Personas</span></span></span>
+          <span class="tags tags-col"><span class="tag">Escuela</span><span class="tag">Personas</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">水</span>
+          <span class="meta"><span class="t">shuǐ</span><span class="s">agua</span><span class="tags m-tags"><span class="tag">Comida</span></span></span>
+          <span class="tags tags-col"><span class="tag">Comida</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">朋友</span>
+          <span class="meta"><span class="t">péngyou</span><span class="s">amigo</span><span class="tags m-tags"><span class="tag">Personas</span><span class="tag">HSK1</span></span></span>
+          <span class="tags tags-col"><span class="tag">Personas</span><span class="tag">HSK1</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">图书馆</span>
+          <span class="meta"><span class="t">túshūguǎn</span><span class="s">biblioteca</span><span class="tags m-tags"><span class="tag">Lugares</span><span class="tag">Escuela</span></span></span>
+          <span class="tags tags-col"><span class="tag">Lugares</span><span class="tag">Escuela</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">吃饭</span>
+          <span class="meta"><span class="t">chī fàn</span><span class="s">comer</span><span class="tags m-tags"><span class="tag">Comida</span><span class="tag">Verbos</span></span></span>
+          <span class="tags tags-col"><span class="tag">Comida</span><span class="tag">Verbos</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+        <a class="item card-row" href="f04-flashcard-detalle.html" role="listitem">
+          <span class="sel-slot"><span class="sel-box"><i data-i="check" data-s="sm"></i></span></span>
+          <span class="lead han" lang="zh">老师</span>
+          <span class="meta"><span class="t">lǎoshī</span><span class="s">profesor</span><span class="tags m-tags"><span class="tag">Escuela</span><span class="tag">Personas</span></span></span>
+          <span class="tags tags-col"><span class="tag">Escuela</span><span class="tag">Personas</span></span>
+          <span class="icon-btn" aria-hidden="true"><i data-i="chev-r"></i></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ESTADO VACÍO -->
+    <div class="empty" data-show="empty" hidden>
+      <div class="art" aria-hidden="true">字</div>
+      <h2>Todavía no hay flashcards en Chino mandarín</h2>
+      <p>Crea la primera escribiendo la palabra y dejando que la IA complete el resto, o importa varias desde un CSV.</p>
+      <div class="btn-group" style="justify-content:center">
+        <a class="btn btn-primary" href="f03-flashcard-form.html"><i data-i="plus"></i>Nueva flashcard</a>
+        <a class="btn btn-secondary" href="f05-importar-csv.html"><i data-i="upload"></i>Importar CSV</a>
+      </div>
+    </div>
+
+    <!-- SIN RESULTADOS DE BÚSQUEDA -->
+    <div class="empty" data-show="noresults" hidden>
+      <div class="art" aria-hidden="true"><i data-i="search" data-s="lg"></i></div>
+      <h2>Sin resultados para “xyz”</h2>
+      <p>Prueba con otra palabra, con la traducción o quita los filtros de tag.</p>
+      <button class="btn btn-secondary">Limpiar búsqueda</button>
+    </div>
+  </div>
+</main>
+
+<!-- FAB mobile -->
+<a class="fab only-mobile" id="fab" href="f03-flashcard-form.html" aria-label="Nueva flashcard"><i data-i="plus" data-s="lg"></i></a>
+
+<!-- Barra de acciones en modo selección (F02) -->
+<div class="action-bar" id="action-bar" role="toolbar" aria-label="Acciones sobre la selección" hidden>
+  <span class="count" aria-live="polite"><span data-selected-count>3</span><span class="only-desktop"> seleccionadas</span><span class="sr-only only-mobile"> seleccionadas</span></span>
+  <a class="btn btn-light" href="m02-mazo-form.html"><i data-i="deck"></i>Crear mazo</a>
+  <button class="btn btn-onbar" data-open="#bulk"><i data-i="edit"></i>Editar</button>
+  <button class="icon-btn btn-onbar" id="btn-cancel-select" aria-label="Cancelar selección" style="color:var(--bg)"><i data-i="x"></i></button>
+</div>
+
+<!-- Edición masiva (F06) -->
+<div class="overlay" id="bulk" role="dialog" aria-modal="true" aria-labelledby="bulk-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="bulk-t">Editar 3 flashcards</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body stack">
+      <div class="field">
+        <label for="bulk-field">Campo a modificar</label>
+        <select class="select" id="bulk-field"><option>Tags</option><option>Pinyin</option><option>Ejemplo</option></select>
+      </div>
+      <div class="field">
+        <span class="label">Acción</span>
+        <div class="seg" role="group" aria-label="Acción sobre los tags">
+          <button aria-pressed="true">Agregar</button><button aria-pressed="false">Quitar</button><button aria-pressed="false">Reemplazar</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">Tags</span>
+        <div class="tags">
+          <button class="chip button" aria-pressed="true">HSK1</button>
+          <button class="chip button" aria-pressed="false">Saludos</button>
+          <button class="chip button" aria-pressed="false">Escuela</button>
+          <button class="chip button" aria-pressed="false">Comida</button>
+          <button class="chip button" aria-pressed="false"><i data-i="plus" data-s="sm"></i>Nuevo tag</button>
+        </div>
+      </div>
+      <div class="alert"><i data-i="info"></i><div>Se agregará <strong>HSK1</strong> a las 3 flashcards seleccionadas. Las que ya lo tienen no cambian.</div></div>
+    </div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-primary" data-close>Aplicar a 3</button></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('shell-ready', function () {
+  var wrap = document.getElementById('list-wrap'), bar = document.getElementById('action-bar'), fab = document.getElementById('fab');
+  function setMode(on) {
+    wrap.classList.toggle('select-mode', on); bar.hidden = !on; fab.hidden = on;
+    if (!on) wrap.querySelectorAll('.item.selected').forEach(function (i) { i.classList.remove('selected'); });
+  }
+  ['btn-select', 'btn-select-m'].forEach(function (id) { document.getElementById(id).addEventListener('click', function () { setMode(true); document.querySelectorAll('.popover').forEach(function (p) { p.hidden = true; }); }); });
+  document.getElementById('btn-cancel-select').addEventListener('click', function () { setMode(false); });
+  if (HM.params.get('select')) {
+    setMode(true);
+    var items = wrap.querySelectorAll('.item'); [0, 1, 3].forEach(function (i) { items[i].classList.add('selected'); });
+  }
+});
+</script>
+</body>
+</html>

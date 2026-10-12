@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I01 · Idiomas — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="idiomas" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn only-mobile" href="g01-mas.html" aria-label="Volver a Más"><i data-i="arrow-l"></i></a>
+    <h1>Idiomas</h1>
+    <a class="btn btn-secondary only-desktop" href="i02-idioma-editor.html?mode=new"><i data-i="plus"></i>Nuevo idioma</a>
+  </div>
+  <div class="page narrow" style="--w:760px">
+    <p class="muted" style="margin-bottom:var(--sp-4)">Cada idioma define qué campos tiene una flashcard y cómo se ve. Se configura una vez y rara vez se toca.</p>
+    <div class="list" data-show="default">
+      <a class="item" href="i02-idioma-editor.html">
+        <span class="deck-icon han" lang="zh" style="font-size:22px">中</span>
+        <span class="meta"><span class="t">Chino mandarín</span><span class="s">5 campos · 7 tags · 3 layouts · 38 flashcards</span></span>
+        <i data-i="chev-r"></i>
+      </a>
+      <a class="item" href="i02-idioma-editor.html">
+        <span class="deck-icon han" lang="ja" style="font-size:22px">日</span>
+        <span class="meta"><span class="t">Japonés</span><span class="s">6 campos · 5 tags · 2 layouts · 12 flashcards</span></span>
+        <i data-i="chev-r"></i>
+      </a>
+    </div>
+    <div class="empty" data-show="empty" hidden>
+      <div class="art" aria-hidden="true"><i data-i="languages" data-s="lg"></i></div>
+      <h2>Todavía no configuraste ningún idioma</h2>
+      <p>Crea el primero para empezar a armar flashcards.</p>
+      <a class="btn btn-primary" href="i02-idioma-editor.html?mode=new"><i data-i="plus"></i>Nuevo idioma</a>
+    </div>
+  </div>
+</main>
+<a class="fab only-mobile" style="bottom:var(--sp-4)" href="i02-idioma-editor.html?mode=new" aria-label="Nuevo idioma"><i data-i="plus" data-s="lg"></i></a>
+</body>
+</html>

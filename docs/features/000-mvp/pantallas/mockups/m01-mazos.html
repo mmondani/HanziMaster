@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M01 · Mazos — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="mazos">
+<main>
+  <div class="page">
+    <header class="page-head">
+      <div class="title-row">
+        <h1>Mazos</h1>
+        <div data-lang-selector></div>
+        <a class="btn btn-primary only-desktop" href="m02-mazo-form.html"><i data-i="plus"></i>Nuevo mazo</a>
+      </div>
+    </header>
+
+    <div class="stack" style="--gap:var(--sp-3)" data-show="default">
+      <div class="search"><i data-i="search"></i><input class="input" type="search" placeholder="Buscar mazo" aria-label="Buscar mazos"></div>
+      <p class="small muted">4 mazos</p>
+    </div>
+
+    <div class="deck-grid section" data-show="default">
+      <!-- La tarjeta completa inicia el recorrido (abre la selección de modo). El botón de detalle es secundario. -->
+      <div class="card deck-card" style="position:relative">
+        <div class="row">
+          <span class="deck-icon"><i data-i="deck"></i></span>
+          <div class="grow"><h3>Saludos básicos</h3><div class="small muted">12 flashcards</div></div>
+          <a class="icon-btn" href="m03-mazo-detalle.html" aria-label="Ver detalle de Saludos básicos" style="position:relative;z-index:2"><i data-i="sliders"></i></a>
+        </div>
+        <div class="tags"><span class="badge">2 modos de recorrida</span><span class="badge">Libre</span></div>
+        <button class="btn btn-primary btn-block" data-open="#modo"><i data-i="play"></i>Estudiar</button>
+      </div>
+      <div class="card deck-card">
+        <div class="row">
+          <span class="deck-icon"><i data-i="deck"></i></span>
+          <div class="grow"><h3>HSK 1 · Semana 1</h3><div class="small muted">24 flashcards</div></div>
+          <a class="icon-btn" href="m03-mazo-detalle.html" aria-label="Ver detalle de HSK 1 · Semana 1"><i data-i="sliders"></i></a>
+        </div>
+        <div class="tags"><span class="badge">3 modos de recorrida</span><span class="badge">Libre</span></div>
+        <button class="btn btn-primary btn-block" data-open="#modo"><i data-i="play"></i>Estudiar</button>
+      </div>
+      <div class="card deck-card">
+        <div class="row">
+          <span class="deck-icon"><i data-i="deck"></i></span>
+          <div class="grow"><h3>Comida y bebida</h3><div class="small muted">18 flashcards</div></div>
+          <a class="icon-btn" href="m03-mazo-detalle.html" aria-label="Ver detalle de Comida y bebida"><i data-i="sliders"></i></a>
+        </div>
+        <div class="tags"><span class="badge">1 modo de recorrida</span><span class="badge">Libre</span></div>
+        <button class="btn btn-primary btn-block" data-open="#modo"><i data-i="play"></i>Estudiar</button>
+      </div>
+      <!-- Mazo inutilizable: uno de sus modos usa un layout que fue eliminado -->
+      <div class="card deck-card">
+        <div class="row">
+          <span class="deck-icon"><i data-i="deck"></i></span>
+          <div class="grow"><h3>Frases útiles</h3><div class="small muted">8 flashcards</div></div>
+          <a class="icon-btn" href="m03-mazo-detalle.html" aria-label="Ver detalle de Frases útiles"><i data-i="sliders"></i></a>
+        </div>
+        <div class="alert warn"><i data-i="alert"></i><div><strong>Mazo no disponible.</strong> Un layout que usaba fue eliminado.</div></div>
+        <button class="btn btn-primary btn-block" disabled><i data-i="play"></i>Estudiar</button>
+      </div>
+    </div>
+
+    <div class="empty" data-show="empty" hidden>
+      <div class="art" aria-hidden="true"><i data-i="deck" data-s="lg"></i></div>
+      <h2>Aún no hay mazos en Chino mandarín</h2>
+      <p>Un mazo agrupa las flashcards que quieres repasar juntas. Puedes crearlo eligiendo cartas a mano o desde la selección en Flashcards.</p>
+      <a class="btn btn-primary" href="m02-mazo-form.html"><i data-i="plus"></i>Crear mazo</a>
+    </div>
+  </div>
+</main>
+<a class="fab only-mobile" href="m02-mazo-form.html" aria-label="Nuevo mazo"><i data-i="plus" data-s="lg"></i></a>
+
+<!-- M04 · selección de modo de recorrida -->
+<div class="overlay" id="modo" role="dialog" aria-modal="true" aria-labelledby="modo-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="modo-t">Saludos básicos · ¿Cómo recorrerlo?</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body">
+      <div class="stack" style="--gap:var(--sp-2)" role="radiogroup" aria-labelledby="modo-t">
+        <label class="item hover" style="cursor:pointer;align-items:flex-start">
+          <input type="radio" name="modo" checked style="width:22px;height:22px;accent-color:var(--primary);margin-top:2px">
+          <span class="meta"><span class="t" style="white-space:normal">Palabra → Significado</span><span class="s" style="white-space:normal">Frente: Palabra y pinyin · Reverso: Traducción y ejemplo</span></span>
+        </label>
+        <label class="item hover" style="cursor:pointer;align-items:flex-start">
+          <input type="radio" name="modo" style="width:22px;height:22px;accent-color:var(--primary);margin-top:2px">
+          <span class="meta"><span class="t" style="white-space:normal">Significado → Palabra</span><span class="s" style="white-space:normal">Frente: Traducción · Reverso: Palabra, pinyin y ejemplo</span></span>
+        </label>
+      </div>
+      <p class="small muted" style="margin-top:var(--sp-3)">Forma de aprendizaje: <strong style="color:var(--text)">Libre</strong> · orden aleatorio, sin registrar aciertos.</p>
+    </div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><a class="btn btn-primary" href="r01-recorrido.html"><i data-i="play"></i>Comenzar</a></div>
+  </div>
+</div>
+</body>
+</html>

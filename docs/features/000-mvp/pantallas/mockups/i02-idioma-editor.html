@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I02 · Editor de idioma — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="idiomas" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="i01-idiomas.html" aria-label="Volver a Idiomas"><i data-i="arrow-l"></i></a>
+    <h1 id="t">Chino mandarín</h1>
+    <button class="btn btn-danger-ghost only-desktop" data-open="#del"><i data-i="trash"></i>Eliminar idioma</button>
+  </div>
+
+  <div class="page narrow" style="--w:820px">
+    <div class="form-grid two" style="margin:var(--sp-2) 0 var(--sp-4)">
+      <div class="field">
+        <label for="l-name">Nombre del idioma <span class="req" aria-hidden="true">*</span></label>
+        <input class="input" id="l-name" value="Chino mandarín">
+        <p class="help">Así aparece en los listados y en el selector de idioma.</p>
+      </div>
+      <div class="field">
+        <label for="l-code">Código de idioma <span class="req" aria-hidden="true">*</span></label>
+        <select class="select" id="l-code"><option>zh-CN · Chino (simplificado)</option><option>zh-TW · Chino (tradicional)</option><option>ja-JP · Japonés</option><option>ko-KR · Coreano</option></select>
+        <p class="help">Se usa para el audio (text-to-speech) y para mostrar bien los caracteres.</p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Configuración del idioma">
+      <button role="tab" id="tab-campos" data-tab="campos" aria-selected="true">Campos</button>
+      <button role="tab" id="tab-tags" data-tab="tags" aria-selected="false">Tags</button>
+      <button role="tab" id="tab-layouts" data-tab="layouts" aria-selected="false">Layouts</button>
+    </div>
+
+    <!-- CAMPOS -->
+    <section data-panel="campos" class="section" aria-labelledby="tab-campos">
+      <div class="row" style="margin-bottom:var(--sp-2)"><p class="section-hint grow" style="margin:0">Los campos Palabra, Traducción y Tags son obligatorios del sistema y no se pueden eliminar.</p><button class="btn btn-secondary" data-open="#campo"><i data-i="plus"></i><span class="only-desktop">Agregar campo</span><span class="only-mobile">Campo</span></button></div>
+      <div class="list">
+        <div class="item"><span class="drag only-desktop" aria-hidden="true"><i data-i="grip"></i></span>
+          <span class="meta"><span class="t">Palabra <i data-i="lock" data-s="sm" aria-label="Campo base"></i></span><span class="s">La palabra que estás estudiando</span><span class="tags" style="margin-top:4px"><span class="badge">Texto</span><span class="badge"><i data-i="volume" data-s="sm"></i>Audio</span><span class="badge ok">Obligatorio</span></span></span>
+          <button class="icon-btn" data-open="#campo" aria-label="Editar campo Palabra"><i data-i="edit"></i></button></div>
+        <div class="item"><span class="drag only-desktop" aria-hidden="true"><i data-i="grip"></i></span>
+          <span class="meta"><span class="t">Pinyin</span><span class="s">Pronunciación con tonos</span><span class="tags" style="margin-top:4px"><span class="badge">Texto</span><span class="badge">Opcional</span></span></span>
+          <button class="icon-btn" data-open="#campo" aria-label="Editar campo Pinyin"><i data-i="edit"></i></button></div>
+        <div class="item"><span class="drag only-desktop" aria-hidden="true"><i data-i="grip"></i></span>
+          <span class="meta"><span class="t">Traducción <i data-i="lock" data-s="sm" aria-label="Campo base"></i></span><span class="s">Significado en español</span><span class="tags" style="margin-top:4px"><span class="badge">Texto</span><span class="badge ok">Obligatorio</span></span></span>
+          <button class="icon-btn" data-open="#campo" aria-label="Editar campo Traducción"><i data-i="edit"></i></button></div>
+        <div class="item"><span class="drag only-desktop" aria-hidden="true"><i data-i="grip"></i></span>
+          <span class="meta"><span class="t">Ejemplo</span><span class="s">Oración de ejemplo</span><span class="tags" style="margin-top:4px"><span class="badge">Texto</span><span class="badge"><i data-i="volume" data-s="sm"></i>Audio</span><span class="badge">Opcional</span></span></span>
+          <button class="icon-btn" data-open="#campo" aria-label="Editar campo Ejemplo"><i data-i="edit"></i></button></div>
+        <div class="item"><span class="drag only-desktop" aria-hidden="true"><i data-i="grip"></i></span>
+          <span class="meta"><span class="t">Tags <i data-i="lock" data-s="sm" aria-label="Campo base"></i></span><span class="s">Clasifican y filtran las flashcards</span><span class="tags" style="margin-top:4px"><span class="badge">Lista</span><span class="badge">Opcional</span></span></span>
+          <button class="icon-btn" data-open="#campo" aria-label="Editar campo Tags"><i data-i="edit"></i></button></div>
+      </div>
+      <p class="xs muted" style="margin-top:var(--sp-2)">Para reordenar usa el control de arrastre o “Mover” dentro de cada campo.</p>
+    </section>
+
+    <!-- TAGS -->
+    <section data-panel="tags" class="section" aria-labelledby="tab-tags" hidden>
+      <p class="section-hint">Set inicial de tags disponibles al crear flashcards de este idioma. También se pueden crear desde la flashcard.</p>
+      <div class="input-wrap" style="margin-bottom:var(--sp-4)"><input class="input" placeholder="Nuevo tag" aria-label="Nuevo tag"><button class="btn btn-primary"><i data-i="plus"></i>Agregar</button></div>
+      <div class="tags">
+        <span class="chip">Saludos<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Saludos"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">Escuela<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Escuela"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">Comida<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Comida"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">Personas<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Personas"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">Lugares<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Lugares"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">Verbos<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag Verbos"><i data-i="x" data-s="sm"></i></button></span>
+        <span class="chip">HSK1<button class="icon-btn" style="width:28px;height:28px" aria-label="Quitar tag HSK1"><i data-i="x" data-s="sm"></i></button></span>
+      </div>
+      <p class="alert warn" style="margin-top:var(--sp-4)"><i data-i="alert"></i><span>Quitar un tag también lo quita de las flashcards que lo usan.</span></p>
+    </section>
+
+    <!-- LAYOUTS -->
+    <section data-panel="layouts" class="section" aria-labelledby="tab-layouts" hidden>
+      <div class="row" style="margin-bottom:var(--sp-3)"><p class="section-hint grow" style="margin:0">Un layout define qué campos se muestran, dónde y de qué tamaño. Los mazos los combinan como frente y reverso.</p><a class="btn btn-secondary" href="i04-layout-editor.html"><i data-i="plus"></i><span class="only-desktop">Nuevo layout</span><span class="only-mobile">Layout</span></a></div>
+      <div class="deck-grid">
+        <a class="card deck-card" href="i04-layout-editor.html"><div class="layout-canvas" style="grid-auto-rows:20px;pointer-events:none;padding:8px;gap:4px" aria-hidden="true"><div class="cell" style="grid-column:1/7;grid-row:1/4;font-size:11px">Palabra</div><div class="cell" style="grid-column:1/7;grid-row:4/5;font-size:11px">Pinyin</div></div><div><h3>Palabra y pinyin</h3><div class="small muted">2 campos</div></div></a>
+        <a class="card deck-card" href="i04-layout-editor.html"><div class="layout-canvas" style="grid-auto-rows:20px;pointer-events:none;padding:8px;gap:4px" aria-hidden="true"><div class="cell" style="grid-column:1/7;grid-row:1/3;font-size:11px">Traducción</div><div class="cell" style="grid-column:1/7;grid-row:3/5;font-size:11px">Ejemplo</div></div><div><h3>Traducción y ejemplo</h3><div class="small muted">2 campos</div></div></a>
+        <a class="card deck-card" href="i04-layout-editor.html"><div class="layout-canvas" style="grid-auto-rows:20px;pointer-events:none;padding:8px;gap:4px" aria-hidden="true"><div class="cell" style="grid-column:1/7;grid-row:1/5;font-size:11px">Traducción</div></div><div><h3>Solo traducción</h3><div class="small muted">1 campo</div></div></a>
+      </div>
+    </section>
+
+    <div class="sticky-foot"><a class="btn btn-secondary" href="i01-idiomas.html">Cancelar</a><a class="btn btn-primary" href="i01-idiomas.html">Guardar idioma</a></div>
+    <div class="only-mobile" style="margin-top:var(--sp-4)"><button class="btn btn-danger-ghost btn-block" data-open="#del"><i data-i="trash"></i>Eliminar idioma</button></div>
+  </div>
+</main>
+
+<!-- I03 · editor de campo -->
+<div class="overlay" id="campo" role="dialog" aria-modal="true" aria-labelledby="cp-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="cp-t">Editar campo</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body stack">
+      <div class="field"><label for="c-n">Nombre <span class="req" aria-hidden="true">*</span></label><input class="input" id="c-n" value="Ejemplo"></div>
+      <div class="field"><label for="c-d">Descripción <span class="opt">(opcional)</span></label><input class="input" id="c-d" value="Oración de ejemplo"><p class="help">Se muestra como ayuda al completar la flashcard.</p></div>
+      <div class="field"><span class="label">Tipo</span><div class="seg" role="group" aria-label="Tipo de campo"><button aria-pressed="true">Texto</button><button aria-pressed="false">Lista</button><button aria-pressed="false">Número</button></div></div>
+      <div class="field"><label for="c-v">Valor por defecto <span class="opt">(vacío si se deja en blanco)</span></label><input class="input" id="c-v" placeholder="Vacío"></div>
+      <div class="sep" style="margin:0"></div>
+      <label class="row" style="justify-content:space-between;min-height:44px"><span><strong>Text-to-speech</strong><br><span class="small muted">Muestra un ícono de audio para escuchar este campo</span></span><span class="switch"><input type="checkbox" checked role="switch"><span></span></span></label>
+      <label class="row" style="justify-content:space-between;min-height:44px"><span><strong>Obligatorio</strong><br><span class="small muted">No se puede guardar una flashcard sin completarlo</span></span><span class="switch"><input type="checkbox" role="switch"><span></span></span></label>
+      <div class="row"><button class="btn btn-secondary grow"><i data-i="arrow-up"></i>Mover arriba</button><button class="btn btn-secondary grow"><i data-i="arrow-down"></i>Mover abajo</button></div>
+    </div>
+    <div class="sheet-foot"><button class="btn btn-danger-ghost" style="flex:none"><i data-i="trash"></i>Eliminar</button><span class="grow"></span><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-primary" data-close>Guardar</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="del" role="alertdialog" aria-modal="true" aria-labelledby="del-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="del-t">¿Eliminar «Chino mandarín»?</h2></div>
+    <div class="sheet-body"><p class="muted">Se eliminarán también sus 38 flashcards y 3 mazos. Esta acción no se puede deshacer.</p>
+      <div class="field" style="margin-top:var(--sp-4)"><label for="del-c">Escribe el nombre del idioma para confirmar</label><input class="input" id="del-c" placeholder="Chino mandarín"></div></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-danger" disabled>Eliminar idioma</button></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('shell-ready', function () {
+  var P = HM.params, tab = P.get('tab');
+  if (tab) { var b = document.getElementById('tab-' + tab); if (b) b.click(); }
+  if (P.get('mode') === 'new') {
+    document.getElementById('t').textContent = 'Nuevo idioma'; document.getElementById('l-name').value = '';
+  }
+});
+</script>
+</body>
+</html>

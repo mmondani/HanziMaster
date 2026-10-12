@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F03 · Flashcard (crear / editar) — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="flashcards" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="f01-flashcards.html" aria-label="Volver a Flashcards"><i data-i="arrow-l"></i></a>
+    <h1 id="form-title">Nueva flashcard</h1>
+    <span class="badge only-desktop"><span class="han" lang="zh" style="font-size:13px">中</span>Chino mandarín</span>
+  </div>
+
+  <form class="page narrow" id="card-form" novalidate style="--w:760px" onsubmit="return false">
+    <!-- Banner IA (visible tras completar con IA) -->
+    <div class="alert ai" id="ai-banner" role="status" hidden style="margin-bottom:var(--sp-4)">
+      <i data-i="sparkles"></i>
+      <div><strong>Completado con IA.</strong> Revisa los campos y corrige lo que haga falta antes de guardar. Los tags se eligieron entre los existentes (máx. 2).</div>
+    </div>
+    <div class="alert err" id="ai-error" role="alert" hidden style="margin-bottom:var(--sp-4)">
+      <i data-i="alert"></i>
+      <div>No se pudo completar con IA. Puedes reintentar o llenar los campos a mano. <button type="button" class="btn-ghost" style="font-weight:600;text-decoration:underline">Reintentar</button></div>
+    </div>
+
+    <div class="stack" style="--gap:var(--sp-5)">
+      <!-- Campo 1: palabra (obligatorio, TTS) + botón IA -->
+      <div class="field">
+        <label for="f-word">Palabra <span class="req" aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+        <div class="input-wrap">
+          <input class="input han-input" id="f-word" lang="zh" placeholder="Ej.: 朋友" autocomplete="off" required>
+          <button type="button" class="btn btn-ai" id="btn-ai" disabled aria-describedby="ai-help"><i data-i="sparkles"></i><span class="only-desktop">Completar con IA</span><span class="only-mobile">IA</span></button>
+        </div>
+        <p class="help" id="ai-help">Escribe la palabra y usa la IA para completar traducción, pinyin, ejemplo y tags.</p>
+        <p class="help row" style="gap:6px"><i data-i="volume" data-s="sm"></i>Este campo tiene audio (text-to-speech).</p>
+      </div>
+
+      <div class="form-grid two">
+        <div class="field">
+          <label for="f-pinyin">Pinyin <span class="opt">(opcional)</span></label>
+          <input class="input" id="f-pinyin" autocomplete="off" placeholder="Ej.: péngyou">
+        </div>
+        <div class="field" id="f-tr-field">
+          <label for="f-tr">Traducción <span class="req" aria-hidden="true">*</span><span class="sr-only">(obligatorio)</span></label>
+          <input class="input" id="f-tr" autocomplete="off" placeholder="Ej.: amigo" aria-describedby="f-tr-err">
+          <p class="error" id="f-tr-err" hidden><i data-i="alert" data-s="sm"></i>La traducción es obligatoria.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-ex">Ejemplo <span class="opt">(opcional)</span></label>
+        <textarea class="textarea" id="f-ex" lang="zh" placeholder="Ej.: 他是我的朋友。"></textarea>
+        <p class="help row" style="gap:6px"><i data-i="volume" data-s="sm"></i>Este campo tiene audio (text-to-speech).</p>
+      </div>
+
+      <div class="field">
+        <span class="label" id="tags-label">Tags</span>
+        <div class="tags" role="group" aria-labelledby="tags-label" id="tag-group">
+          <button type="button" class="chip button" aria-pressed="false">Saludos</button>
+          <button type="button" class="chip button" aria-pressed="false">Escuela</button>
+          <button type="button" class="chip button" aria-pressed="false">Comida</button>
+          <button type="button" class="chip button" aria-pressed="false" data-tag="Personas">Personas</button>
+          <button type="button" class="chip button" aria-pressed="false">Lugares</button>
+          <button type="button" class="chip button" aria-pressed="false">Verbos</button>
+          <button type="button" class="chip button" aria-pressed="false" data-tag="HSK1">HSK1</button>
+          <button type="button" class="chip button" aria-pressed="false" data-open="#new-tag"><i data-i="plus" data-s="sm"></i>Nuevo tag</button>
+        </div>
+        <p class="help">Puedes dejar la flashcard sin tags.</p>
+      </div>
+    </div>
+
+    <div class="sticky-foot">
+      <a class="btn btn-secondary" href="f01-flashcards.html">Cancelar</a>
+      <button type="button" class="btn btn-danger-ghost" id="btn-del" data-open="#del" hidden><i data-i="trash"></i>Eliminar</button>
+      <button type="submit" class="btn btn-primary" id="btn-save">Guardar</button>
+    </div>
+  </form>
+</main>
+
+<!-- nuevo tag -->
+<div class="overlay" id="new-tag" role="dialog" aria-modal="true" aria-labelledby="nt-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="nt-t">Nuevo tag</h2><button class="icon-btn" data-close aria-label="Cerrar"><i data-i="x"></i></button></div>
+    <div class="sheet-body"><div class="field"><label for="nt-in">Nombre del tag</label><input class="input" id="nt-in" placeholder="Ej.: Viajes"><p class="help">Se agrega al set de tags de Chino mandarín y queda disponible para todas las flashcards.</p></div></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><button class="btn btn-primary" data-close>Crear y asignar</button></div>
+  </div>
+</div>
+
+<!-- confirmar eliminación -->
+<div class="overlay" id="del" role="alertdialog" aria-modal="true" aria-labelledby="del-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="del-t">¿Eliminar esta flashcard?</h2></div>
+    <div class="sheet-body"><p class="muted">Se quitará también de los mazos que la incluyen. Esta acción no se puede deshacer.</p></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><a class="btn btn-danger" href="f01-flashcards.html">Eliminar</a></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('shell-ready', function () {
+  var P = HM.params, view = P.get('view') || 'default', mode = P.get('mode');
+  var word = document.getElementById('f-word'), ai = document.getElementById('btn-ai');
+  var tr = document.getElementById('f-tr'), py = document.getElementById('f-pinyin'), ex = document.getElementById('f-ex');
+  var banner = document.getElementById('ai-banner');
+  function sync() { ai.disabled = !word.value.trim(); }
+  function setTags(list) { document.querySelectorAll('#tag-group .chip[data-tag]').forEach(function (c) { c.setAttribute('aria-pressed', String(list.indexOf(c.dataset.tag) > -1)); }); }
+  function fill() {
+    tr.value = 'amigo'; py.value = 'péngyou'; ex.value = '他是我的朋友。'; setTags(['Personas', 'HSK1']);
+    banner.hidden = false;
+  }
+  function run() {
+    ai.disabled = true; ai.innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".9s" repeatCount="indefinite"/></path></svg>Completando…';
+    setTimeout(function () { fill(); ai.innerHTML = '<i data-i="sparkles"></i>Completar de nuevo'; HM.icons(ai); ai.disabled = false; }, 1100);
+  }
+  word.addEventListener('input', sync);
+  ai.addEventListener('click', run);
+  document.getElementById('btn-save').addEventListener('click', function () {
+    var empty = !tr.value.trim();
+    document.getElementById('f-tr-field').classList.toggle('has-error', empty);
+    document.getElementById('f-tr-err').hidden = !empty;
+    if (empty) tr.focus(); else location.href = 'f01-flashcards.html';
+  });
+  if (view === 'ai') { word.value = '朋友'; sync(); fill(); }
+  if (view === 'loading') { word.value = '朋友'; sync(); ai.disabled = true; ai.innerHTML = '<svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".9s" repeatCount="indefinite"/></path></svg>Completando…'; [tr, py, ex].forEach(function (i) { i.disabled = true; i.classList.add('skeleton'); }); }
+  if (view === 'error') { word.value = '朋友'; sync(); document.getElementById('ai-error').hidden = false; }
+  if (view === 'validation') { word.value = '朋友'; sync(); document.getElementById('btn-save').click(); }
+  if (mode === 'edit') {
+    document.getElementById('form-title').textContent = 'Editar flashcard';
+    word.value = '朋友'; tr.value = 'amigo'; py.value = 'péngyou'; ex.value = '他是我的朋友。'; setTags(['Personas', 'HSK1']); sync();
+    ai.querySelector('span.only-desktop').textContent = 'Volver a completar con IA';
+    document.getElementById('btn-del').hidden = false;
+  }
+});
+</script>
+</body>
+</html>

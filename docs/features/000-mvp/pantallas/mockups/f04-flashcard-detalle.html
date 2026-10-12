@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F04 · Detalle de flashcard — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="flashcards" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="f01-flashcards.html" aria-label="Volver a Flashcards"><i data-i="arrow-l"></i></a>
+    <h1>Flashcard</h1>
+    <a class="btn btn-secondary only-desktop" href="f03-flashcard-form.html?mode=edit"><i data-i="edit"></i>Editar</a>
+    <button class="btn btn-danger-ghost only-desktop" data-open="#del"><i data-i="trash"></i>Eliminar</button>
+    <a class="icon-btn only-mobile" href="f03-flashcard-form.html?mode=edit" aria-label="Editar"><i data-i="edit"></i></a>
+    <button class="icon-btn only-mobile" data-open="#del" aria-label="Eliminar" style="color:var(--danger)"><i data-i="trash"></i></button>
+  </div>
+
+  <div class="page">
+    <div class="split two-one">
+      <!-- vista previa de la carta -->
+      <section aria-labelledby="prev-t" class="stack" style="--gap:var(--sp-3)">
+        <div class="row">
+          <h2 id="prev-t" class="grow">Vista previa</h2>
+          <div class="seg" role="group" aria-label="Layout de vista previa">
+            <button aria-pressed="true">Estándar</button><button aria-pressed="false">Solo significado</button>
+          </div>
+        </div>
+        <div class="flip" id="flip" tabindex="0" role="button" aria-label="Girar carta. Mostrando el frente" style="max-width:none;aspect-ratio:16/10;max-height:none">
+          <div class="flip-inner">
+            <div class="face">
+              <span class="tts corner" aria-label="Escuchar" role="button"><i data-i="volume"></i></span>
+              <div class="big han" lang="zh" style="font-size:clamp(64px,12vw,112px)">朋友</div>
+              <div class="muted">péngyou</div>
+            </div>
+            <div class="face back">
+              <div class="tr">amigo</div>
+              <div class="han" lang="zh" style="font-size:22px;font-weight:500">他是我的朋友。</div>
+              <span class="tags" style="justify-content:center"><span class="tag">Personas</span><span class="tag">HSK1</span></span>
+            </div>
+          </div>
+        </div>
+        <p class="hint">Toca la carta para girarla</p>
+      </section>
+
+      <!-- datos -->
+      <section aria-labelledby="data-t" class="card">
+        <h2 id="data-t" class="card-title">Campos</h2>
+        <dl class="stack" style="--gap:var(--sp-4)">
+          <div><dt class="xs muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.05em">Palabra</dt><dd class="row"><span class="han" lang="zh" style="font-size:28px">朋友</span><span class="tts" role="button" tabindex="0" aria-label="Escuchar palabra"><i data-i="volume"></i></span></dd></div>
+          <div><dt class="xs muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.05em">Pinyin</dt><dd>péngyou</dd></div>
+          <div><dt class="xs muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.05em">Traducción</dt><dd>amigo</dd></div>
+          <div><dt class="xs muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.05em">Ejemplo</dt><dd class="row"><span class="han grow" lang="zh" style="font-weight:500">他是我的朋友。</span><span class="tts" role="button" tabindex="0" aria-label="Escuchar ejemplo"><i data-i="volume"></i></span></dd></div>
+          <div><dt class="xs muted" style="font-weight:600;text-transform:uppercase;letter-spacing:.05em">Tags</dt><dd class="tags" style="margin-top:4px"><span class="tag">Personas</span><span class="tag">HSK1</span></dd></div>
+        </dl>
+        <div class="sep"></div>
+        <p class="small muted">Aparece en 2 mazos: <a href="m03-mazo-detalle.html" style="color:var(--primary-text);font-weight:600">Saludos básicos</a>, <a href="m03-mazo-detalle.html" style="color:var(--primary-text);font-weight:600">HSK 1 · Semana 1</a></p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="overlay" id="del" role="alertdialog" aria-modal="true" aria-labelledby="del-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="del-t">¿Eliminar esta flashcard?</h2></div>
+    <div class="sheet-body"><p class="muted">Se quitará también de los 2 mazos que la incluyen. Esta acción no se puede deshacer.</p></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><a class="btn btn-danger" href="f01-flashcards.html">Eliminar</a></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('shell-ready', function () {
+  var f = document.getElementById('flip');
+  function t() { f.classList.toggle('is-flipped'); f.setAttribute('aria-label', 'Girar carta. Mostrando ' + (f.classList.contains('is-flipped') ? 'el reverso' : 'el frente')); }
+  f.addEventListener('click', function (e) { if (!e.target.closest('.tts')) t(); });
+  f.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); t(); } });
+  if (HM.params.get('side') === 'back') f.classList.add('is-flipped');
+});
+</script>
+</body>
+</html>

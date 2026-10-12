@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I04 · Editor de layout — Hanzi Master</title>
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/shell.js" defer></script>
+</head>
+<body data-shell="app" data-active="idiomas" data-nav="push">
+<main>
+  <div class="topbar">
+    <a class="icon-btn" href="i02-idioma-editor.html?tab=layouts" aria-label="Volver al idioma"><i data-i="arrow-l"></i></a>
+    <h1>Layout de flashcard</h1>
+    <span class="badge only-desktop"><span class="han" lang="zh" style="font-size:13px">中</span>Chino mandarín</span>
+  </div>
+
+  <div class="page narrow" style="--w:1000px">
+    <div class="field" style="margin-bottom:var(--sp-5);max-width:480px">
+      <label for="ly-n">Nombre del layout <span class="req" aria-hidden="true">*</span></label>
+      <input class="input" id="ly-n" value="Palabra y pinyin">
+    </div>
+
+    <div class="split two-one">
+      <!-- lienzo -->
+      <section aria-labelledby="cv-t" class="stack" style="--gap:var(--sp-3)">
+        <div class="row"><h2 id="cv-t" class="grow">Disposición</h2><span class="xs muted">Grilla de 6 columnas</span></div>
+        <div class="layout-canvas" id="canvas" role="group" aria-label="Disposición de la flashcard" style="grid-auto-rows:44px;min-height:264px">
+          <button class="cell" style="grid-column:1/7;grid-row:1/5;outline:3px solid var(--ring);outline-offset:1px;font-size:18px" aria-pressed="true" aria-label="Palabra, columnas 1 a 6, filas 1 a 4. Seleccionado"><span class="han" lang="zh" style="font-size:40px">你好</span></button>
+          <button class="cell" style="grid-column:1/7;grid-row:5/6" aria-pressed="false" aria-label="Pinyin, columnas 1 a 6, fila 5">Pinyin · nǐ hǎo</button>
+          <div class="cell empty-cell" style="grid-column:1/7;grid-row:6/7">Espacio libre</div>
+        </div>
+        <p class="xs muted">Toca un campo para seleccionarlo y ajustar su posición y tamaño con los controles. También puedes arrastrarlo en PC.</p>
+        <div class="alert ai" style="background:var(--surface-2)"><i data-i="volume" style="color:var(--primary-text)"></i><div class="small">El campo <strong>Palabra</strong> tiene audio: en el recorrido se mostrará el ícono <i data-i="volume" data-s="sm"></i> junto a él.</div></div>
+      </section>
+
+      <!-- propiedades -->
+      <aside class="stack" style="--gap:var(--sp-4)">
+        <section class="card" aria-labelledby="pr-t">
+          <h2 id="pr-t" class="card-title">Campo seleccionado</h2>
+          <div class="stack" style="--gap:var(--sp-3)">
+            <div class="field"><label for="p-f">Campo</label><select class="select" id="p-f"><option>Palabra</option><option>Pinyin</option><option>Traducción</option><option>Ejemplo</option><option>Tags</option></select></div>
+            <div class="form-grid" style="grid-template-columns:1fr 1fr">
+              <div class="field"><label for="p-c">Columna</label><select class="select" id="p-c"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+              <div class="field"><label for="p-r">Fila</label><select class="select" id="p-r"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+              <div class="field"><label for="p-w">Ancho</label><select class="select" id="p-w"><option>6</option></select></div>
+              <div class="field"><label for="p-h">Alto</label><select class="select" id="p-h"><option>4</option></select></div>
+            </div>
+            <div class="field"><span class="label">Tamaño del texto</span><div class="seg" role="group" aria-label="Tamaño del texto"><button aria-pressed="false">S</button><button aria-pressed="false">M</button><button aria-pressed="false">L</button><button aria-pressed="true">XL</button></div></div>
+            <div class="field"><span class="label">Alineación</span><div class="seg" role="group" aria-label="Alineación"><button aria-pressed="false">Izq.</button><button aria-pressed="true">Centro</button><button aria-pressed="false">Der.</button></div></div>
+            <button class="btn btn-danger-ghost"><i data-i="trash"></i>Quitar del layout</button>
+          </div>
+        </section>
+        <button class="btn btn-secondary btn-block"><i data-i="plus"></i>Agregar campo al layout</button>
+      </aside>
+    </div>
+
+    <div class="sticky-foot"><a class="btn btn-secondary" href="i02-idioma-editor.html?tab=layouts">Cancelar</a><button class="btn btn-danger-ghost" data-open="#del"><i data-i="trash"></i>Eliminar layout</button><a class="btn btn-primary" href="i02-idioma-editor.html?tab=layouts">Guardar layout</a></div>
+  </div>
+</main>
+
+<div class="overlay" id="del" role="alertdialog" aria-modal="true" aria-labelledby="del-t">
+  <div class="sheet">
+    <div class="sheet-grab"></div>
+    <div class="sheet-head"><h2 id="del-t">¿Eliminar el layout «Palabra y pinyin»?</h2></div>
+    <div class="sheet-body"><div class="alert warn"><i data-i="alert"></i><div><strong>Lo usan 2 modos de recorrida en 2 mazos</strong> («Saludos básicos» y «Frases útiles»). Una vez eliminado, esos mazos <strong>dejarán de poder usarse</strong>. Esta acción no se puede deshacer.</div></div></div>
+    <div class="sheet-foot"><button class="btn btn-secondary" data-close>Cancelar</button><a class="btn btn-danger" href="i02-idioma-editor.html?tab=layouts">Eliminar</a></div>
+  </div>
+</div>
+</body>
+</html>
