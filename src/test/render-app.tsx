@@ -2,6 +2,8 @@ import { render } from '@testing-library/react';
 import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { routes } from '@/app/routes';
 import { ToastProvider } from '@/components/ui/toast-provider';
+import { AiProvider } from '@/lib/ai/ai-provider';
+import type { AiCompleter } from '@/lib/domain/ai-completion';
 import { AuthProvider } from '@/lib/auth/auth-provider';
 import { RepositoriesProvider } from '@/lib/repositories/repositories-provider';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
@@ -10,15 +12,18 @@ import { FakeAuthService } from './fake-auth-service';
 export const ANA = { uid: 'u1', email: 'ana@gmail.com' };
 
 /** Renderiza la app completa en una ruta, con servicios de autenticación y datos simulados. */
-export function renderApp(path: string, service = new FakeAuthService(), repos = new MemoryRepositories()) {
+export function renderApp(path: string, service = new FakeAuthService(), repos = new MemoryRepositories(), ai?: AiCompleter) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   const factory = () => repos;
+  const content = (
+    <ToastProvider>
+      <RouterProvider router={router} />
+    </ToastProvider>
+  );
   const view = render(
     <AuthProvider service={service}>
       <RepositoriesProvider factory={factory}>
-        <ToastProvider>
-          <RouterProvider router={router} />
-        </ToastProvider>
+        {ai ? <AiProvider completer={ai}>{content}</AiProvider> : content}
       </RepositoriesProvider>
     </AuthProvider>,
   );

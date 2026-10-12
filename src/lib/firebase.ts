@@ -1,8 +1,9 @@
 import { initializeApp } from 'firebase/app';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import { connectFirestoreEmulator, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
-const app = initializeApp({
+export const app = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -10,6 +11,13 @@ const app = initializeApp({
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 });
+
+// App Check (opcional): solo si hay site key. En desarrollo imprime un token de depuración para registrarlo en la consola.
+const appCheckSiteKey = import.meta.env.VITE_APPCHECK_SITE_KEY;
+if (appCheckSiteKey) {
+  if (import.meta.env.DEV) (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN: boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey), isTokenAutoRefreshEnabled: true });
+}
 
 export const auth = getAuth(app);
 

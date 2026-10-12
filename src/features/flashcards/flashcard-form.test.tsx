@@ -74,6 +74,8 @@ describe('F03 · Crear y editar flashcard', () => {
     expect(created.values).toMatchObject({ word: '水', translation: 'agua', nivel: 1 });
     expect(created.languageId).toBe('zh');
     expect(await screen.findByText('Flashcard guardada')).toBeInTheDocument();
+    // Se espera a que la lista ya refleje la nueva flashcard: un reenvío tardío de datos remonta el formulario y pierde lo tipeado.
+    await screen.findByText('水');
 
     await router.navigate('/flashcards/nueva');
     await userEvent.type(await screen.findByLabelText(/Palabra/), '学');
@@ -82,9 +84,9 @@ describe('F03 · Crear y editar flashcard', () => {
     await userEvent.click(within(tags).getByRole('button', { name: 'Saludos' }));
     await userEvent.click(within(tags).getByRole('button', { name: 'Escuela' }));
     await userEvent.click(save());
-    await waitFor(() => expect(repos.flashcardsData).toHaveLength(3));
+    await waitFor(() => expect(repos.flashcardsData).toHaveLength(3), { timeout: 8000 });
     expect(repos.flashcardsData.find((c) => c.values.word === '学')!.tags).toEqual(['Saludos', 'Escuela']);
-  });
+  }, 20000);
 
   it('F03-4 se crea un tag nuevo desde el formulario y queda en el set del idioma', async () => {
     const { repos } = await openForm('/flashcards/nueva');

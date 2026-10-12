@@ -256,6 +256,8 @@ a.deck-card:hover { border-color: var(--primary); }
 @media (min-width: 1024px) { .toast { bottom: var(--sp-5); } }
 .skeleton { background: linear-gradient(90deg, var(--surface-2), var(--border), var(--surface-2)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: var(--r-md); }
 @keyframes shimmer { to { background-position: -200% 0; } }
+.input.skeleton { color: transparent; border-color: transparent; }
+.input.from-ai { border-color: var(--ai); background: var(--ai-soft); }
 .progress { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
 .progress > i { display: block; height: 100%; background: var(--primary); border-radius: 3px; }
 .steps { display: flex; gap: var(--sp-2); align-items: center; font-size: 14px; font-weight: 600; color: var(--text-muted); }

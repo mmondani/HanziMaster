@@ -105,7 +105,7 @@ Cada paso termina con `npm run lint` y `npm test` en verde, salvo indicación.
 - [x] **11. PWA y offline**
   - Qué: `vite-plugin-pwa` (manifest standalone, ícono maskable, precache del shell), caché persistente de Firestore, deshabilitar acciones que requieren red con "Requiere conexión", safe-area insets.
   - Verificación: Lighthouse PWA instalable; prueba manual en modo avión: ver y recorrer lo ya sincronizado (A04-2), cambios sincronizan al volver (A04-4). Tests A04-3.
-- [ ] **12. Completar con IA (F03-5…8, A04-3)**
+- [x] **12. Completar con IA (F03-5…8, A04-3)**
   - Qué: `lib/ai` con **Firebase AI Logic** (Gemini vía SDK de cliente, salida estructurada con `responseSchema`), App Check activado y habilitación de la API en la consola. Entrada = palabra + idioma + definición de campos + set de tags; salida con esquema estructurado; el cliente **descarta** tags que no estén en el set y recorta a 2 tags; solo rellena campos vacíos; estado "viene de IA".
   - Verificación: tests F03-5…8 con el servicio de IA simulado; unit test del saneamiento de la respuesta; prueba manual con una palabra real.
 - [ ] **13. Pasada final de calidad**
