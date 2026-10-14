@@ -180,6 +180,51 @@ describe('I02 · Tags', () => {
     expect(repos.flashcardsData.find((c) => c.id === 'c2')!.tags).toEqual([]);
   });
 
+  it('MJ7-6 editar un tag lo renombra en el idioma y en las flashcards que lo usan', async () => {
+    const { repos } = await openTags();
+    await userEvent.click(screen.getByRole('button', { name: 'Editar tag Saludos' }));
+    const input = screen.getByLabelText('Nuevo nombre del tag Saludos');
+    expect(input).toHaveFocus();
+    await userEvent.clear(input);
+    await userEvent.type(input, 'Hola');
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
+    expect(screen.getByText('Hola')).toBeInTheDocument();
+    await userEvent.click(saveButton());
+    await waitFor(() => expect(repos.languagesData.find((l) => l.id === 'zh')!.tags).toEqual(['Hola', 'Escuela']));
+    expect(repos.flashcardsData.find((c) => c.id === 'c1')!.tags).toEqual(['Hola', 'Escuela']);
+    expect(repos.flashcardsData.find((c) => c.id === 'c2')!.tags).toEqual(['Hola']);
+  });
+
+  it('MJ7-7 no permite un nombre vacío ni el de otro tag; Cancelar descarta la edición', async () => {
+    const { repos } = await openTags();
+    await userEvent.click(screen.getByRole('button', { name: 'Editar tag Saludos' }));
+    const input = screen.getByLabelText('Nuevo nombre del tag Saludos');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'escuela');
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
+    expect(await screen.findByText('El tag «escuela» ya existe.')).toBeInTheDocument();
+    await userEvent.clear(input);
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
+    expect(await screen.findByText('El nombre del tag no puede estar vacío.')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Cancelar edición del tag Saludos' }));
+    expect(screen.queryByLabelText('Nuevo nombre del tag Saludos')).toBeNull();
+    expect(repos.languagesData.find((l) => l.id === 'zh')!.tags).toEqual(['Saludos', 'Escuela']);
+  });
+
+  it('MJ7-8 renombrar y luego quitar un tag lo quita de las flashcards con su nombre original', async () => {
+    const { repos } = await openTags();
+    await userEvent.click(screen.getByRole('button', { name: 'Editar tag Saludos' }));
+    const input = screen.getByLabelText('Nuevo nombre del tag Saludos');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'Hola');
+    await userEvent.click(screen.getByRole('button', { name: 'Guardar' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Quitar tag Hola' }));
+    await userEvent.click(saveButton());
+    await waitFor(() => expect(repos.languagesData.find((l) => l.id === 'zh')!.tags).toEqual(['Escuela']));
+    expect(repos.flashcardsData.find((c) => c.id === 'c1')!.tags).toEqual(['Escuela']);
+    expect(repos.flashcardsData.find((c) => c.id === 'c2')!.tags).toEqual([]);
+  });
+
   it('la pestaña activa vive en la URL (?tab=)', async () => {
     const { router } = await openEditor('/idiomas/zh?tab=tags');
     expect(screen.getByRole('tab', { name: 'Tags' })).toHaveAttribute('aria-selected', 'true');

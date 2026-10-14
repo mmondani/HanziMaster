@@ -146,16 +146,16 @@ describe('F01 · Listado de flashcards', () => {
     expect(await screen.findByText('你好')).toBeInTheDocument();
   });
 
-  it('con muchas flashcards pagina de a 50 con "Mostrar más"', async () => {
+  it('con muchas flashcards pagina de a 50 con el paginador numerado', async () => {
     const repos = seeded();
     repos.flashcardsData = Array.from({ length: 120 }, (_, i) => card(`n${i}`, 'zh', { values: { word: `字${i}`, translation: `t${i}` } }));
     await openList(repos);
     await screen.findByText('120 flashcards');
     expect(rows()).toHaveLength(50);
-    await userEvent.click(screen.getByRole('button', { name: /Mostrar más \(70 restantes\)/ }));
-    expect(rows()).toHaveLength(100);
-    await userEvent.click(screen.getByRole('button', { name: /Mostrar más \(20 restantes\)/ }));
-    expect(rows()).toHaveLength(120);
+    await userEvent.click(screen.getByRole('button', { name: 'Página 2' }));
+    expect(rows()).toHaveLength(50);
+    await userEvent.click(screen.getByRole('button', { name: 'Página 3' }));
+    expect(rows()).toHaveLength(20);
     expect(screen.queryByRole('button', { name: /Mostrar más/ })).toBeNull();
   });
 });

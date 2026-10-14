@@ -1,3 +1,4 @@
+import type { TagRename } from '@/lib/domain/field-rules';
 import type { Deck, Flashcard, Language } from '@/lib/types';
 
 export type Unsubscribe = () => void;
@@ -19,6 +20,8 @@ export interface DeckRef {
 export interface LanguageChanges {
   removedFieldIds: string[];
   removedTags: string[];
+  /** Tags que cambiaron de nombre (con su nombre original). */
+  renamedTags?: TagRename[];
 }
 
 export interface LanguageRepository {
@@ -46,6 +49,8 @@ export interface FlashcardRepository {
   saveMany(cards: Flashcard[]): Promise<void>;
   /** Elimina la flashcard y la quita de los mazos que la incluyen. */
   remove(cardId: string): Promise<RemovedFlashcard>;
+  /** Elimina varias flashcards (borrado de la selección) y las quita de los mazos que las incluyen. Sin deshacer. */
+  removeMany(cardIds: string[]): Promise<void>;
   /** Deshace `remove`: vuelve a crear la flashcard y la reincorpora a sus mazos. */
   restore(removed: RemovedFlashcard): Promise<void>;
 }

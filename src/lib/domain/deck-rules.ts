@@ -1,3 +1,4 @@
+import { newId } from '@/lib/ids';
 import type { Deck, Language, TraversalMode } from '@/lib/types';
 
 /**
@@ -11,6 +12,14 @@ export type DeckStatus =
   | { kind: 'broken'; modes: TraversalMode[] };
 
 const hasLayout = (language: Language, id: string) => language.layouts.some((l) => l.id === id);
+
+/**
+ * Modos que trae un mazo nuevo: copias (con id nuevo) de los modos por defecto del idioma.
+ * Se omiten los que usan un layout eliminado; el mazo puede editarlos o quitarlos sin afectar al idioma.
+ */
+export function modesFromDefaults(language: Language): TraversalMode[] {
+  return (language.defaultModes ?? []).filter((m) => !isModeBroken(m, language)).map((m) => ({ ...m, id: newId() }));
+}
 
 /** Un modo es válido si sus dos layouts siguen existiendo en el idioma. */
 export function isModeBroken(mode: TraversalMode, language: Language): boolean {

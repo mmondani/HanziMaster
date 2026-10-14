@@ -1,6 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { ChevronRight, Languages, LogOut } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
+import { ThemeSelector } from '@/components/layout/theme-selector';
 import { useAuth } from '@/lib/auth/auth-provider';
 import { useMediaQuery } from '@/lib/hooks/use-media-query';
 
@@ -36,6 +37,11 @@ export function MorePage() {
               <ChevronRight className="ic" aria-hidden="true" />
             </Link>
           </div>
+        </section>
+
+        <section aria-labelledby="apariencia">
+          <h2 id="apariencia" className="side-label" style={{ padding: '0 0 var(--sp-2)' }}>Apariencia</h2>
+          <ThemeSelector />
         </section>
 
         <section aria-label="Sesión">

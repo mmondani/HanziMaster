@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
-import { card, chinese } from '@/test/fixtures';
+import { card, chinese, deck } from '@/test/fixtures';
 import { renderApp, signedInService } from '@/test/render-app';
 
 function seeded() {
@@ -197,5 +197,60 @@ describe('F06 · Edición masiva', () => {
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(repos.flashcardsData.find((c) => c.id === 'c1')!.tags).toEqual(['Saludos']);
+  });
+});
+
+describe('MJ6 · Eliminar la selección', () => {
+  function seededWithDeck() {
+    const repos = seeded();
+    repos.decksData = [deck('d1', 'zh', { cardIds: ['c1', 'c2', 'c3'] })];
+    return repos;
+  }
+
+  it('MJ6-1 el botón Eliminar está deshabilitado sin selección', async () => {
+    await openList();
+    await startSelecting();
+    expect(within(bar()).getByRole('button', { name: /Eliminar/ })).toBeDisabled();
+    await userEvent.click(row('你好'));
+    expect(within(bar()).getByRole('button', { name: /Eliminar/ })).toBeEnabled();
+  });
+
+  it('MJ6-2 pide confirmación con la cantidad y Cancelar no borra nada', async () => {
+    const { repos } = await openList(seededWithDeck());
+    await startSelecting();
+    await userEvent.click(row('你好'));
+    await userEvent.click(row('谢谢'));
+    await userEvent.click(within(bar()).getByRole('button', { name: /Eliminar/ }));
+    const dialog = screen.getByRole('alertdialog', { name: '¿Eliminar 2 flashcards?' });
+    expect(within(dialog).getByRole('button', { name: 'Eliminar 2 flashcards' })).toBeInTheDocument();
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancelar' }));
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(repos.flashcardsData).toHaveLength(4);
+    expect(within(bar()).getByRole('status')).toHaveTextContent('2 seleccionadas');
+  });
+
+  it('MJ6-3 confirmar elimina las flashcards, las quita de los mazos y sale del modo selección', async () => {
+    const { repos } = await openList(seededWithDeck());
+    await startSelecting();
+    await userEvent.click(row('你好'));
+    await userEvent.click(row('学生'));
+    await userEvent.click(within(bar()).getByRole('button', { name: /Eliminar/ }));
+    await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Eliminar 2 flashcards' }));
+    await waitFor(() => expect(repos.flashcardsData.map((c) => c.id)).toEqual(['c2', 'c4']));
+    expect(repos.decksData[0].cardIds).toEqual(['c2']);
+    await waitFor(() => expect(screen.queryByRole('toolbar')).toBeNull());
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(screen.queryByRole('link', { name: /你好/ })).toBeNull();
+    expect(await screen.findByText('Se eliminaron 2 flashcards')).toBeInTheDocument();
+  });
+
+  it('MJ6-4 con la selección de todas las visibles elimina todo lo filtrado y nada más', async () => {
+    const { repos } = await openList(seededWithDeck());
+    await startSelecting();
+    await userEvent.click(within(screen.getByRole('group', { name: 'Filtrar por tag' })).getByRole('button', { name: 'Saludos' }));
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Seleccionar todas las visibles' }));
+    await userEvent.click(within(bar()).getByRole('button', { name: /Eliminar/ }));
+    await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Eliminar 2 flashcards' }));
+    await waitFor(() => expect(repos.flashcardsData.map((c) => c.id)).toEqual(['c3', 'c4']));
   });
 });

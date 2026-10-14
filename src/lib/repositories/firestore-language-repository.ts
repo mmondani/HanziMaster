@@ -64,12 +64,13 @@ export function createFirestoreLanguageRepository(db: Firestore, uid: string): L
 
     async save(language, changes?: LanguageChanges) {
       await setDoc(doc(languages, language.id), language);
-      if (!changes || (changes.removedFieldIds.length === 0 && changes.removedTags.length === 0)) return;
+      const renamedTags = changes?.renamedTags ?? [];
+      if (!changes || (changes.removedFieldIds.length === 0 && changes.removedTags.length === 0 && renamedTags.length === 0)) return;
       const snap = await getDocs(cardsOf(language.id));
       const writes: Write[] = [];
       for (const d of snap.docs) {
         const card = { ...(d.data() as Flashcard), id: d.id };
-        const next = stripFromFlashcard(card, changes.removedFieldIds, changes.removedTags);
+        const next = stripFromFlashcard(card, changes.removedFieldIds, changes.removedTags, renamedTags);
         if (next) writes.push((b) => b.set(d.ref as DocumentReference, next));
       }
       await commitInBatches(db, writes);

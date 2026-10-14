@@ -1,6 +1,6 @@
 import type { FieldDef, Layout } from '@/lib/types';
 import {
-  addField, addTag, createLanguage, createSystemFields, hasSystemFields, layoutsUsingField, moveField,
+  addField, addTag, effectiveRenames, renameTag, trackRename, untrackRename, createLanguage, createSystemFields, hasSystemFields, layoutsUsingField, moveField,
   removeField, removeFieldFromLayouts, removeTag, updateField, validateFieldName, validateLanguageName,
 } from './field-rules';
 
@@ -107,5 +107,30 @@ describe('nombre del idioma (I02-7)', () => {
     expect(validateLanguageName('chino', langs)).toMatch(/Ya existe/);
     expect(validateLanguageName('chino', langs, langs[0].id)).toBeNull();
     expect(validateLanguageName('Japonés', langs)).toBeNull();
+  });
+});
+
+describe('MJ7 · renombrar tags', () => {
+  it('MJ7-1 renombra conservando la posición y limpia espacios', () => {
+    expect(renameTag(['a', 'b', 'c'], 'b', '  B2 ')).toEqual({ tags: ['a', 'B2', 'c'] });
+  });
+
+  it('MJ7-2 rechaza vacío y nombres de otro tag (sin distinguir mayúsculas), pero admite cambiar solo las mayúsculas del propio', () => {
+    expect(renameTag(['a', 'b'], 'b', '   ')).toMatchObject({ tags: ['a', 'b'], error: expect.stringMatching(/vacío/) });
+    expect(renameTag(['Saludos', 'Escuela'], 'Escuela', 'saludos')).toMatchObject({ error: expect.stringMatching(/ya existe/) });
+    expect(renameTag(['Saludos', 'Escuela'], 'Escuela', 'ESCUELA')).toEqual({ tags: ['Saludos', 'ESCUELA'] });
+  });
+
+  it('MJ7-3 los renombrados sucesivos se encadenan desde el nombre original y volver al original los anula', () => {
+    let r = trackRename([], 'A', 'B');
+    r = trackRename(r, 'B', 'C');
+    expect(r).toEqual([{ from: 'A', to: 'C' }]);
+    expect(trackRename(r, 'C', 'A')).toEqual([]);
+  });
+
+  it('MJ7-4 quitar un tag renombrado olvida el renombrado y solo valen los que siguen vigentes', () => {
+    const r = [{ from: 'A', to: 'B' }, { from: 'X', to: 'Y' }];
+    expect(untrackRename(r, 'B')).toEqual([{ from: 'X', to: 'Y' }]);
+    expect(effectiveRenames(r, ['A', 'X'], ['B'])).toEqual([{ from: 'A', to: 'B' }]);
   });
 });

@@ -1,5 +1,5 @@
-import { chinese, deck } from '@/test/fixtures';
-import { canStudy, describeMode, getDeckStatus, hasDeckErrors, isModeBroken, validateDeck } from './deck-rules';
+import { chinese, deck, MODE_A, MODE_B } from '@/test/fixtures';
+import { canStudy, describeMode, getDeckStatus, hasDeckErrors, isModeBroken, modesFromDefaults, validateDeck } from './deck-rules';
 
 const language = chinese();
 const mode = { id: 'm1', name: 'Palabra → Significado', frontLayoutId: 'ly1', backLayoutId: 'ly2' };
@@ -65,5 +65,20 @@ describe('validateDeck (M02-6, M02-8)', () => {
   });
   it('un modo sin nombre es inválido', () => {
     expect(validateDeck({ name: 'Mazo', cardIds: ['a'], modes: [{ ...mode, name: '' }] }, language).modeErrors.m1).toMatch(/nombre/);
+  });
+});
+
+describe('MJ4 · modos por defecto del idioma', () => {
+  it('MJ4-1 modesFromDefaults copia los modos con ids nuevos y omite los de layouts eliminados', () => {
+    const language = chinese({ defaultModes: [MODE_A, MODE_B, { ...MODE_A, id: 'roto', frontLayoutId: 'borrado' }] });
+    const modes = modesFromDefaults(language);
+    expect(modes.map((m) => m.name)).toEqual([MODE_A.name, MODE_B.name]);
+    expect(modes.map((m) => m.id)).not.toContain('mA');
+    expect(new Set(modes.map((m) => m.id)).size).toBe(2);
+    expect(modes[0]).toMatchObject({ frontLayoutId: 'ly1', backLayoutId: 'ly2' });
+  });
+
+  it('un idioma sin modos por defecto (o anterior a la iteración) da una lista vacía', () => {
+    expect(modesFromDefaults(chinese())).toEqual([]);
   });
 });

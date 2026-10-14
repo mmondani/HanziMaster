@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { DESKTOP_NAV, LANGUAGES_NAV, isActive } from './nav-items';
 import { IconButton } from '@/components/ui/icon-button';
+import { ThemeSelector } from './theme-selector';
 
 export interface SidebarUser {
   email: string;
@@ -34,6 +35,10 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           {languages.label}
         </Link>
       </nav>
+      <div className="side-theme">
+        <div className="side-label" id="side-theme">Apariencia</div>
+        <ThemeSelector />
+      </div>
       {user && (
         <div className="side-user">
           <span className="avatar" aria-hidden="true">{user.email.slice(0, 2).toUpperCase()}</span>

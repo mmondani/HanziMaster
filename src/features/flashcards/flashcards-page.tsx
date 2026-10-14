@@ -9,19 +9,23 @@ import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Menu } from '@/components/ui/menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Pagination } from '@/components/ui/pagination';
+import { SortSelect } from '@/components/ui/sort-select';
 import { useToast } from '@/components/ui/toast-provider';
 import { sortFields } from '@/lib/domain/field-rules';
+import { orderParam, paginate, parseOrder, parsePage, sortByCreated, type SortOrder } from '@/lib/domain/list-view';
 import { filterFlashcards } from '@/lib/domain/search';
 import { useFlashcards } from '@/lib/flashcards/flashcards-provider';
 import { useLanguages } from '@/lib/languages/languages-provider';
 import { useRepositories } from '@/lib/repositories/repositories-provider';
 import type { Flashcard } from '@/lib/types';
 import { BulkEditDialog } from './bulk-edit-dialog';
+import { DeleteSelectionDialog } from './delete-selection-dialog';
 import { FlashcardRow } from './flashcard-row';
 import { SelectionBar } from './selection-bar';
 import { useCreateTag } from './use-create-tag';
 
-const PAGE_SIZE = 50;
+export const PAGE_SIZE = 50;
 const SEARCH_DEBOUNCE_MS = 200;
 
 /** F01 · Listado de flashcards del idioma activo, con búsqueda en vivo, filtro por tag y selección múltiple (F02). */
@@ -33,12 +37,15 @@ export function FlashcardsPage() {
   const [params, setParams] = useSearchParams();
   const q = params.get('q') ?? '';
   const tagParam = params.get('tag') ?? '';
+  const order = parseOrder(params.get('orden'));
+  const pageParam = parsePage(params.get('pagina'));
 
   const [text, setText] = useState(q);
-  const [limit, setLimit] = useState<{ key: string; size: number }>({ key: '', size: PAGE_SIZE });
   const [selecting, setSelecting] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState<'idle' | 'busy' | 'failed'>('idle');
 
   // El texto del buscador se refleja en la URL (?q=) con un pequeño retardo.
   useEffect(() => {
@@ -47,6 +54,7 @@ export function FlashcardsPage() {
       setParams((prev) => {
         const next = new URLSearchParams(prev);
         if (text) next.set('q', text); else next.delete('q');
+        next.delete('pagina');
         return next;
       }, { replace: true });
     }, SEARCH_DEBOUNCE_MS);
@@ -63,16 +71,17 @@ export function FlashcardsPage() {
 
   const tag = active?.tags.includes(tagParam) ? tagParam : '';
   const ofLanguage = useMemo(() => (active && flashcards ? filterFlashcards(flashcards, active) : []), [active, flashcards]);
-  const visible = useMemo(() => (active && flashcards ? filterFlashcards(flashcards, active, { q, tag }) : []), [active, flashcards, q, tag]);
+  const visible = useMemo(
+    () => (active && flashcards ? sortByCreated(filterFlashcards(flashcards, active, { q, tag }), order) : []),
+    [active, flashcards, q, tag, order],
+  );
   const secondary = active ? sortFields(active.fields).find((f) => !f.system && f.type === 'text') : undefined;
 
   // La selección solo cuenta las flashcards que están a la vista.
   const selected = useMemo(() => visible.filter((c) => selectedIds.has(c.id)), [visible, selectedIds]);
   const allVisibleSelected = visible.length > 0 && selected.length === visible.length;
 
-  const key = `${active?.id}|${q}|${tag}`;
-  const size = limit.key === key ? limit.size : PAGE_SIZE;
-  const shown = visible.slice(0, size);
+  const { items: shown, page, pageCount } = paginate(visible, pageParam, PAGE_SIZE);
 
   const createTag = useCreateTag(active ?? { id: '', name: '', code: '', fields: [], tags: [], layouts: [] });
 
@@ -80,8 +89,28 @@ export function FlashcardsPage() {
     setParams((prev) => {
       const p = new URLSearchParams(prev);
       if (next) p.set('tag', next); else p.delete('tag');
+      p.delete('pagina');
       return p;
     }, { replace: true });
+  }
+
+  function setOrder(next: SortOrder) {
+    setParams((prev) => {
+      const p = new URLSearchParams(prev);
+      const value = orderParam(next);
+      if (value) p.set('orden', value); else p.delete('orden');
+      p.delete('pagina');
+      return p;
+    }, { replace: true });
+  }
+
+  function goToPage(next: number) {
+    setParams((prev) => {
+      const p = new URLSearchParams(prev);
+      if (next > 1) p.set('pagina', String(next)); else p.delete('pagina');
+      return p;
+    }, { replace: true });
+    document.querySelector('.page')?.scrollIntoView?.({ block: 'start' });
   }
 
   function clearFilters() {
@@ -121,6 +150,21 @@ export function FlashcardsPage() {
       duration: 8000,
       action: { label: 'Deshacer', onClick: () => void repos.flashcards.saveMany(originals) },
     });
+  }
+
+  async function deleteSelected() {
+    const ids = selected.map((c) => c.id);
+    setDeleting('busy');
+    try {
+      await repos.flashcards.removeMany(ids);
+    } catch {
+      setDeleting('failed');
+      return;
+    }
+    setDeleteOpen(false);
+    setDeleting('idle');
+    cancelSelection();
+    toast.show({ message: `Se ${ids.length === 1 ? 'eliminó 1 flashcard' : `eliminaron ${ids.length} flashcards`}` });
   }
 
   const startSelecting = () => setSelecting(true);
@@ -205,6 +249,7 @@ export function FlashcardsPage() {
                 onChange={(e) => setText(e.target.value)}
               />
             </div>
+            <SortSelect value={order} onChange={setOrder} />
           </div>
           {active.tags.length > 0 && (
             <div className="chips-scroll" role="group" aria-label="Filtrar por tag">
@@ -245,13 +290,7 @@ export function FlashcardsPage() {
                 </li>
               ))}
             </ul>
-            {shown.length < visible.length && (
-              <div style={{ textAlign: 'center', marginTop: 'var(--sp-4)' }}>
-                <Button variant="secondary" onClick={() => setLimit({ key, size: size + PAGE_SIZE })}>
-                  Mostrar más ({visible.length - shown.length} restantes)
-                </Button>
-              </div>
-            )}
+            <Pagination page={page} pageCount={pageCount} onChange={goToPage} />
           </div>
         )}
       </>
@@ -268,7 +307,16 @@ export function FlashcardsPage() {
         </Link>
       )}
       {selecting && (
-        <SelectionBar ids={selected.map((c) => c.id)} onEdit={() => setBulkOpen(true)} onCancel={cancelSelection} />
+        <SelectionBar ids={selected.map((c) => c.id)} onEdit={() => setBulkOpen(true)} onDelete={() => { setDeleting('idle'); setDeleteOpen(true); }} onCancel={cancelSelection} />
+      )}
+      {deleteOpen && (
+        <DeleteSelectionDialog
+          count={selected.length}
+          busy={deleting === 'busy'}
+          failed={deleting === 'failed'}
+          onConfirm={() => void deleteSelected()}
+          onClose={() => setDeleteOpen(false)}
+        />
       )}
       {bulkOpen && active && (
         <BulkEditDialog language={active} cards={selected} onApply={applyBulk} onCreateTag={createTag} onClose={() => setBulkOpen(false)} />

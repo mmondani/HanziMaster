@@ -100,6 +100,40 @@ export function removeTag(tags: string[], tag: string): string[] {
   return tags.filter((t) => t !== tag);
 }
 
+/**
+ * Renombra un tag conservando su posición. Un nombre vacío o que ya usa otro tag (sin distinguir
+ * mayúsculas) es un error; cambiar solo mayúsculas o espacios del propio tag es válido.
+ */
+export function renameTag(tags: string[], from: string, raw: string): TagResult {
+  const to = raw.trim();
+  if (!to) return { tags, error: 'El nombre del tag no puede estar vacío.' };
+  if (tags.some((t) => t !== from && sameName(t, to))) return { tags, error: `El tag «${to}» ya existe.` };
+  return { tags: tags.map((t) => (t === from ? to : t)) };
+}
+
+/** Un tag del set original que ahora se llama distinto; se propaga a las flashcards al guardar. */
+export interface TagRename {
+  from: string;
+  to: string;
+}
+
+/** Registra que el tag `current` pasó a llamarse `to`, encadenando renombrados sucesivos desde el nombre original. */
+export function trackRename(renames: TagRename[], current: string, to: string): TagRename[] {
+  const origin = renames.find((r) => r.to === current)?.from ?? current;
+  const rest = renames.filter((r) => r.to !== current);
+  return origin === to ? rest : [...rest, { from: origin, to }];
+}
+
+/** Olvida el renombrado de un tag que se quitó: su nombre original pasa a contar como quitado. */
+export function untrackRename(renames: TagRename[], tag: string): TagRename[] {
+  return renames.filter((r) => r.to !== tag);
+}
+
+/** Renombrados que siguen vigentes al guardar: el original existía y el nuevo sigue en el idioma. */
+export function effectiveRenames(renames: TagRename[], originalTags: string[], tags: string[]): TagRename[] {
+  return renames.filter((r) => r.from !== r.to && originalTags.includes(r.from) && tags.includes(r.to));
+}
+
 /** Mensaje de error del nombre del idioma (obligatorio y único), o `null`. */
 export function validateLanguageName(name: string, languages: Language[], currentId?: string): string | null {
   if (!name.trim()) return 'El nombre es obligatorio.';

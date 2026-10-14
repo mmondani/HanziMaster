@@ -11,7 +11,7 @@ import { IconButton } from '@/components/ui/icon-button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast-provider';
 import { UnsavedChangesGuard } from '@/components/ui/unsaved-changes-guard';
-import { describeMode, hasDeckErrors, isModeBroken, validateDeck, type DeckErrors } from '@/lib/domain/deck-rules';
+import { describeMode, hasDeckErrors, isModeBroken, modesFromDefaults, validateDeck, type DeckErrors } from '@/lib/domain/deck-rules';
 import { sortFields } from '@/lib/domain/field-rules';
 import { languageGlyph } from '@/lib/domain/language-presentation';
 import { newId } from '@/lib/ids';
@@ -50,7 +50,7 @@ function DeckForm({ language, flashcards, deck }: DeckFormProps) {
   const [baseline] = useState(() => {
     const preselected = (params.get('cartas') ?? '').split(',').filter((id) => flashcards.some((c) => c.id === id));
     const cardIds = deck ? deck.cardIds.filter((id) => flashcards.some((c) => c.id === id)) : preselected;
-    return { name: deck?.name ?? '', cardIds, modes: deck?.modes ?? ([] as TraversalMode[]) };
+    return { name: deck?.name ?? '', cardIds, modes: deck?.modes ?? modesFromDefaults(language) };
   });
   const [name, setName] = useState(baseline.name);
   const [cardIds, setCardIds] = useState(baseline.cardIds);
@@ -90,6 +90,8 @@ function DeckForm({ language, flashcards, deck }: DeckFormProps) {
       id: deck?.id ?? newId(),
       languageId: language.id,
       name: name.trim(),
+      // Se conserva la fecha original; un mazo anterior sin fecha sigue sin ella.
+      ...(deck ? (deck.createdAt === undefined ? {} : { createdAt: deck.createdAt }) : { createdAt: Date.now() }),
       cardIds,
       modes: modes.map((m) => ({ ...m, name: m.name.trim() })),
       learning: 'free',

@@ -49,6 +49,11 @@ describe('datos del usuario', () => {
     await assertSucceeds(getDoc(doc(ana(), 'users/ana/languages/zh')));
     await assertSucceeds(setDoc(doc(ana(), 'users/ana/flashcards/c1'), { word: '你好' }));
   });
+  it('los campos de la iteración 001 (createdAt en mazos, defaultModes en idiomas) se escriben sin cambios de reglas', async () => {
+    const mode = { id: 'm1', name: 'Directo', frontLayoutId: 'ly1', backLayoutId: 'ly2' };
+    await assertSucceeds(setDoc(doc(ana(), 'users/ana/decks/d1'), { name: 'HSK 1', cardIds: [], modes: [mode], learning: 'free', createdAt: 1 }));
+    await assertSucceeds(setDoc(doc(ana(), 'users/ana/languages/zh'), { name: 'Chino', defaultModes: [mode] }));
+  });
   it('otro usuario no accede a datos ajenos aunque esté habilitado', async () => {
     await env.withSecurityRulesDisabled(async (ctx) => {
       await setDoc(doc(ctx.firestore(), 'allowedEmails', OTHER), { email: OTHER });

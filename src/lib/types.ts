@@ -41,6 +41,8 @@ export interface Language {
   fields: FieldDef[];
   tags: string[];
   layouts: Layout[];
+  /** Modos de recorrida que se copian a cada mazo nuevo del idioma. Pueden faltar en idiomas anteriores a la iteración 001. */
+  defaultModes?: TraversalMode[];
 }
 
 export interface Flashcard {
@@ -63,6 +65,8 @@ export interface Deck {
   id: string;
   languageId: string;
   name: string;
+  /** Alta del mazo (ms). Falta en los mazos creados antes de la iteración 001: cuentan como los más antiguos. */
+  createdAt?: number;
   cardIds: string[];
   modes: TraversalMode[];
   /** "Libre" en el MVP; reservado para otras formas de aprendizaje. */
