@@ -41,7 +41,7 @@ export class MemoryRepositories implements Repositories {
       if (i >= 0) this.languagesData[i] = language;
       else this.languagesData.push(language);
       if (changes) {
-        this.flashcardsData = this.flashcardsData.map((c) => (c.languageId === language.id ? stripFromFlashcard(c, changes.removedFieldIds, changes.removedTags) ?? c : c));
+        this.flashcardsData = this.flashcardsData.map((c) => (c.languageId === language.id ? stripFromFlashcard(c, changes.removedFieldIds, changes.removedTags, changes.renamedTags) ?? c : c));
       }
       this.notify();
     },
@@ -87,6 +87,12 @@ export class MemoryRepositories implements Repositories {
       this.decksData = this.decksData.map((d) => (d.cardIds.includes(cardId) ? { ...d, cardIds: d.cardIds.filter((id) => id !== cardId) } : d));
       this.notify();
       return { card, deckIds };
+    },
+    removeMany: async (cardIds) => {
+      const gone = new Set(cardIds);
+      this.flashcardsData = this.flashcardsData.filter((c) => !gone.has(c.id));
+      this.decksData = this.decksData.map((d) => (d.cardIds.some((id) => gone.has(id)) ? { ...d, cardIds: d.cardIds.filter((id) => !gone.has(id)) } : d));
+      this.notify();
     },
     restore: async ({ card, deckIds }) => {
       this.flashcardsData.push(card);

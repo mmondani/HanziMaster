@@ -1,0 +1,9 @@
+- En los listados de flashcards y mazos, poder ordenarlos por fecha de creación
+- En los listados de flashcards y mazos, agregar paginación (1, 2, 3.....5)
+- En la sección Más agregar la opción de elegir modo claro, oscuro o el del sistema
+- A nivel de idioma, poder definir modos de recorrida por default. Luego se puede borrar o editar para cada mazo que se cree
+- Para los campos de tipo lista, mostrar cada elemento uno abajo del otro en los layouts
+- Cuando se está en modo de selección múltiple, agregar la posiblidad de eliminar todo lo seleccionado (con una confirmación de borrado)
+- Para los tags definidos para un idioma, poder editarlos.
+- Hacer más compacto cada elemento de la lista de flashcards en la versión mobile. Mostrar la palabra y la traducción. Con un fuente más pequeña
+- Hacer más compacto cada elemento de la lista de mazos en la versión mobile. Mostrar el nombre del mazo, el botón de configuración y el de estudiar.

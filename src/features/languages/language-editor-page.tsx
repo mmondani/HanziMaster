@@ -13,13 +13,14 @@ import { Tabs } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/toast-provider';
 import { UnsavedChangesGuard } from '@/components/ui/unsaved-changes-guard';
 import {
-  addField, createLanguage, layoutsUsingField, moveField, removeField, removeFieldFromLayouts,
-  updateField, validateLanguageName,
+  addField, createLanguage, effectiveRenames, layoutsUsingField, moveField, removeField, removeFieldFromLayouts,
+  trackRename, untrackRename, updateField, validateLanguageName, type TagRename,
 } from '@/lib/domain/field-rules';
 import { LANGUAGE_CODES } from '@/lib/domain/language-presentation';
 import { useLanguages } from '@/lib/languages/languages-provider';
 import { useRepositories } from '@/lib/repositories/repositories-provider';
-import type { FieldDef, Language } from '@/lib/types';
+import type { FieldDef, Language, TraversalMode } from '@/lib/types';
+import { DefaultModesPanel } from './default-modes-panel';
 import { DeleteLanguageDialog } from './delete-language-dialog';
 import { FieldEditorDialog } from './field-editor-dialog';
 import { FieldsPanel } from './fields-panel';
@@ -30,6 +31,7 @@ const TABS = [
   { id: 'campos', label: 'Campos' },
   { id: 'tags', label: 'Tags' },
   { id: 'layouts', label: 'Layouts' },
+  { id: 'recorridas', label: 'Recorridas' },
 ];
 
 /** I02 · Rutas `/idiomas/nuevo` y `/idiomas/:id`. */
@@ -93,6 +95,8 @@ function LanguageEditor({ initial, persisted }: LanguageEditorProps) {
   const [code, setCode] = useState(initial.code);
   const [fields, setFields] = useState(initial.fields);
   const [tags, setTags] = useState(initial.tags);
+  const [defaultModes, setDefaultModes] = useState<TraversalMode[]>(initial.defaultModes ?? []);
+  const [renames, setRenames] = useState<TagRename[]>([]);
   const [nameError, setNameError] = useState<string | undefined>();
   const [saveError, setSaveError] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -102,7 +106,19 @@ function LanguageEditor({ initial, persisted }: LanguageEditorProps) {
   const dirty =
     name !== baseline.name || code !== baseline.code ||
     JSON.stringify(fields) !== JSON.stringify(baseline.fields) ||
-    JSON.stringify(tags) !== JSON.stringify(baseline.tags);
+    JSON.stringify(tags) !== JSON.stringify(baseline.tags) ||
+    JSON.stringify(defaultModes) !== JSON.stringify(baseline.defaultModes ?? []);
+
+  function changeTags(next: string[]) {
+    // Un tag quitado deja de contar como renombrado: se quita con su nombre original.
+    setRenames((list) => tags.filter((t) => !next.includes(t)).reduce(untrackRename, list));
+    setTags(next);
+  }
+
+  function renameTagOf(from: string, to: string) {
+    setRenames((list) => trackRename(list, from, to));
+    setTags((list) => list.map((t) => (t === from ? to : t)));
+  }
   const dirtyRef = useRef(dirty);
   useEffect(() => { dirtyRef.current = dirty; }, [dirty]);
   const leaveFreely = useRef(false);
@@ -116,12 +132,13 @@ function LanguageEditor({ initial, persisted }: LanguageEditorProps) {
     if (error) { setNameError(error); return; }
     const removedFieldIds = baseline.fields.filter((f) => !fields.some((x) => x.id === f.id)).map((f) => f.id);
     const removedTags = baseline.tags.filter((t) => !tags.includes(t));
+    const renamedTags = effectiveRenames(renames, baseline.tags, tags);
     let layouts = initial.layouts;
     for (const fieldId of removedFieldIds) layouts = removeFieldFromLayouts(layouts, fieldId);
     setSaving(true);
     setSaveError(false);
     try {
-      await repos.languages.save({ ...initial, name: name.trim(), code, fields, tags, layouts }, { removedFieldIds, removedTags });
+      await repos.languages.save({ ...initial, name: name.trim(), code, fields, tags, layouts, defaultModes }, { removedFieldIds, removedTags, renamedTags });
       leaveFreely.current = true;
       toast.show({ message: 'Idioma guardado' });
       navigate('/idiomas');
@@ -175,7 +192,8 @@ function LanguageEditor({ initial, persisted }: LanguageEditorProps) {
 
         <Tabs label="Configuración del idioma" items={TABS} value={tab} onChange={(t) => setParams({ tab: t }, { replace: true })}>
           {tab === 'campos' && <FieldsPanel fields={fields} onAdd={() => setEditingId('new')} onEdit={(f) => setEditingId(f.id)} />}
-          {tab === 'tags' && <TagsPanel tags={tags} onChange={setTags} />}
+          {tab === 'tags' && <TagsPanel tags={tags} onChange={changeTags} onRename={renameTagOf} />}
+          {tab === 'recorridas' && <DefaultModesPanel language={{ ...initial, fields }} modes={defaultModes} onChange={setDefaultModes} />}
           {tab === 'layouts' && <LayoutsPanel language={{ ...initial, fields }} persisted={persisted} />}
         </Tabs>
 
