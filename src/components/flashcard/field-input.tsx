@@ -40,7 +40,6 @@ export function FieldInput({ field, language, value, error, onChange, fromAi, lo
             {...c}
             className={[loading && 'skeleton', fromAi && !loading && 'from-ai'].filter(Boolean).join(' ') || undefined}
             cjk={target && isCjk(language)}
-            lang={target ? language.code : undefined}
             type={field.type === 'number' ? 'number' : 'text'}
             inputMode={field.type === 'number' ? 'decimal' : undefined}
             step={field.type === 'number' ? 'any' : undefined}

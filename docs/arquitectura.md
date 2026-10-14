@@ -1,6 +1,6 @@
 # Arquitectura — Hanzi Master
 
-**Última revisión:** 2026-10-13 (cierre de la iteración 001 · Mejoras)
+**Última revisión:** 2026-10-13 (iteración 002 · Fixes)
 
 Hanzi Master es una SPA/PWA para estudiar idiomas con flashcards. No tiene servidor propio: el navegador habla directamente con Firebase (Authentication, Firestore, AI Logic) y la privacidad se impone con reglas de seguridad de Firestore. Producción: https://hanzi-master-701f9.web.app (proyecto Firebase `hanzi-master-701f9`).
 
@@ -60,6 +60,8 @@ users/{uid}/decks/{deckId}            Deck: languageId, cardIds, modes (frente/r
 - **Cascadas en el cliente** (escritura por lotes, `lib/domain/cascades.ts`): eliminar idioma → sus flashcards y mazos; eliminar flashcard → se quita de los mazos; quitar un tag del idioma → se quita de las flashcards; renombrar un tag → se renombra en las flashcards (`LanguageChanges.renamedTags`, resuelto desde los nombres originales); eliminar la selección de flashcards → `removeMany` las borra y las quita de los mazos en una sola pasada (sin deshacer); eliminar un campo → se borra su valor y su lugar en los layouts.
 - Las flashcards del usuario se suscriben completas (`onSnapshot`) y se filtran por idioma, búsqueda y tags en memoria: el volumen esperado es bajo.
 - **Listados:** flashcards y mazos se ordenan por fecha de creación (`?orden=recientes|antiguas`, por defecto los más recientes) y se paginan en memoria (`?pagina=`; 50 flashcards o 12 mazos por página). La lógica es pura, en `lib/domain/list-view.ts`; cualquier cambio de filtro, búsqueda, orden o idioma vuelve a la página 1. En mobile las filas de flashcards (< 1024px: palabra y traducción) y las tarjetas de mazo (< 640px: nombre, configuración y estudiar) se compactan solo por CSS.
+- **Selección por pulsación larga:** en el listado de flashcards, mantener apretada una fila (solo touch/lápiz, 500 ms; se cancela si el dedo se mueve) entra en el modo de selección con esa carta marcada y no navega al detalle. El gesto es `lib/hooks/use-long-press.ts`.
+- Los inputs de campos no declaran `lang` (solo la vista de la carta); la tipografía CJK sale de la clase `han-input`.
 - El idioma activo se recuerda en `localStorage` (`hm:active-language:{uid}`).
 - **Tema:** claro, oscuro o el del sistema (`lib/theme.ts`). La preferencia vive en `localStorage` (`hm:theme`, por dispositivo, no en la cuenta) y se elige en Más (mobile) o en el sidebar (desktop).
 
@@ -93,7 +95,7 @@ Mapa en `src/app/routes.tsx` (detalle en `docs/features/000-mvp/pantallas/navega
 - `npm run dev` apunta al proyecto real (con `VITE_USE_EMULATORS=true` usa los emuladores de Auth y Firestore: `npm run emulators`).
 - `npm run build` (tsc + Vite): JS inicial ~244 KB de app y ~650 KB de Firebase en su propio chunk; el SDK de IA va aparte.
 - Despliegue: `firebase deploy --only hosting` (las reglas e índices de Firestore se despliegan con `--only firestore`). Hosting reescribe todo a `index.html`; `sw.js`, `index.html` y el manifest salen sin caché y los assets con hash como inmutables (`firebase.json`).
-- Las decisiones y desvíos de cada iteración están en `docs/features/NNN-nombre/notas.md` (000 MVP, 001 Mejoras).
+- Las decisiones y desvíos de cada iteración están en `docs/features/NNN-nombre/notas.md` (000 MVP, 001 Mejoras, 002 Fixes).
 
 ## Pruebas
 

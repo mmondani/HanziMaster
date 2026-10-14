@@ -1,0 +1,3 @@
+- Error: al cambiar el idioma del teclado en mobile, aparece y desaparece el dialog con los idiomas
+- Error: en el detalle de la flashcard el layout queda por fuera de la pantalla
+- Feature: al mantener apretada una flashcard, entrar en modo de selección múltiple

@@ -167,7 +167,10 @@ export function FlashcardsPage() {
     toast.show({ message: `Se ${ids.length === 1 ? 'eliminó 1 flashcard' : `eliminaron ${ids.length} flashcards`}` });
   }
 
-  const startSelecting = () => setSelecting(true);
+  const startSelecting = (id?: string) => {
+    setSelecting(true);
+    if (typeof id === 'string') setSelectedIds(new Set([id]));
+  };
 
   const header = (
     <PageHeader
@@ -176,7 +179,7 @@ export function FlashcardsPage() {
       desktopActions={
         !selecting && active ? (
           <>
-            {ofLanguage.length > 0 && <Button variant="ghost" onClick={startSelecting}><ListChecks className="ic" aria-hidden="true" />Seleccionar</Button>}
+            {ofLanguage.length > 0 && <Button variant="ghost" onClick={() => startSelecting()}><ListChecks className="ic" aria-hidden="true" />Seleccionar</Button>}
             <Link className="btn btn-secondary" to="/flashcards/importar"><Upload className="ic" aria-hidden="true" />Importar CSV</Link>
           </>
         ) : undefined
@@ -187,7 +190,7 @@ export function FlashcardsPage() {
           <Menu
             label="Más acciones"
             items={[
-              ...(ofLanguage.length > 0 ? [{ label: 'Seleccionar', icon: <ListChecks className="ic" aria-hidden="true" />, onSelect: startSelecting }] : []),
+              ...(ofLanguage.length > 0 ? [{ label: 'Seleccionar', icon: <ListChecks className="ic" aria-hidden="true" />, onSelect: () => startSelecting() }] : []),
               { label: 'Importar CSV', icon: <Upload className="ic" aria-hidden="true" />, to: '/flashcards/importar' },
             ]}
           />
@@ -286,7 +289,7 @@ export function FlashcardsPage() {
             <ul className="list" style={{ listStyle: 'none', padding: 0 }}>
               {shown.map((c) => (
                 <li key={c.id}>
-                  <FlashcardRow card={c} language={active} secondary={secondary} selecting={selecting} selected={selectedIds.has(c.id)} onToggle={() => toggle(c.id)} />
+                  <FlashcardRow card={c} language={active} secondary={secondary} selecting={selecting} selected={selectedIds.has(c.id)} onToggle={() => toggle(c.id)} onLongPress={() => startSelecting(c.id)} />
                 </li>
               ))}
             </ul>

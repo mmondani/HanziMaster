@@ -172,3 +172,14 @@ describe('F03 · Crear y editar flashcard', () => {
     expect(await screen.findByText('No se encontró la flashcard')).toBeInTheDocument();
   });
 });
+
+describe('FX1 · Campo Palabra en Android', () => {
+  it('FX1 el input de la palabra no declara `lang` (evita que Gboard reabra su selector de idioma) y conserva el foco al escribir', async () => {
+    await openForm('/flashcards/nueva');
+    const word = screen.getByLabelText(/Palabra/);
+    expect(word).not.toHaveAttribute('lang');
+    await userEvent.type(word, '你好');
+    expect(word).toHaveValue('你好');
+    expect(word).toHaveFocus();
+  });
+});

@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
 import { card, chinese, deck } from '@/test/fixtures';
@@ -252,5 +252,29 @@ describe('MJ6 · Eliminar la selección', () => {
     await userEvent.click(within(bar()).getByRole('button', { name: /Eliminar/ }));
     await userEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Eliminar 2 flashcards' }));
     await waitFor(() => expect(repos.flashcardsData.map((c) => c.id)).toEqual(['c3', 'c4']));
+  });
+});
+
+describe('FX · Pulsación larga en una flashcard', () => {
+  it('FX3 mantener apretada una fila (touch) entra en modo selección con esa carta marcada', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      await openList();
+      fireEvent.pointerDown(screen.getByRole('link', { name: /谢谢/ }), { pointerType: 'touch', clientX: 5, clientY: 5 });
+      act(() => { vi.advanceTimersByTime(600); });
+      expect(await screen.findByRole('toolbar', { name: 'Acciones sobre la selección' })).toBeInTheDocument();
+      expect(within(bar()).getByRole('status')).toHaveTextContent('1 seleccionadas');
+      expect(row('谢谢')).toBeChecked();
+      expect(row('你好')).not.toBeChecked();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('FX4 un toque corto sigue abriendo el detalle', async () => {
+    await openList();
+    await userEvent.click(screen.getByRole('link', { name: /谢谢/ }));
+    expect(await screen.findByRole('heading', { name: 'Flashcard' })).toBeInTheDocument();
+    expect(screen.queryByRole('toolbar')).toBeNull();
   });
 });
