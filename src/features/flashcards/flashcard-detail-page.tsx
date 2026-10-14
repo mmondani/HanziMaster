@@ -75,7 +75,7 @@ function FlashcardDetail({ language, card }: { language: Language; card: Flashca
         {failed && <div style={{ marginBottom: 'var(--sp-4)' }}><Alert tone="err">No se pudo eliminar la flashcard. Inténtalo de nuevo.</Alert></div>}
         <div className="split two-one">
           <section aria-labelledby="prev-t" className="stack" style={{ '--gap': 'var(--sp-3)' } as React.CSSProperties}>
-            <div className="row">
+            <div className="row wrap">
               <h2 id="prev-t" className="grow">Vista previa</h2>
               {layouts.length > 1 && (
                 <Segmented label="Layout de vista previa" options={layouts.map((l) => ({ value: l.id, label: l.name }))} value={front.id} onChange={setLayoutId} />

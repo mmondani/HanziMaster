@@ -20,12 +20,12 @@ export function SelectionBar({ ids, onEdit, onDelete, onCancel }: SelectionBarPr
         <span className="sr-only only-mobile"> seleccionadas</span>
       </span>
       {none ? (
-        <button type="button" className="btn btn-light" disabled><Layers className="ic" aria-hidden="true" />Crear mazo</button>
+        <button type="button" className="btn btn-light" disabled><Layers className="ic" aria-hidden="true" /><span className="lbl lbl-narrow">Crear mazo</span></button>
       ) : (
-        <Link className="btn btn-light" to={`/mazos/nuevo?cartas=${ids.join(',')}`}><Layers className="ic" aria-hidden="true" />Crear mazo</Link>
+        <Link className="btn btn-light" to={`/mazos/nuevo?cartas=${ids.join(',')}`}><Layers className="ic" aria-hidden="true" /><span className="lbl lbl-narrow">Crear mazo</span></Link>
       )}
-      <button type="button" className="btn btn-onbar" disabled={none} onClick={onEdit}><Pencil className="ic" aria-hidden="true" />Editar</button>
-      <button type="button" className="btn btn-onbar" disabled={none} onClick={onDelete}><Trash2 className="ic" aria-hidden="true" />Eliminar</button>
+      <button type="button" className="btn btn-onbar" disabled={none} onClick={onEdit}><Pencil className="ic" aria-hidden="true" /><span className="lbl">Editar</span></button>
+      <button type="button" className="btn btn-onbar" disabled={none} onClick={onDelete}><Trash2 className="ic" aria-hidden="true" /><span className="lbl">Eliminar</span></button>
       <IconButton className="btn-onbar" style={{ color: 'var(--bg)' }} aria-label="Cancelar selección" onClick={onCancel}>
         <X className="ic" aria-hidden="true" />
       </IconButton>

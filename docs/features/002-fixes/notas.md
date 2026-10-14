@@ -8,6 +8,10 @@
 - **FX2:** `.split` pasa a `grid-template-columns: minmax(0, 1fr)` y sus hijos a `min-width: 0`.
 - **FX3/FX4:** `useLongPress` (500 ms, tolerancia de 10 px, solo `pointerType` distinto de `mouse`). Vibra 10 ms si el dispositivo lo permite. `.item.card-row` lleva `user-select: none` y `-webkit-touch-callout: none`, y el enlace `draggable={false}`.
 
+## Segunda pasada de FX2 (tras probar en el celular)
+- El selector de layouts (`Segmented`) se salía de la pantalla: el encabezado de la vista previa ahora envuelve (`.row.wrap`) y `.seg` tiene `max-width: 100%` con scroll horizontal; los botones no se parten.
+- El texto del layout se desbordaba de su celda (traducción larga en XL, pisaba al pinyin): `FlashcardView` calcula el tamaño según el largo del texto (`fontSize`, CJK = 1em, resto ≈ 0.55em) y usa `cqw` (la raíz es `container-type: inline-size`) en vez de `vw`. Los textos cortos quedan igual; solo L y XL se achican.
+
 ## Verificación
 - `npm test` (399), `npm run lint` y `npm run build`: en verde. Tests nuevos: `use-long-press.test.tsx`, `FX3`/`FX4` en `selection-bulk.test.tsx`, `FX1` en `flashcard-form.test.tsx`.
 
@@ -18,3 +22,6 @@
 
 ## Aprendizajes
 - El diálogo que parpadeaba era del teclado (Gboard), no de la app: conviene preguntar qué se ve antes de buscar en el código.
+
+## Tercera pasada (barra de selección en mobile)
+- La barra de acciones de la selección no entraba en pantalla (Eliminar y la ✕ quedaban cortados). Bajo 1024px, Editar y Eliminar muestran solo el ícono (el texto queda como nombre accesible) y, bajo 390px, también Crear mazo. Revisar a 360 px.

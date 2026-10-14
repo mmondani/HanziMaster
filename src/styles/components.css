@@ -25,6 +25,7 @@ h3, .as-h3 { font-size: 16px; font-weight: 600; }
 .stack > * + * { margin-top: var(--gap, var(--sp-4)); }
 .row { display: flex; align-items: center; gap: var(--gap, var(--sp-3)); }
 .row.wrap { flex-wrap: wrap; }
+.row.wrap { flex-wrap: wrap; }
 .grow { flex: 1; min-width: 0; }
 .ic { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 .ic.lg { width: 24px; height: 24px; }
@@ -142,8 +143,8 @@ h3, .as-h3 { font-size: 16px; font-weight: 600; }
 .switch input:checked + span { background: var(--primary); }
 .switch input:checked + span::after { transform: translateX(20px); }
 .switch input:focus-visible + span { outline: 3px solid var(--ring); outline-offset: 2px; }
-.seg { display: inline-flex; padding: 3px; background: var(--surface-2); border-radius: var(--r-md); gap: 2px; }
-.seg button, .seg a { min-height: 40px; padding: 0 var(--sp-4); border-radius: calc(var(--r-md) - 3px); font-weight: 600; font-size: 14px; color: var(--text-muted); display: inline-flex; align-items: center; }
+.seg { display: inline-flex; max-width: 100%; overflow-x: auto; padding: 3px; background: var(--surface-2); border-radius: var(--r-md); gap: 2px; }
+.seg button, .seg a { flex: none; white-space: nowrap; min-height: 40px; padding: 0 var(--sp-4); border-radius: calc(var(--r-md) - 3px); font-weight: 600; font-size: 14px; color: var(--text-muted); display: inline-flex; align-items: center; }
 .seg [aria-pressed="true"], .seg [aria-selected="true"], .seg .on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-1); }
 .form-grid { display: grid; gap: var(--sp-4); }
 @media (min-width: 640px) { .form-grid.two { grid-template-columns: 1fr 1fr; } }
@@ -242,7 +243,17 @@ a.deck-card:hover { border-color: var(--primary); }
 .action-bar .btn { min-height: 44px; padding: 0 var(--sp-3); font-size: 14px; }
 .action-bar .btn-light { background: var(--bg); color: var(--text); }
 .action-bar .btn-onbar { color: var(--bg); }
+.action-bar .count { min-width: 0; }
+/* Mobile: Editar y Eliminar solo con ícono (el nombre accesible se conserva) para que la barra entre en pantalla. */
+@media (max-width: 1023.98px) {
+  .action-bar .btn-onbar .lbl { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .action-bar .btn-onbar { min-width: 44px; padding: 0; justify-content: center; }
+}
 .action-bar .btn-onbar:hover { background: rgba(255,255,255,.15); }
+@media (max-width: 389.98px) {
+  .action-bar .lbl-narrow { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .action-bar .btn-light { min-width: 44px; padding: 0; justify-content: center; }
+}
 @media (min-width: 1024px) { .action-bar { left: calc(var(--sidebar-w) + var(--sp-6)); right: var(--sp-6); bottom: var(--sp-5); max-width: 640px; margin: 0 auto; } }
 
 /* ---------- navegación interna ---------- */

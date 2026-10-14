@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { ToastProvider } from '@/components/ui/toast-provider';
 import { chinese } from '@/test/fixtures';
 import type { Language, Layout } from '@/lib/types';
-import { FlashcardView } from './flashcard-view';
+import { FlashcardView, fontSize } from './flashcard-view';
 
 function withSynonyms(): { language: Language; layout: Layout } {
   const base = chinese();
@@ -41,5 +41,15 @@ describe('MJ5 · Campos de lista en los layouts', () => {
     );
     expect(container.querySelector('[data-field="sinonimos"]')).toBeNull();
     expect(screen.getByText('你好')).toBeInTheDocument();
+  });
+});
+
+describe('FX2 · Textos largos en tamaños grandes', () => {
+  it('FX2 un texto largo en XL/L se achica respecto de uno corto; S y M no cambian', () => {
+    expect(fontSize('XL', '水')).toBe('clamp(1.5rem, 14.00cqw, 6.00rem)');
+    expect(fontSize('XL', '2 (personas, plata)')).toBe('clamp(1.5rem, 6.70cqw, 2.87rem)');
+    expect(fontSize('L', '水')).toBe('1.75rem');
+    expect(parseFloat(fontSize('L', 'una traducción bastante larga de ejemplo'))).toBeLessThan(1.75);
+    expect(fontSize('M', 'una traducción bastante larga de ejemplo')).toBe('1.125rem');
   });
 });
