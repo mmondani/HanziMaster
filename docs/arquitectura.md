@@ -1,6 +1,6 @@
 # Arquitectura — Hanzi Master
 
-**Última revisión:** 2026-10-12 (cierre de la iteración 000 · MVP)
+**Última revisión:** 2026-10-13 (cierre de la iteración 001 · Mejoras)
 
 Hanzi Master es una SPA/PWA para estudiar idiomas con flashcards. No tiene servidor propio: el navegador habla directamente con Firebase (Authentication, Firestore, AI Logic) y la privacidad se impone con reglas de seguridad de Firestore. Producción: https://hanzi-master-701f9.web.app (proyecto Firebase `hanzi-master-701f9`).
 
@@ -24,7 +24,7 @@ src/
   components/
     ui/           primitivas (button, field, input, dialog, toast, tabs, chip…)
     layout/       app-shell, sidebar, bottom-nav, top-bar, selector de idioma, aviso offline, aviso de actualización
-    flashcard/    flashcard-view, flip-card, layout-canvas, field-input, tts-button
+    flashcard/    flashcard-view (los campos de lista, un elemento por línea), flip-card, layout-canvas, field-input, tts-button
   features/       una carpeta por área: access, languages, flashcards, decks, study, more (páginas + hooks de pantalla + tests)
   lib/
     types.ts      tipos del dominio (Language, Flashcard, Deck…)
@@ -47,17 +47,21 @@ Reglas de capas:
 
 ```
 allowedEmails/{email}                 id = email en minúsculas; solo lectura del propio documento
-users/{uid}/languages/{languageId}    Language: fields, tags y layouts embebidos
+users/{uid}/languages/{languageId}    Language: fields, tags, layouts y defaultModes embebidos
 users/{uid}/flashcards/{cardId}       Flashcard: languageId, values por id de campo, tags
-users/{uid}/decks/{deckId}            Deck: languageId, cardIds, modes (frente/reverso por layout), learning:'free'
+users/{uid}/decks/{deckId}            Deck: languageId, cardIds, modes (frente/reverso por layout), learning:'free', createdAt?
 ```
 
 - Los campos de cada idioma son configurables (`FieldDef`); `word`, `translation` y `tags` son campos de sistema y no se pueden eliminar.
 - Un layout es una grilla de 6 columnas × hasta 12 filas con los campos ubicados (`LayoutItem`); sin arrastrar y soltar, solo con controles.
+- **Modos por defecto:** `Language.defaultModes` se **copia** (ids nuevos) a cada mazo nuevo; no afecta a los existentes y los rotos se omiten. Ver [ADR 0005](./decisiones/0005-modos-por-defecto-del-idioma.md).
+- **`Deck.createdAt`** (opcional) se asigna al crear el mazo y se conserva al editarlo; los mazos anteriores no lo tienen y cuentan como los más antiguos al ordenar. Las flashcards ya tenían `createdAt`.
 - **Mazo "no disponible"** es un estado **derivado**, no guardado: algún modo apunta a un layout que ya no existe. Se repara editando ese modo.
-- **Cascadas en el cliente** (escritura por lotes, `lib/domain/cascades.ts`): eliminar idioma → sus flashcards y mazos; eliminar flashcard → se quita de los mazos; quitar un tag del idioma → se quita de las flashcards; eliminar un campo → se borra su valor y su lugar en los layouts.
+- **Cascadas en el cliente** (escritura por lotes, `lib/domain/cascades.ts`): eliminar idioma → sus flashcards y mazos; eliminar flashcard → se quita de los mazos; quitar un tag del idioma → se quita de las flashcards; renombrar un tag → se renombra en las flashcards (`LanguageChanges.renamedTags`, resuelto desde los nombres originales); eliminar la selección de flashcards → `removeMany` las borra y las quita de los mazos en una sola pasada (sin deshacer); eliminar un campo → se borra su valor y su lugar en los layouts.
 - Las flashcards del usuario se suscriben completas (`onSnapshot`) y se filtran por idioma, búsqueda y tags en memoria: el volumen esperado es bajo.
+- **Listados:** flashcards y mazos se ordenan por fecha de creación (`?orden=recientes|antiguas`, por defecto los más recientes) y se paginan en memoria (`?pagina=`; 50 flashcards o 12 mazos por página). La lógica es pura, en `lib/domain/list-view.ts`; cualquier cambio de filtro, búsqueda, orden o idioma vuelve a la página 1. En mobile las filas de flashcards (< 1024px: palabra y traducción) y las tarjetas de mazo (< 640px: nombre, configuración y estudiar) se compactan solo por CSS.
 - El idioma activo se recuerda en `localStorage` (`hm:active-language:{uid}`).
+- **Tema:** claro, oscuro o el del sistema (`lib/theme.ts`). La preferencia vive en `localStorage` (`hm:theme`, por dispositivo, no en la cuenta) y se elige en Más (mobile) o en el sidebar (desktop).
 
 ## Seguridad y privacidad
 
@@ -89,7 +93,7 @@ Mapa en `src/app/routes.tsx` (detalle en `docs/features/000-mvp/pantallas/navega
 - `npm run dev` apunta al proyecto real (con `VITE_USE_EMULATORS=true` usa los emuladores de Auth y Firestore: `npm run emulators`).
 - `npm run build` (tsc + Vite): JS inicial ~244 KB de app y ~650 KB de Firebase en su propio chunk; el SDK de IA va aparte.
 - Despliegue: `firebase deploy --only hosting` (las reglas e índices de Firestore se despliegan con `--only firestore`). Hosting reescribe todo a `index.html`; `sw.js`, `index.html` y el manifest salen sin caché y los assets con hash como inmutables (`firebase.json`).
-- Las decisiones y desvíos de la iteración están en `docs/features/000-mvp/notas.md`.
+- Las decisiones y desvíos de cada iteración están en `docs/features/NNN-nombre/notas.md` (000 MVP, 001 Mejoras).
 
 ## Pruebas
 
