@@ -13,7 +13,7 @@ export function UpdatePrompt() {
 
   if (!needRefresh) return null;
   return (
-    <div className="toast" role="status" style={{ bottom: 'calc(var(--bottom-nav-h) + var(--sp-4) + env(safe-area-inset-bottom))', zIndex: 130 }}>
+    <div className="toast with-actions" role="status" style={{ bottom: 'calc(var(--bottom-nav-h) + var(--sp-4) + env(safe-area-inset-bottom))', zIndex: 130 }}>
       <span>Hay una versión nueva de Hanzi Master.</span>
       <Button variant="ghost" style={{ color: 'var(--bg)' }} onClick={() => void updateServiceWorker(true)}>Actualizar</Button>
       <Button variant="ghost" style={{ color: 'var(--bg)' }} onClick={() => setNeedRefresh(false)}>Más tarde</Button>

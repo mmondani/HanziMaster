@@ -303,8 +303,12 @@ a.deck-card:hover { border-color: var(--primary); }
 .alert.ok .ic { color: var(--success); }
 .alert.warn { background: var(--warn-soft); }
 .alert.warn .ic { color: var(--warn); }
-.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--bottom-nav-h) + var(--sp-4) + env(safe-area-inset-bottom)); z-index: 120; display: flex; align-items: center; gap: var(--sp-3); padding: 0 var(--sp-2) 0 var(--sp-4); min-height: 48px; background: var(--text); color: var(--bg); border-radius: var(--r-md); box-shadow: var(--shadow-3); font-size: 14px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--bottom-nav-h) + var(--sp-4) + env(safe-area-inset-bottom)); z-index: 120; width: max-content; max-width: calc(100vw - 2 * var(--sp-4)); display: flex; align-items: center; gap: var(--sp-3); padding: 0 var(--sp-2) 0 var(--sp-4); min-height: 48px; background: var(--text); color: var(--bg); border-radius: var(--r-md); box-shadow: var(--shadow-3); font-size: 14px; }
 .toast .btn { color: var(--bg); text-decoration: underline; min-height: 44px; }
+/* Toast con acciones: si no entra en una línea, los botones bajan alineados a la derecha. */
+.toast.with-actions { flex-wrap: wrap; column-gap: var(--sp-3); row-gap: 0; }
+.toast.with-actions > span { padding: var(--sp-3) 0; }
+.toast.with-actions > .btn:first-of-type { margin-left: auto; }
 @media (min-width: 1024px) { .toast { bottom: var(--sp-5); } }
 .skeleton { background: linear-gradient(90deg, var(--surface-2), var(--border), var(--surface-2)); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; border-radius: var(--r-md); }
 @keyframes shimmer { to { background-position: -200% 0; } }
