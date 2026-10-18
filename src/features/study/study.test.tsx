@@ -1,8 +1,10 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { DRAW_LAYOUT_ID } from '@/lib/domain/handwriting';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
 import { card, chinese, deck, MODE_A, MODE_B } from '@/test/fixtures';
 import { renderApp, signedInService } from '@/test/render-app';
+import { fixtureLoader } from '@/test/stroke-fixtures';
 
 const WORDS = [
   ['你好', 'nǐ hǎo', 'hola'],
@@ -304,6 +306,76 @@ describe('R01 · Salir', () => {
     await openStudy();
     expect(document.querySelector('.sidebar')).toBeNull();
     expect(document.querySelector('.bottom-nav')).toBeNull();
+  });
+});
+
+describe('E1/E2 · Recorrido con el layout Dibujar', () => {
+  const DRAW_BACK = { id: 'mD', name: 'Escribir', frontLayoutId: 'ly2', backLayoutId: DRAW_LAYOUT_ID };
+  const DRAW_FRONT = { id: 'mF', name: 'Dibujar primero', frontLayoutId: DRAW_LAYOUT_ID, backLayoutId: 'ly1' };
+
+  function drawSeeded() {
+    const repos = new MemoryRepositories();
+    repos.languagesData = [chinese()];
+    repos.flashcardsData = [card('c0', 'zh', { values: { word: '口', translation: 'boca' } }), card('c1', 'zh', { values: { word: '你好', translation: 'hola' } })];
+    repos.decksData = [deck('d1', 'zh', { cardIds: ['c0', 'c1'], modes: [DRAW_BACK, DRAW_FRONT] })];
+    return repos;
+  }
+
+  async function openDraw(modeId: string, loader = fixtureLoader()) {
+    identityOrder();
+    renderApp(`/mazos/d1/estudiar?modo=${modeId}`, signedInService(), drawSeeded(), undefined, loader);
+    await screen.findByRole('progressbar');
+    return loader;
+  }
+
+  it('Dibujar en el reverso: el frente muestra su layout y el reverso un único canvas para dibujar', async () => {
+    await openDraw('mD');
+    expect(within(front()).getByText('boca')).toBeInTheDocument();
+    expect(back().querySelectorAll('canvas')).toHaveLength(1);
+    expect(front().querySelector('canvas')).toBeNull();
+    expect(within(back()).getByRole('button', { name: 'Validar', hidden: true })).toBeInTheDocument();
+  });
+
+  it('Dibujar en el frente también se puede', async () => {
+    await openDraw('mF');
+    expect(front().querySelectorAll('canvas')).toHaveLength(1);
+    expect(back().querySelector('[data-field="word"]')).toHaveTextContent('口');
+  });
+
+  it('tocar el área de dibujo no gira la carta; el botón Girar sí', async () => {
+    await openDraw('mF');
+    await userEvent.click(within(front()).getByRole('img', { name: /Área de dibujo/ }));
+    expect(flipCard().closest('.flip')).not.toHaveClass('is-flipped');
+    await userEvent.click(screen.getByRole('button', { name: 'Girar' }));
+    expect(flipCard().closest('.flip')).toHaveClass('is-flipped');
+  });
+
+  it('un gesto que empieza en el área de dibujo no cambia de carta', async () => {
+    await openDraw('mF');
+    const canvas = within(front()).getByRole('img', { name: /Área de dibujo/ });
+    fireEvent.touchStart(canvas, { touches: [{ clientX: 250, clientY: 0 }] });
+    fireEvent.touchEnd(canvas, { changedTouches: [{ clientX: 50, clientY: 0 }] });
+    expect(counter()).toHaveTextContent('1 / 2');
+  });
+
+  it('la carta siguiente tiene una celda por carácter de su palabra', async () => {
+    await openDraw('mF');
+    expect(within(front()).getByRole('img')).toHaveAccessibleName('Área de dibujo: una celda');
+    await userEvent.keyboard('{ArrowRight}');
+    expect(within(front()).getByRole('img')).toHaveAccessibleName('Área de dibujo: 2 celdas, una por carácter');
+  });
+
+  it('al empezar, se descargan de antemano los trazos de las palabras del mazo', async () => {
+    const loader = await openDraw('mD');
+    await waitFor(() => expect([...new Set(loader.calls)].sort()).toEqual(['口', '你', '好'].sort()));
+  });
+
+  it('sin Dibujar no se descargan trazos', async () => {
+    const loader = fixtureLoader();
+    identityOrder();
+    renderApp('/mazos/d1/estudiar?modo=mA', signedInService(), seeded(), undefined, loader);
+    await screen.findByRole('progressbar');
+    expect(loader.calls).toEqual([]);
   });
 });
 

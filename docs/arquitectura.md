@@ -1,6 +1,6 @@
 # Arquitectura — Hanzi Master
 
-**Última revisión:** 2026-10-13 (iteración 002 · Fixes)
+**Última revisión:** 2026-10-18 (iteración 003 · Escritura a mano)
 
 Hanzi Master es una SPA/PWA para estudiar idiomas con flashcards. No tiene servidor propio: el navegador habla directamente con Firebase (Authentication, Firestore, AI Logic) y la privacidad se impone con reglas de seguridad de Firestore. Producción: https://hanzi-master-701f9.web.app (proyecto Firebase `hanzi-master-701f9`).
 
@@ -13,6 +13,7 @@ Hanzi Master es una SPA/PWA para estudiar idiomas con flashcards. No tiene servi
 | Íconos / CSV | `lucide-react`, `papaparse` |
 | Datos y acceso | Firebase: Authentication (Google), Firestore (`(default)`, `us-central1`), Hosting |
 | IA | Firebase AI Logic con Gemini Developer API (modelo en `VITE_AI_MODEL`, por defecto `gemini-3.5-flash`) |
+| Trazos (Dibujar) | Datos de Make Me a Hanzi / hanzi-writer-data, hanzi-writer-data-jp y animCJK desde jsDelivr con versión fija; canvas nativo y comparador propio |
 | PWA | `vite-plugin-pwa` (`registerType: 'prompt'`), caché persistente multipestaña de Firestore |
 | Calidad | Vitest + Testing Library (jsdom), ESLint 9 (`jsx-a11y`, `react-hooks`), tests de reglas con el emulador de Firestore |
 
@@ -24,16 +25,19 @@ src/
   components/
     ui/           primitivas (button, field, input, dialog, toast, tabs, chip…)
     layout/       app-shell, sidebar, bottom-nav, top-bar, selector de idioma, aviso offline, aviso de actualización
-    flashcard/    flashcard-view (los campos de lista, un elemento por línea), flip-card, layout-canvas, field-input, tts-button
+    flashcard/    flashcard-view (los campos de lista, un elemento por línea), flip-card, layout-canvas, field-input, tts-button,
+                  handwriting-canvas + handwriting-paint (layout Dibujar)
   features/       una carpeta por área: access, languages, flashcards, decks, study, more (páginas + hooks de pantalla + tests)
   lib/
     types.ts      tipos del dominio (Language, Flashcard, Deck…)
     domain/       lógica pura sin React ni Firebase (reglas de campos, grilla de layouts, búsqueda, formulario, edición masiva,
-                  importación CSV, reglas de mazo, mezcla, sesión de estudio, cascadas, saneamiento de la IA)
+                  importación CSV, reglas de mazo, mezcla, sesión de estudio, cascadas, saneamiento de la IA,
+                  layout Dibujar: handwriting, strokes, stroke-matching)
     repositories/ interfaces + implementación Firestore + `MemoryRepositories` (tests)
     auth/         servicio de autenticación (interfaz + Firebase) y `AuthProvider`
     languages|flashcards|decks/   proveedores de contexto con los datos suscritos
     ai/           cliente de Gemini, prompt y `AiProvider`
+    handwriting/  carga de datos de trazos (`CharDataLoader`, jsDelivr) y `CharDataProvider`
     firebase.ts   inicialización (App, Auth, Firestore, App Check opcional, emuladores)
   test/           utilidades de test (render de la app con servicios simulados, fixtures)
 ```
@@ -41,7 +45,7 @@ src/
 Reglas de capas:
 - **La UI nunca toca Firestore.** Accede a `Repositories` (`useRepositories`) y a los proveedores de contexto. Los repositorios se inyectan (`RepositoriesProvider`), así los tests usan `MemoryRepositories`.
 - **La lógica de negocio vive en `lib/domain`**, como funciones puras con tests unitarios.
-- La autenticación y la IA también son interfaces inyectables (`AuthService`, `AiCompleter`).
+- La autenticación, la IA y los datos de trazos también son interfaces inyectables (`AuthService`, `AiCompleter`, `CharDataLoader`).
 
 ## Modelo de datos (Firestore)
 
@@ -57,6 +61,7 @@ users/{uid}/decks/{deckId}            Deck: languageId, cardIds, modes (frente/r
 - **Modos por defecto:** `Language.defaultModes` se **copia** (ids nuevos) a cada mazo nuevo; no afecta a los existentes y los rotos se omiten. Ver [ADR 0005](./decisiones/0005-modos-por-defecto-del-idioma.md).
 - **`Deck.createdAt`** (opcional) se asigna al crear el mazo y se conserva al editarlo; los mazos anteriores no lo tienen y cuentan como los más antiguos al ordenar. Las flashcards ya tenían `createdAt`.
 - **Mazo "no disponible"** es un estado **derivado**, no guardado: algún modo apunta a un layout que ya no existe. Se repara editando ese modo.
+- **Layout Dibujar:** virtual, con id reservado `__draw__`; no está en `Language.layouts` y solo existe en idiomas `zh-*` y `ja-*` (`layoutOptions`). Si el idioma deja de serlo, sus modos con Dibujar quedan "no disponibles". Ver [ADR 0006](./decisiones/0006-layout-dibujar-y-validacion-por-trazos.md).
 - **Cascadas en el cliente** (escritura por lotes, `lib/domain/cascades.ts`): eliminar idioma → sus flashcards y mazos; eliminar flashcard → se quita de los mazos; quitar un tag del idioma → se quita de las flashcards; renombrar un tag → se renombra en las flashcards (`LanguageChanges.renamedTags`, resuelto desde los nombres originales); eliminar la selección de flashcards → `removeMany` las borra y las quita de los mazos en una sola pasada (sin deshacer); eliminar un campo → se borra su valor y su lugar en los layouts.
 - Las flashcards del usuario se suscriben completas (`onSnapshot`) y se filtran por idioma, búsqueda y tags en memoria: el volumen esperado es bajo.
 - **Listados:** flashcards y mazos se ordenan por fecha de creación (`?orden=recientes|antiguas`, por defecto los más recientes) y se paginan en memoria (`?pagina=`; 50 flashcards o 12 mazos por página). La lógica es pura, en `lib/domain/list-view.ts`; cualquier cambio de filtro, búsqueda, orden o idioma vuelve a la página 1. En mobile las filas de flashcards (< 1024px: palabra y traducción) y las tarjetas de mazo (< 640px: nombre, configuración y estudiar) se compactan solo por CSS.
@@ -84,21 +89,28 @@ Mapa en `src/app/routes.tsx` (detalle en `docs/features/000-mvp/pantallas/navega
 
 - Firestore usa `persistentLocalCache` con `persistentMultipleTabManager`: lo ya sincronizado se ve y se recorre sin red, y las escrituras quedan en cola y se sincronizan al volver.
 - El service worker (generado por `vite-plugin-pwa`) precachea el shell (HTML, JS, CSS, íconos); las fuentes se guardan en caché al usarse. Cuando hay una versión nueva se avisa (`UpdatePrompt`) y el usuario elige cuándo actualizar, para no recargar en medio de un recorrido.
-- `Completar con IA` es la única acción que requiere red: se deshabilita sin conexión.
+- `Completar con IA` es la única acción que requiere red: se deshabilita sin conexión. Validar en Dibujar funciona sin red con los trazos ya descargados (se precargan al empezar el recorrido).
 
 ## IA: completar flashcards
 
 `lib/domain/ai-completion.ts` define la interfaz `AiCompleter`, arma el pedido (palabra + definición de los campos + set de tags) y **sanea** la respuesta: solo rellena campos vacíos, nunca la palabra, valida números y listas, y limita los tags al set del idioma (máximo 2). `lib/ai/gemini-completer.ts` es la implementación real: carga `firebase/ai` bajo demanda y usa salida estructurada (`responseSchema`).
+
+## Escritura a mano (layout Dibujar)
+
+- La cara Dibujar del recorrido es un **único `<canvas>`** con una celda guía (田) por carácter de la Palabra (`drawableChars`: hanzi, kanji y kana; ignora espacios, puntuación, letras y números). En mobile (< 640px) se ve **un carácter a la vez**, en la celda más grande que entra en la carta, sin scroll. Se cambia de carácter con indicadores numerados (no muestran el carácter), flechas o swipe horizontal sobre esa tira (`lib/hooks/use-horizontal-swipe.ts`, 40 px; descarta el click del indicador donde empezó el gesto). Los indicadores marcan si el carácter tiene trazos y, después de validar, si está correcto o tiene errores. El canvas tiene `touch-action: none`. El área de dibujo lleva `data-no-flip` y `data-no-swipe`: no gira la carta ni cambia de carta.
+- Cada trazo se guarda en unidades de su celda (1024). En desktop se asigna a la celda que contiene la mayoría de sus puntos; en mobile, a la celda visible. Deshacer quita el último trazo (en mobile, el último del carácter visible); Borrar, todos. **Tocar un trazo lo borra** (`strokeAt`): un gesto que no se mueve más de 8 px es un toque, no se pinta y nunca se guarda como trazo; si cae a menos del grosor del trazo + 12 px de uno, lo borra.
+- **Validar** compara cada celda con los trazos del carácter (`lib/domain/stroke-matching.ts`): asignación uno a uno de costo mínimo (algoritmo húngaro) sobre Fréchet de posición y de forma y largo, probando cada trazo en los dos sentidos, así que **el orden y la dirección no importan**. Tolera escribir algo más chico o corrido (ajuste a la caja del carácter). Marca la celda en verde o rojo, los trazos propios con error en rojo y los que faltan con su contorno punteado; un carácter sin datos queda "no se puede validar" (lo único que se lista en texto). El detalle de los errores por carácter no se muestra: queda solo para lectores de pantalla (`sr-only`), porque las marcas del canvas no son accesibles.
+- Datos: chino de `hanzi-writer-data@2.0.1`, kanji de `hanzi-writer-data-jp@0.0.1`, kana de animCJK (fijado a un commit), desde jsDelivr. Se cachean en memoria y en el service worker (`stroke-data`, `CacheFirst`), y al empezar un recorrido con Dibujar se precargan los caracteres del mazo. La atribución (Arphic PL, LGPL) está en Más y en el sidebar.
 
 ## Build, entornos y despliegue
 
 - `npm run dev` apunta al proyecto real (con `VITE_USE_EMULATORS=true` usa los emuladores de Auth y Firestore: `npm run emulators`).
 - `npm run build` (tsc + Vite): JS inicial ~244 KB de app y ~650 KB de Firebase en su propio chunk; el SDK de IA va aparte.
 - Despliegue: `firebase deploy --only hosting` (las reglas e índices de Firestore se despliegan con `--only firestore`). Hosting reescribe todo a `index.html`; `sw.js`, `index.html` y el manifest salen sin caché y los assets con hash como inmutables (`firebase.json`).
-- Las decisiones y desvíos de cada iteración están en `docs/features/NNN-nombre/notas.md` (000 MVP, 001 Mejoras, 002 Fixes).
+- Las decisiones y desvíos de cada iteración están en `docs/features/NNN-nombre/notas.md` (000 MVP, 001 Mejoras, 002 Fixes, 003 Escritura a mano).
 
 ## Pruebas
 
-- `npm test`: unitarias de dominio y tests de pantalla por criterio de aceptación (`F03-6`, `M02-3`… en los nombres), con repositorios, autenticación e IA simulados.
+- `npm test`: unitarias de dominio y tests de pantalla por criterio de aceptación (`F03-6`, `M02-3`, `E1`… en los nombres), con repositorios, autenticación, IA y datos de trazos simulados (fixtures reales de unos pocos caracteres en `src/test/stroke-data.json`). jsdom no pinta canvas: el dibujo se prueba por su estado.
 - `npm run test:rules`: reglas de Firestore contra el emulador.
 - Lo que no se automatiza y se probó a mano: sesión real de Google, IA real, instalación y uso sin conexión (ver `notas.md`).

@@ -34,4 +34,4 @@
 
 ## Iteración actual
 <!-- Actualizar al empezar cada iteración -->
-`docs/features/000-mvp/`
+`docs/features/003-escritura-mano/`

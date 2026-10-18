@@ -45,6 +45,16 @@ export default defineConfig({
               handler: 'CacheFirst',
               options: { cacheName: 'fonts', expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 365 } },
             },
+            {
+              // Datos de trazos del layout Dibujar (versión fija en la URL: no cambian). Lo ya usado no se vuelve a descargar.
+              urlPattern: ({ url }) => url.origin === 'https://cdn.jsdelivr.net',
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'stroke-data',
+                expiration: { maxEntries: 6000, maxAgeSeconds: 60 * 60 * 24 * 365 },
+                cacheableResponse: { statuses: [200] },
+              },
+            },
           ],
         },
       }),

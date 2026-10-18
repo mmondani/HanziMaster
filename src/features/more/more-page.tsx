@@ -1,5 +1,6 @@
 import { Link, Navigate } from 'react-router-dom';
 import { ChevronRight, Languages, LogOut } from 'lucide-react';
+import { DataCredits } from '@/components/layout/data-credits';
 import { PageHeader } from '@/components/layout/page-header';
 import { ThemeSelector } from '@/components/layout/theme-selector';
 import { useAuth } from '@/lib/auth/auth-provider';
@@ -50,6 +51,7 @@ export function MorePage() {
           </button>
         </section>
         <p className="xs muted" style={{ textAlign: 'center' }}>Hanzi Master · versión 0.1 (MVP)</p>
+        <div className="credits" style={{ textAlign: 'center' }}><DataCredits /></div>
       </div>
     </div>
   );

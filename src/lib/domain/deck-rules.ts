@@ -1,5 +1,6 @@
 import { newId } from '@/lib/ids';
 import type { Deck, Language, TraversalMode } from '@/lib/types';
+import { DRAW_LAYOUT_ID, DRAW_LAYOUT_NAME, layoutOptions, supportsHandwriting } from './handwriting';
 
 /**
  * Estado de un mazo respecto de sus layouts y flashcards.
@@ -11,7 +12,8 @@ export type DeckStatus =
   | { kind: 'empty' }
   | { kind: 'broken'; modes: TraversalMode[] };
 
-const hasLayout = (language: Language, id: string) => language.layouts.some((l) => l.id === id);
+/** El layout existe: es del idioma o es Dibujar en un idioma que lo ofrece. */
+const hasLayout = (language: Language, id: string) => layoutOptions(language).some((l) => l.id === id);
 
 /**
  * Modos que trae un mazo nuevo: copias (con id nuevo) de los modos por defecto del idioma.
@@ -36,12 +38,15 @@ export function getDeckStatus(deck: Deck, language: Language | undefined): DeckS
 
 export const canStudy = (status: DeckStatus) => status.kind === 'ok';
 
-const layoutName = (language: Language, id: string) => language.layouts.find((l) => l.id === id)?.name;
+function layoutName(language: Language, id: string): string {
+  if (id === DRAW_LAYOUT_ID && !supportsHandwriting(language)) return `${DRAW_LAYOUT_NAME} (solo chino o japonés)`;
+  return layoutOptions(language).find((l) => l.id === id)?.name ?? 'layout eliminado';
+}
 
-/** "Frente: Palabra y pinyin · Reverso: Traducción" (con "layout eliminado" si ya no existe). */
+/** "Frente: Palabra y pinyin · Reverso: Dibujar" (con "layout eliminado" si ya no existe). */
 export function describeMode(mode: TraversalMode, language: Language): string {
-  const front = layoutName(language, mode.frontLayoutId) ?? 'layout eliminado';
-  const back = layoutName(language, mode.backLayoutId) ?? 'layout eliminado';
+  const front = layoutName(language, mode.frontLayoutId);
+  const back = layoutName(language, mode.backLayoutId);
   return `Frente: ${front} · Reverso: ${back}`;
 }
 

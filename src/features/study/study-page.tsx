@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CircleCheck, FlipHorizontal2, Shuffle, X } from 'lucide-react';
 import { FlashcardView } from '@/components/flashcard/flashcard-view';
 import { FlipCard } from '@/components/flashcard/flip-card';
+import { HandwritingCanvas } from '@/components/flashcard/handwriting-canvas';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
@@ -10,9 +11,12 @@ import { IconButton } from '@/components/ui/icon-button';
 import { DeckStatusView } from '@/features/decks/deck-status-view';
 import { useDeckRecord } from '@/features/decks/use-deck-record';
 import { getDeckStatus } from '@/lib/domain/deck-rules';
+import { DRAW_LAYOUT_ID, drawableChars } from '@/lib/domain/handwriting';
 import { reshuffle, shuffle } from '@/lib/domain/shuffle';
 import { initStudy, studyReducer } from '@/lib/domain/study-session';
-import type { Deck, Flashcard, Language, TraversalMode } from '@/lib/types';
+import { prefetchChars } from '@/lib/handwriting/char-data';
+import { useCharDataLoader } from '@/lib/handwriting/char-data-provider';
+import type { Deck, Flashcard, Language, Layout, TraversalMode } from '@/lib/types';
 
 /** Distancia horizontal mínima (px) para que un gesto cuente como swipe. */
 const SWIPE_THRESHOLD = 60;
@@ -59,11 +63,23 @@ function Study({ deck, language, mode, flashcards }: StudyProps) {
   const [confirmingExit, setConfirmingExit] = useState(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
+  const loader = useCharDataLoader();
+
   const total = state.order.length;
   const card = flashcards.find((c) => c.id === state.order[state.index]);
-  const front = language.layouts.find((l) => l.id === mode.frontLayoutId);
-  const back = language.layouts.find((l) => l.id === mode.backLayoutId);
+  // Dibujar es un layout virtual: no está en `language.layouts`.
+  const findLayout = (id: string): Layout | 'draw' | undefined => (id === DRAW_LAYOUT_ID ? 'draw' : language.layouts.find((l) => l.id === id));
+  const front = findLayout(mode.frontLayoutId);
+  const back = findLayout(mode.backLayoutId);
   const dialogOpen = confirmingExit || state.finished;
+  const draws = front === 'draw' || back === 'draw';
+
+  // Con Dibujar, se descargan de antemano los trazos de las palabras del mazo: así se puede validar aun sin conexión.
+  useEffect(() => {
+    if (!draws) return;
+    const chars = deck.cardIds.flatMap((id) => drawableChars(String(flashcards.find((c) => c.id === id)?.values.word ?? '')));
+    void prefetchChars(loader, chars, language);
+  }, [draws, deck.cardIds, flashcards, language, loader]);
 
   // Teclado: ← → navegan, Espacio/Enter giran (si nada tiene el foco), Esc pide salir.
   useEffect(() => {
@@ -79,6 +95,11 @@ function Study({ deck, language, mode, flashcards }: StudyProps) {
   }, [dialogOpen]);
 
   function onTouchStart(e: TouchEvent) {
+    // Dibujar o hacer scroll en el área de dibujo no es un swipe.
+    if ((e.target as HTMLElement).closest('[data-no-swipe]')) {
+      touchStart.current = null;
+      return;
+    }
     const t = e.touches[0];
     touchStart.current = { x: t.clientX, y: t.clientY };
   }
@@ -100,6 +121,11 @@ function Study({ deck, language, mode, flashcards }: StudyProps) {
       </main>
     );
   }
+
+  const renderFace = (layout: Layout | 'draw') =>
+    layout === 'draw'
+      ? <HandwritingCanvas language={language} word={String(card.values.word ?? '')} />
+      : <FlashcardView language={language} card={card} layout={layout} />;
 
   return (
     <div className="study">
@@ -124,8 +150,8 @@ function Study({ deck, language, mode, flashcards }: StudyProps) {
           key={`${state.order.join()}:${state.index}`}
           flipped={state.flipped}
           onFlipChange={() => dispatch({ type: 'flip' })}
-          front={<FlashcardView language={language} card={card} layout={front} />}
-          back={<FlashcardView language={language} card={card} layout={back} />}
+          front={renderFace(front)}
+          back={renderFace(back)}
         />
       </main>
 

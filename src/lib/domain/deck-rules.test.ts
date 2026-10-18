@@ -1,5 +1,6 @@
 import { chinese, deck, MODE_A, MODE_B } from '@/test/fixtures';
 import { canStudy, describeMode, getDeckStatus, hasDeckErrors, isModeBroken, modesFromDefaults, validateDeck } from './deck-rules';
+import { DRAW_LAYOUT_ID } from './handwriting';
 
 const language = chinese();
 const mode = { id: 'm1', name: 'Palabra → Significado', frontLayoutId: 'ly1', backLayoutId: 'ly2' };
@@ -44,6 +45,28 @@ describe('describeMode', () => {
   });
   it('marca los layouts eliminados', () => {
     expect(describeMode({ ...mode, backLayoutId: 'x' }, language)).toBe('Frente: Palabra y pinyin · Reverso: layout eliminado');
+  });
+});
+
+describe('E1 · Dibujar en los modos de recorrida', () => {
+  const draw = { ...mode, backLayoutId: DRAW_LAYOUT_ID };
+
+  it('un modo con Dibujar (frente o reverso) es válido en chino y japonés', () => {
+    expect(isModeBroken(draw, language)).toBe(false);
+    expect(isModeBroken({ ...mode, frontLayoutId: DRAW_LAYOUT_ID }, chinese({ code: 'ja-JP' }))).toBe(false);
+    expect(getDeckStatus(deck('d', 'zh', { cardIds: ['a'], modes: [draw] }), language).kind).toBe('ok');
+    expect(describeMode(draw, language)).toBe('Frente: Palabra y pinyin · Reverso: Dibujar');
+  });
+
+  it('si el idioma deja de ser chino o japonés, el modo queda roto (derivado, sin tocar el mazo)', () => {
+    const english = chinese({ code: 'en-US' });
+    expect(isModeBroken(draw, english)).toBe(true);
+    expect(getDeckStatus(deck('d', 'zh', { cardIds: ['a'], modes: [draw] }), english).kind).toBe('broken');
+    expect(describeMode(draw, english)).toBe('Frente: Palabra y pinyin · Reverso: Dibujar (solo chino o japonés)');
+  });
+
+  it('los modos por defecto con Dibujar se copian a los mazos nuevos', () => {
+    expect(modesFromDefaults(chinese({ defaultModes: [{ ...draw, id: 'mD' }] }))[0]).toMatchObject({ backLayoutId: DRAW_LAYOUT_ID });
   });
 });
 

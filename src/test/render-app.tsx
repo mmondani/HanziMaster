@@ -5,14 +5,20 @@ import { ToastProvider } from '@/components/ui/toast-provider';
 import { AiProvider } from '@/lib/ai/ai-provider';
 import type { AiCompleter } from '@/lib/domain/ai-completion';
 import { AuthProvider } from '@/lib/auth/auth-provider';
+import type { CharDataLoader } from '@/lib/handwriting/char-data';
+import { CharDataProvider } from '@/lib/handwriting/char-data-provider';
 import { RepositoriesProvider } from '@/lib/repositories/repositories-provider';
 import { MemoryRepositories } from '@/lib/repositories/memory-repositories';
 import { FakeAuthService } from './fake-auth-service';
+import { fixtureLoader } from './stroke-fixtures';
 
 export const ANA = { uid: 'u1', email: 'ana@gmail.com' };
 
-/** Renderiza la app completa en una ruta, con servicios de autenticación y datos simulados. */
-export function renderApp(path: string, service = new FakeAuthService(), repos = new MemoryRepositories(), ai?: AiCompleter) {
+/**
+ * Renderiza la app completa en una ruta, con servicios de autenticación y datos simulados.
+ * Los datos de trazos salen siempre de los fixtures (nunca de la red).
+ */
+export function renderApp(path: string, service = new FakeAuthService(), repos = new MemoryRepositories(), ai?: AiCompleter, charData: CharDataLoader = fixtureLoader()) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   const factory = () => repos;
   const content = (
@@ -23,7 +29,9 @@ export function renderApp(path: string, service = new FakeAuthService(), repos =
   const view = render(
     <AuthProvider service={service}>
       <RepositoriesProvider factory={factory}>
-        {ai ? <AiProvider completer={ai}>{content}</AiProvider> : content}
+        <CharDataProvider loader={charData}>
+          {ai ? <AiProvider completer={ai}>{content}</AiProvider> : content}
+        </CharDataProvider>
       </RepositoriesProvider>
     </AuthProvider>,
   );

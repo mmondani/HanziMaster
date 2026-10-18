@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { DESKTOP_NAV, LANGUAGES_NAV, isActive } from './nav-items';
 import { IconButton } from '@/components/ui/icon-button';
+import { DataCredits } from './data-credits';
 import { ThemeSelector } from './theme-selector';
 
 export interface SidebarUser {
@@ -46,6 +47,7 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <IconButton aria-label="Cerrar sesión" onClick={user.onSignOut}><LogOut className="ic" aria-hidden="true" /></IconButton>
         </div>
       )}
+      <div className="side-credits"><DataCredits /></div>
     </aside>
   );
 }

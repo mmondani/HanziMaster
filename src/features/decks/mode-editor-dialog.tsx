@@ -4,6 +4,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { layoutOptions } from '@/lib/domain/handwriting';
 import { newId } from '@/lib/ids';
 import type { Language, TraversalMode } from '@/lib/types';
 
@@ -15,13 +16,15 @@ export interface ModeEditorDialogProps {
   onClose: () => void;
 }
 
-/** Alta y edición de un modo de recorrida: nombre y layouts de frente y reverso (los del idioma). */
+/** Alta y edición de un modo de recorrida: nombre y layouts de frente y reverso (los del idioma y, en chino o japonés, Dibujar). */
 export function ModeEditorDialog({ language, mode, onSave, onClose }: ModeEditorDialogProps) {
-  const layouts = language.layouts;
+  const layouts = layoutOptions(language);
   const exists = (id: string | undefined) => (id && layouts.some((l) => l.id === id) ? id : '');
   const [name, setName] = useState(mode?.name ?? '');
-  const [front, setFront] = useState(exists(mode?.frontLayoutId) || (mode ? '' : layouts[0]?.id ?? ''));
-  const [back, setBack] = useState(exists(mode?.backLayoutId) || (mode ? '' : layouts[1]?.id ?? layouts[0]?.id ?? ''));
+  // Un modo nuevo propone los layouts propios del idioma; Dibujar se elige a mano.
+  const own = language.layouts;
+  const [front, setFront] = useState(exists(mode?.frontLayoutId) || (mode ? '' : own[0]?.id ?? ''));
+  const [back, setBack] = useState(exists(mode?.backLayoutId) || (mode ? '' : own[1]?.id ?? own[0]?.id ?? ''));
   const [errors, setErrors] = useState<{ name?: string; front?: string; back?: string }>({});
 
   function save() {

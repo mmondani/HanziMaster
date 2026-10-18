@@ -1,0 +1,8 @@
+- Al crear los modos de recorrida de un mazo, si se trata de idioma Chino o Japonés, además de los layouts creados para ese idioma se debe agregar uno más que sea el de Dibujar
+- Este layout continue un único elemento de canvas para poder dibujar a mano alzada y va a validar la escritura contra la palabra correspondiente
+- El canvas debe contar con un botón para ir deshaciendo cada trazo que fue hecho
+- El canvas debe contar con un botón para borrar todo lo dibujado
+- El canvas debe contar con un botón para validar lo dibujado contra la palabra
+- En la evaluación solo se debe comparar caracter por caracter, no el órden y dirección en el que fueron dibujados los trazos
+- Si hay errores se deben marcar claramente
+- Si no hay errores se debe marcar que está correcto
